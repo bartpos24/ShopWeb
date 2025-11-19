@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShopWeb.Domain\ShopWeb.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TransferObjects\Login\" />
+    <Folder Include="TransferObjects\Inventory\" />
+    <Folder Include="TransferObjects\Products\" />
+  </ItemGroup>
+
+</Project>
