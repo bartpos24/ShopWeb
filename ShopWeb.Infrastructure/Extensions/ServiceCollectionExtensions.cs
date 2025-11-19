@@ -22,10 +22,13 @@ namespace ShopWeb.Infrastructure.Extensions
                 ?? throw new ArgumentNullException("ShopApi:BaseUrl is not configured");
 
             // Register ShopApi Client
-            services.AddHttpClient<IShopApiClient, ShopApiClient>(client =>
+            services.AddHttpClient<IShopApiClient, ShopApiClient>((serviceProvider, client) =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
+            }).AddTypedClient<IShopApiClient>((httpClient, serviceProvider) =>
+            {
+                return new ShopApiClient(apiBaseUrl, httpClient);
             });
 
             //// Register Login Client
@@ -67,12 +70,16 @@ namespace ShopWeb.Infrastructure.Extensions
                 ?? throw new ArgumentNullException("ShopApi:BaseUrl is not configured");
 
             // Re-register clients with authentication handler
-            services.AddHttpClient<IShopApiClient, ShopApiClient>(client =>
+            services.AddHttpClient<IShopApiClient, ShopApiClient>((serviceProvider, client) =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             })
-            .AddHttpMessageHandler<AuthorizationMessageHandler>();
+            .AddHttpMessageHandler<AuthorizationMessageHandler>()
+            .AddTypedClient<IShopApiClient>((httpClient, serviceProvider) =>
+            {
+                return new ShopApiClient(apiBaseUrl, httpClient);
+            });
 
             //// Re-register clients with authentication handler
             //services.AddHttpClient<ILoginClient, LoginClient>(client =>
@@ -95,6 +102,11 @@ namespace ShopWeb.Infrastructure.Extensions
             //    client.DefaultRequestHeaders.Add("Accept", "application/json");
             //})
             //.AddHttpMessageHandler<AuthorizationMessageHandler>();
+
+            // Register custom services/handlers
+            services.AddTransient<AuthorizationMessageHandler>();
+
+            services.AddScoped<IInventoryRepository, InventoryRepository>();
 
             return services;
         }
