@@ -19,7 +19,7 @@ namespace ShopWeb.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var x = await inventoryService.Login("barpos", "Dobrakow56!","");
+            var x = await inventoryService.Login("temp_user", "temp_password"); //HttpContext.Connection.RemoteIpAddress?.ToString() ?? ""
             return View();
         }
 
