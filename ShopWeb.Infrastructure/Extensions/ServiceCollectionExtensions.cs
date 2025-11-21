@@ -22,13 +22,13 @@ namespace ShopWeb.Infrastructure.Extensions
                 ?? throw new ArgumentNullException("ShopApi:BaseUrl is not configured");
 
             // Register ShopApi Client
-            services.AddHttpClient<IShopApiClient, ShopApiClient>((serviceProvider, client) =>
+            services.AddHttpClient<IShopApiNSwagClient, ShopApiNSwagClient>((serviceProvider, client) =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
-            }).AddTypedClient<IShopApiClient>((httpClient, serviceProvider) =>
+            }).AddTypedClient<IShopApiNSwagClient>((httpClient, serviceProvider) =>
             {
-                return new ShopApiClient(apiBaseUrl, httpClient);
+                return new ShopApiNSwagClient(apiBaseUrl, httpClient);
             });
 
             //// Register Login Client
@@ -70,15 +70,15 @@ namespace ShopWeb.Infrastructure.Extensions
                 ?? throw new ArgumentNullException("ShopApi:BaseUrl is not configured");
 
             // Re-register clients with authentication handler
-            services.AddHttpClient<IShopApiClient, ShopApiClient>((serviceProvider, client) =>
+            services.AddHttpClient<IShopApiNSwagClient, ShopApiNSwagClient>((serviceProvider, client) =>
             {
                 client.BaseAddress = new Uri(apiBaseUrl);
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .AddHttpMessageHandler<AuthorizationMessageHandler>()
-            .AddTypedClient<IShopApiClient>((httpClient, serviceProvider) =>
+            .AddTypedClient<IShopApiNSwagClient>((httpClient, serviceProvider) =>
             {
-                return new ShopApiClient(apiBaseUrl, httpClient);
+                return new ShopApiNSwagClient(apiBaseUrl, httpClient);
             });
 
             //// Re-register clients with authentication handler
