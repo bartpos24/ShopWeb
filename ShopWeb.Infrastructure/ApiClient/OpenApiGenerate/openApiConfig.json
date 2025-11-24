@@ -1,0 +1,21 @@
+{
+  "packageName": "ShopApi.Client",
+  "packageVersion": "1.0.0",
+  "targetFramework": "net8.0",
+  "netCoreProjectFile": true,
+  "validatable": true,
+  "nullableReferenceTypes": true,
+  "interfacePrefix": "I",
+  "enumNameSuffix": "",
+  "enumValueSuffix": "",
+  "returnICollection": false,
+  "optionalProjectFile": false,
+  "useCollection": true,
+  "useCompareNetObjects": true,
+  "useDateTimeOffset": true,
+  "useOneOfDiscriminatorLookup": true,
+  "library": "httpclient",
+  "generateApiTests": false,
+  "generateModelTests": false,
+  "hideGenerationTimestamp": true
+}
