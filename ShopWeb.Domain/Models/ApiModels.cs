@@ -25,7 +25,7 @@ namespace ShopWeb.Infrastructure.ApiClient.NSwag.Models
     using System = global::System;
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.6.2.0 (NJsonSchema v11.5.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial interface IShopApiClient
+    public partial interface IShopApiNSwagClient
     {
         /// <returns>OK</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>

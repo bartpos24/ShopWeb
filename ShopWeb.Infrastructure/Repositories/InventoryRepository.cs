@@ -10,8 +10,8 @@ namespace ShopWeb.Infrastructure.Repositories
 {
     public class InventoryRepository : IInventoryRepository
     {
-        private readonly IShopApiClient shopApi;
-        public InventoryRepository(IShopApiClient _shopApiClient)
+        private readonly IShopApiNSwagClient shopApi;
+        public InventoryRepository(IShopApiNSwagClient _shopApiClient)
         {
             shopApi = _shopApiClient;
         }
