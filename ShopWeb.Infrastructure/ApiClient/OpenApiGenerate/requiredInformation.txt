@@ -1,9 +1,0 @@
-Pobieranie pliku jar:
-wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.17.0/openapi-generator-cli-7.17.0.jar -O openapi-generator-cli.jar
-
-Generowanie klienta API:
-java -jar openapi-generator-cli.jar generate -i ./ShopWeb.Infrastructure/ApiClient/shopApi.json -g csharp -o ./ShopWeb.Infrastructure/ApiClient/OpenApiGenerate/Infrastructure/ShopApiClient -c ./ShopWeb.Infrastructure/ApiClient/OpenApiGenerate/openApiConfig.json
-
-Linki do dokumentacji OpenAPI Generator:
-https://github.com/OpenAPITools/openapi-generator/tree/master
-https://openapi-generator.tech/docs/globals

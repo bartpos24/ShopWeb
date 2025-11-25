@@ -1,0 +1,60 @@
+Pobieranie pliku jar:
+wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/7.17.0/openapi-generator-cli-7.17.0.jar -O openapi-generator-cli.jar
+
+Generowanie klienta API:
+java -jar openapi-generator-cli.jar generate -i ./ShopWeb.Infrastructure/ApiClient/shopApi.json -g csharp -o ./ShopWeb.Infrastructure/ApiClient/OpenApiGenerate/Infrastructure/ShopApiClient -c ./ShopWeb.Infrastructure/ApiClient/OpenApiGenerate/openApiConfig.json
+
+Linki do dokumentacji OpenAPI Generator:
+https://github.com/OpenAPITools/openapi-generator/tree/master
+https://openapi-generator.tech/docs/globals
+
+Command to generate openApiGenerate client when all configuration are inside openApiConfig.json:
+java -jar openapi-generator-cli.jar generate -c ./ShopWeb.Infrastructure/ApiClient/openApiConfig.json
+
+Command to generate openApiGenerate client with all configuration in openApiConfig.json file:
+.\ShopWeb.Infrastructure\ApiClient\OpenApiGenerate.ps1
+
+
+openApiConfig.json
+{
+	"generatorName": "csharp",
+	"inputSpec": "./ShopWeb.Infrastructure/ApiClient/shopApi.json",
+	"outputDir": "./ShobWeb.Infrastructure/ApiClient/OpenApiGenerate",
+	"modelPackage": "./ShopWeb.Domain/Models",
+	"apiPackage": "./ShopWeb.Infrastructure/ApiClient/OpenApiGenerate/Api",
+	"additionalProperties": {
+		"packageName": "ShopApiClient",
+		"packageVersion": "1.0.0",
+		"targetFramework": "net9.0",
+		"netCoreProjectFile": false,
+		"library": "httpclient",
+		"generateApiTests": false,
+		"generateModelTests": false,
+		"hideGenerationTimestamp": true,
+		"generateModelDocumentation": false,
+		"generateApiDocumentation": false,
+		"useDateTimeOffset": false, //Use DateTime instead of DateTimeOffset
+		"useCollection": false, // Use List<T> instead of ICollection<T>
+		"sourceFolder": "",
+		"supportsAsync": "true",
+		"modelPropertyNaming": "PascalCase",
+		"generateInterfaces": true,
+		"validatable": true, //Add IValidatableObject
+		"nullableReferenceTypes": true, //Enable nullable reference types
+		"interfacePrefix": "I",
+		"optionalProjectFile": false, //Generate .csproj file
+		"useCompareNetObjects": true,
+		"useHttpClientFactory": true, //Use IHttpClientFactory (DI-friendly)
+		"useSourceGeneration": true, //Use source generators (.NET 6+)
+		"jsonLibrary": "Newtonsoft", //"SystemTextJson" or "Newtonsoft"
+		"useNewtonsoft": true, //Use Newtonsoft.Json (legacy)
+		"separateInterfaces": true
+		//"useOneOfDiscriminatorLookup": true // I have to check what does it mean
+	},
+	"globalProperties": {
+		"modelDocs": "false",
+		"apiDocs": "false",
+		"modelTests": "false",
+		"apiTests": "false"
+	}		
+}

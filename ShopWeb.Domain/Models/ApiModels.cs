@@ -456,3 +456,5 @@ namespace ShopWeb.Infrastructure.ApiClient.NSwag.Models
 #pragma warning restore 8604
 #pragma warning restore 8625
 #pragma warning restore 8765
+
+

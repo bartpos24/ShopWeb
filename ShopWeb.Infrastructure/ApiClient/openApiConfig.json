@@ -1,0 +1,41 @@
+{
+	"generatorName": "csharp",
+	"inputSpec": "./ShopWeb.Infrastructure/ApiClient/shopApi.json",
+	"outputDir": "./ShopWeb.Infrastructure/ApiClient/OpenApiGenerate",
+	"additionalProperties": {
+		"packageName": "ShopApiClient",
+		"packageVersion": "1.0.0",
+		"targetFramework": "net9.0",
+		"netCoreProjectFile": false,
+		"library": "httpclient",
+		"generateApiTests": false,
+		"generateModelTests": false,
+		"hideGenerationTimestamp": true,
+		"generateModelDocumentation": false,
+		"generateApiDocumentation": false,
+		"useDateTimeOffset": false,
+		"useCollection": false,
+		"sourceFolder": ".",
+		"supportsAsync": true,
+		"modelPropertyNaming": "PascalCase",
+		"generateInterfaces": true,
+		"validatable": true,
+		"nullableReferenceTypes": true,
+		"interfacePrefix": "I",
+		"optionalProjectFile": false,
+		"useCompareNetObjects": true,
+		"useHttpClientFactory": true,
+		"useSourceGeneration": false,
+		"jsonLibrary": "SystemTextJson",
+		"useNewtonsoft": false,
+		"modelPackage": "Models",
+		"apiPackage": "Api",
+		"separateInterfaces": true
+	},
+	"globalProperties": {
+		"modelDocs": "false",
+		"apiDocs": "false",
+		"modelTests": "false",
+		"apiTests": "false"
+	}		
+}
