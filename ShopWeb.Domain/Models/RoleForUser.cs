@@ -25,7 +25,7 @@ using FileParameter = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastru
 using OpenAPIDateConverter = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.OpenAPIDateConverter;
 using OpenAPIClientUtils = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils;
 
-namespace ShopWeb.Domain.Models.Generated
+namespace ShopWeb.Domain.Models
 {
     /// <summary>
     /// RoleForUser

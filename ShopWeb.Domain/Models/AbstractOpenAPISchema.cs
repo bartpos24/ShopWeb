@@ -12,7 +12,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace ShopWeb.Domain.Models.Generated
+namespace ShopWeb.Domain.Models
 {
     /// <summary>
     ///  Abstract base class for oneOf, anyOf schemas in the OpenAPI specification

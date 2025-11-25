@@ -11,7 +11,7 @@ https://openapi-generator.tech/docs/globals
 Command to generate openApiGenerate client when all configuration are inside openApiConfig.json:
 java -jar openapi-generator-cli.jar generate -c ./ShopWeb.Infrastructure/ApiClient/openApiConfig.json
 
-Command to generate openApiGenerate client with all configuration in openApiConfig.json file:
+Command to generate openApiGenerate client with all configuration in openApiConfig.json file and use script:
 .\ShopWeb.Infrastructure\ApiClient\OpenApiGenerate.ps1
 
 

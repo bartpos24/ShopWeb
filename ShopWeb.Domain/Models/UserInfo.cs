@@ -21,11 +21,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel.DataAnnotations;
-using FileParameter = ShopApiClient.Client.FileParameter;
-using OpenAPIDateConverter = ShopApiClient.Client.OpenAPIDateConverter;
-using OpenAPIClientUtils = ShopApiClient.Client.ClientUtils;
+using FileParameter = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.FileParameter;
+using OpenAPIDateConverter = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.OpenAPIDateConverter;
+using OpenAPIClientUtils = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils;
 
-namespace ShopWeb.Domain.Models.Generated
+namespace ShopWeb.Domain.Models
 {
     /// <summary>
     /// UserInfo
@@ -127,4 +127,5 @@ namespace ShopWeb.Domain.Models.Generated
     }
 
 }
+
 
