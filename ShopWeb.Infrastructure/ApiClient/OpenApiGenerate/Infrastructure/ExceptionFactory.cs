@@ -21,3 +21,4 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
     public delegate Exception ExceptionFactory(string methodName, IApiResponse response);
 }
 
+

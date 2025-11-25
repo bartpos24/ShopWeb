@@ -73,3 +73,4 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
     }
 }
 
+

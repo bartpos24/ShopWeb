@@ -78,3 +78,4 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
         public static implicit operator FileParameter(Stream s) => new FileParameter(s);
     }
 }
+

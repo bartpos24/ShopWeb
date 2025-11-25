@@ -70,10 +70,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
         /// <returns>A JSON string.</returns>
         public string Serialize(object obj)
         {
-            if (obj != null && obj is ShopApiClient.Models.AbstractOpenAPISchema)
+            if (obj != null && obj is ShopWeb.Domain.Models.AbstractOpenAPISchema)
             {
                 // the object to be serialized is an oneOf/anyOf schema
-                return ((ShopApiClient.Models.AbstractOpenAPISchema)obj).ToJson();
+                return ((ShopWeb.Domain.Models.AbstractOpenAPISchema)obj).ToJson();
             }
             else
             {
@@ -226,7 +226,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
         /// It's better to reuse the <see href="https://docs.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests#issues-with-the-original-httpclient-class-available-in-net">HttpClient and HttpClientHandler</see>.
         /// </summary>
         public ApiClient() :
-                 this(ShopApiClient.Client.GlobalConfiguration.Instance.BasePath)
+                 this(GlobalConfiguration.Instance.BasePath)
         {
         }
 
@@ -258,7 +258,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
         /// The features affected are: Setting and Retrieving Cookies, Client Certificates, Proxy settings.
         /// </remarks>
         public ApiClient(HttpClient client, HttpClientHandler handler = null) :
-                 this(client, ShopApiClient.Client.GlobalConfiguration.Instance.BasePath, handler)
+                 this(client, GlobalConfiguration.Instance.BasePath, handler)
         {
         }
 
@@ -544,7 +544,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
                 object responseData = await deserializer.Deserialize<T>(response).ConfigureAwait(false);
 
                 // if the response type is oneOf/anyOf, call FromJSON to deserialize the data
-                if (typeof(ShopApiClient.Models.AbstractOpenAPISchema).IsAssignableFrom(typeof(T)))
+                if (typeof(ShopWeb.Domain.Models.AbstractOpenAPISchema).IsAssignableFrom(typeof(T)))
                 {
                     responseData = (T)typeof(T).GetMethod("FromJson").Invoke(null, new object[] { response.Content });
                 }
@@ -788,4 +788,5 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
         #endregion ISynchronousClient
     }
 }
+
 

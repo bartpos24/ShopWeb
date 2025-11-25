@@ -86,6 +86,37 @@ if (Test-Path $clientSource) {
     Write-Host "✓ Infrastructure files moved to OpenApiGenerate/Infrastructure" -ForegroundColor Green
 }
 
+# Update Infrastructure files to reference correct namespaces
+if (Test-Path $infrastructureDest) {
+    Get-ChildItem -Path $infrastructureDest -Filter "*.cs" | ForEach-Object {
+        try {
+            $content = Get-Content $_.FullName -Raw -ErrorAction Stop
+            
+            # Replace ShopApiClient.Models with ShopWeb.Domain.Models
+            $content = $content -replace 'ShopApiClient\.Models\.', 'ShopWeb.Domain.Models.'
+            $content = $content -replace 'using ShopApiClient\.Models;', 'using ShopWeb.Domain.Models;'
+            
+            # Remove ShopApiClient.Client prefix from object references
+            $content = $content -replace 'ShopApiClient\.Client\.GlobalConfiguration', 'GlobalConfiguration'
+            $content = $content -replace 'ShopApiClient\.Client\.Configuration', 'Configuration'
+            $content = $content -replace 'ShopApiClient\.Client\.ApiClient', 'ApiClient'
+            $content = $content -replace 'ShopApiClient\.Client\.ClientUtils', 'ClientUtils'
+            $content = $content -replace 'ShopApiClient\.Client\.FileParameter', 'FileParameter'
+            $content = $content -replace 'ShopApiClient\.Client\.OpenAPIDateConverter', 'OpenAPIDateConverter'
+            $content = $content -replace 'ShopApiClient\.Client\.', ''
+            
+            # Remove unnecessary using statements
+            $content = $content -replace 'using ShopApiClient\.Client;', ''
+            
+            Set-ContentSafely -Path $_.FullName -Value $content | Out-Null
+            Write-Host "✓ Updated: $($_.Name)" -ForegroundColor Green
+        }
+        catch {
+            Write-Host "⚠ Skipped: $($_.Name) (file may be open in editor)" -ForegroundColor Yellow
+        }
+    }
+}
+
 # Move API files to Api directory
 if (Test-Path $apiSource) {
     New-Item -ItemType Directory -Force -Path $apiDest | Out-Null
