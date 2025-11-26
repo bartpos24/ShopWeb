@@ -9,12 +9,12 @@ namespace ShopWeb.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> logger;
-        private readonly IInventoryService inventoryService;
+        private readonly ILoginService loginService;
 
-        public HomeController(ILogger<HomeController> _logger, IInventoryService _inventoryService)
+        public HomeController(ILogger<HomeController> _logger, ILoginService _loginService)
         {
-            logger = _logger; 
-            inventoryService = _inventoryService;
+            logger = _logger;
+			loginService = _loginService;
         }
 
         public async Task<IActionResult> Index()
