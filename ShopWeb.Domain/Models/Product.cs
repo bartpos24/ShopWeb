@@ -165,4 +165,3 @@ namespace ShopWeb.Domain.Models
 }
 
 
-

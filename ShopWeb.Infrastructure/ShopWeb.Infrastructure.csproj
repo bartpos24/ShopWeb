@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <Folder Include="ApiClient\Kiota\" />
-    <Folder Include="ApiClient\OpenApiGenerate\" />
+    <Folder Include="ApiClient\OpenApiGenerate\Api\" />
+    <Folder Include="ApiClient\OpenApiGenerate\Infrastructure\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Polly" Version="8.6.5" />
     <PackageReference Include="System.Net.Http.Json" Version="10.0.0" />
   </ItemGroup>
 

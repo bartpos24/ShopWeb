@@ -147,4 +147,3 @@ namespace ShopWeb.Domain.Models
 }
 
 
-

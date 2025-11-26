@@ -138,4 +138,3 @@ namespace ShopWeb.Domain.Models
 }
 
 
-

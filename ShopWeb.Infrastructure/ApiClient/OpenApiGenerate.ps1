@@ -39,6 +39,77 @@ function Set-ContentSafely {
     }
 }
 
+# Function to extract interfaces from API file and create separate interface file
+function Split-ApiInterfaces {
+    param(
+        [string]$ApiFilePath,
+        [string]$DestinationDir
+    )
+    
+    $content = Get-Content $ApiFilePath -Raw
+    $fileName = [System.IO.Path]::GetFileNameWithoutExtension($ApiFilePath)
+    
+    # Extract header comment
+    $headerMatch = [regex]::Match($content, '(?s)(\/\*.*?\*\/)')
+    $header = if ($headerMatch.Success) { $headerMatch.Value + "`r`n`r`n" } else { "" }
+    
+    # Extract using statements
+    $usingPattern = '(?m)^using [^;]+;'
+    $usings = [regex]::Matches($content, $usingPattern) | ForEach-Object { $_.Value }
+    $usingBlock = ($usings | Select-Object -Unique | Sort-Object) -join "`r`n"
+    
+    # Extract namespace
+    $namespaceMatch = [regex]::Match($content, 'namespace ([^\r\n{]+)')
+    $namespace = $namespaceMatch.Groups[1].Value.Trim()
+    
+    # Extract all three interfaces with their XML comments
+    $interfacePattern = '(?s)((?:[ \t]*///[^\r\n]*\r?\n)*[ \t]*public interface I' + $fileName + '[^\{]*\{(?:[^\}]|\}(?![ \t]*\r?\n))*\})'
+    $interfaces = [regex]::Matches($content, $interfacePattern)
+    
+    if ($interfaces.Count -gt 0) {
+        # Build interface file content
+        $interfaceContent = $header
+        $interfaceContent += $usingBlock + "`r`n`r`n"
+        $interfaceContent += "namespace $namespace`r`n{`r`n"
+        
+        foreach ($interface in $interfaces) {
+            $interfaceText = $interface.Groups[1].Value
+            # Clean up indentation
+            $interfaceText = $interfaceText -replace '(?m)^    ', ''
+            $interfaceContent += "`r`n" + $interfaceText.Trim() + "`r`n"
+        }
+        
+        $interfaceContent += "}`r`n"
+        
+        # Write interface file
+        $interfaceFile = Join-Path $DestinationDir "I$fileName.cs"
+        if (Set-ContentSafely -Path $interfaceFile -Value $interfaceContent) {
+            Write-Host "  ✓ Created interface file: I$fileName.cs" -ForegroundColor Cyan
+        }
+        
+        # Remove interfaces from original content, keep only the implementation class
+        foreach ($interface in $interfaces) {
+            $content = $content -replace [regex]::Escape($interface.Groups[1].Value), ''
+        }
+        
+        # Clean up extra whitespace - this is the key fix
+        # Remove multiple consecutive blank lines and leave only one
+        $content = $content -replace '(?m)^\s*$(\r?\n){2,}', "`r`n"
+        
+        # Fix namespace opening brace - ensure only one blank line after the opening brace
+        $content = $content -replace '(?m)(namespace [^\r\n]+\r?\n\{)\s*(\r?\n)+', "`$1`r`n`r`n"
+        
+        # Write implementation-only file
+        if (Set-ContentSafely -Path $ApiFilePath -Value $content) {
+            Write-Host "  ✓ Updated implementation file: $fileName.cs" -ForegroundColor Cyan
+        }
+        
+        return $true
+    }
+    
+    return $false
+}
+
 # Move models to Domain project
 if (Test-Path $modelsSource) {
     New-Item -ItemType Directory -Force -Path $modelsDest | Out-Null
@@ -109,12 +180,12 @@ if (Test-Path $infrastructureDest) {
             $content = $content -replace 'using ShopApiClient\.Client;', ''
             
             Set-ContentSafely -Path $_.FullName -Value $content | Out-Null
-            Write-Host "✓ Updated: $($_.Name)" -ForegroundColor Green
         }
         catch {
             Write-Host "⚠ Skipped: $($_.Name) (file may be open in editor)" -ForegroundColor Yellow
         }
     }
+    Write-Host "✓ Infrastructure namespace references updated" -ForegroundColor Green
 }
 
 # Move API files to Api directory
@@ -139,6 +210,23 @@ if (Test-Path $apiSource) {
     # Remove original Api directory
     Remove-Item -Path $apiSource -Recurse -Force
     Write-Host "✓ API files moved to OpenApiGenerate/Api" -ForegroundColor Green
+}
+
+# Separate interfaces from API implementation classes
+if (Test-Path $apiDest) {
+    Write-Host "`nSeparating interfaces from API implementations..." -ForegroundColor Cyan
+    $separatedCount = 0
+    
+    Get-ChildItem -Path $apiDest -Filter "*Api.cs" | Where-Object { $_.Name -notlike "I*" } | ForEach-Object {
+        Write-Host "Processing: $($_.Name)" -ForegroundColor Gray
+        if (Split-ApiInterfaces -ApiFilePath $_.FullName -DestinationDir $apiDest) {
+            $separatedCount++
+        }
+    }
+    
+    if ($separatedCount -gt 0) {
+        Write-Host "✓ Separated $separatedCount API interface(s) into individual files" -ForegroundColor Green
+    }
 }
 
 # Update Model files to reference new Infrastructure namespace
@@ -171,4 +259,4 @@ Remove-Item -Path "$generatedBase/*.sln" -ErrorAction SilentlyContinue
 Remove-Item -Path "$generatedBase/*.csproj" -ErrorAction SilentlyContinue
 Remove-Item -Path "$generatedBase/ShopApiClient" -Recurse -Force -ErrorAction SilentlyContinue
 
-Write-Host "✓ API client generation complete!" -ForegroundColor Green
+Write-Host "`n✓ API client generation complete!" -ForegroundColor Green
