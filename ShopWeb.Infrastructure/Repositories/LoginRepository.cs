@@ -18,13 +18,7 @@ namespace ShopWeb.Infrastructure.Repositories
 		}
 		public async Task<string> Login(string username, string password, string ssaid = null)
 		{
-			var loginModel = new LoginModel
-			{
-				Username = username,
-				Password = password,
-				Ssaid = ssaid ?? "",
-				LoginType = ELoginType.Web
-			};
+			var loginModel = new LoginModel(username, password, ssaid, ELoginType.Web);
 			return await loginApi.ApiLoginLoginPostAsync(loginModel);
 		}
 	}

@@ -163,8 +163,14 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
 
             if (type == typeof(string) || type.Name.StartsWith("System.Nullable")) // return primitive type
             {
-                return Convert.ChangeType(await response.Content.ReadAsStringAsync().ConfigureAwait(false), type);
-            }
+				var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				// If the content is a JSON string (starts and ends with quotes), deserialize it
+				if (type == typeof(string) && content.StartsWith("\"") && content.EndsWith("\""))
+				{
+					return JsonConvert.DeserializeObject<string>(content, _serializerSettings);
+				}
+				return Convert.ChangeType(content, type);
+			}
 
             // at this point, it must be a model (json)
             try
