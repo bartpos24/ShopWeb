@@ -75,4 +75,3 @@ namespace ShopWeb.Domain.Models
     }
 }
 
-

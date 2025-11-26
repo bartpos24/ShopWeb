@@ -17,7 +17,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
-using KellermanSoftware.CompareNetObjects;
 
 namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
 {
@@ -26,19 +25,6 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
     /// </summary>
     public static class ClientUtils
     {
-        /// <summary>
-        /// An instance of CompareLogic.
-        /// </summary>
-        public static CompareLogic compareLogic;
-
-        /// <summary>
-        /// Static constructor to initialise compareLogic.
-        /// </summary>
-        static ClientUtils()
-        {
-            compareLogic = new();
-        }
-
         /// <summary>
         /// Sanitize filename by removing the path
         /// </summary>

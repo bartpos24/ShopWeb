@@ -23,7 +23,7 @@
 		"nullableReferenceTypes": true,
 		"interfacePrefix": "I",
 		"optionalProjectFile": false,
-		"useCompareNetObjects": true,
+		"useCompareNetObjects": false,
 		"useHttpClientFactory": true,
 		"useSourceGeneration": false,
 		"jsonLibrary": "SystemTextJson",

@@ -67,7 +67,7 @@ function Split-ApiInterfaces {
     $interfaces = [regex]::Matches($content, $interfacePattern)
     
     if ($interfaces.Count -gt 0) {
-        # Build interface file content
+        # Build interface file content - keep the same namespace as the Api classes
         $interfaceContent = $header
         $interfaceContent += $usingBlock + "`r`n`r`n"
         $interfaceContent += "namespace $namespace`r`n{`r`n"
@@ -81,7 +81,7 @@ function Split-ApiInterfaces {
         
         $interfaceContent += "}`r`n"
         
-        # Write interface file
+        # Write interface file in the same directory as API implementations
         $interfaceFile = Join-Path $DestinationDir "I$fileName.cs"
         if (Set-ContentSafely -Path $interfaceFile -Value $interfaceContent) {
             Write-Host "  ✓ Created interface file: I$fileName.cs" -ForegroundColor Cyan
@@ -92,8 +92,7 @@ function Split-ApiInterfaces {
             $content = $content -replace [regex]::Escape($interface.Groups[1].Value), ''
         }
         
-        # Clean up extra whitespace - this is the key fix
-        # Remove multiple consecutive blank lines and leave only one
+        # Clean up extra whitespace
         $content = $content -replace '(?m)^\s*$(\r?\n){2,}', "`r`n"
         
         # Fix namespace opening brace - ensure only one blank line after the opening brace
@@ -229,22 +228,44 @@ if (Test-Path $apiDest) {
     }
 }
 
-# Update Model files to reference new Infrastructure namespace
+# Update Model files to remove FileParameter and OpenAPIDateConverter using aliases
 if (Test-Path $modelsDest) {
+    Write-Host "`nCleaning up Model files..." -ForegroundColor Cyan
+    $cleanedModelCount = 0
+    
     Get-ChildItem -Path $modelsDest -Filter "*.cs" | ForEach-Object {
-        # Skip if file is already being processed or locked
         try {
             $content = Get-Content $_.FullName -Raw -ErrorAction Stop
-            # Update references to Client classes (FileParameter, OpenAPIDateConverter, ClientUtils)
-            $content = $content -replace 'using FileParameter = ShopApiClient\.Client\.FileParameter;', 'using FileParameter = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.FileParameter;'
-            $content = $content -replace 'using OpenAPIDateConverter = ShopApiClient\.Client\.OpenAPIDateConverter;', 'using OpenAPIDateConverter = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.OpenAPIDateConverter;'
-            $content = $content -replace 'using OpenAPIClientUtils = ShopApiClient\.Client\.ClientUtils;', 'using OpenAPIClientUtils = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils;'
+            $originalContent = $content
             
-            Set-ContentSafely -Path $_.FullName -Value $content | Out-Null
+            # Remove the FileParameter and OpenAPIDateConverter using aliases
+            $content = $content -replace 'using FileParameter = ShopWeb\.Infrastructure\.ApiClient\.OpenApiGenerate\.Infrastructure\.FileParameter;\r?\n', ''
+            $content = $content -replace 'using OpenAPIDateConverter = ShopWeb\.Infrastructure\.ApiClient\.OpenApiGenerate\.Infrastructure\.OpenAPIDateConverter;\r?\n', ''
+            $content = $content -replace 'using OpenAPIClientUtils = ShopWeb\.Infrastructure\.ApiClient\.OpenApiGenerate\.Infrastructure\.ClientUtils;\r?\n', ''
+            
+            # Also remove legacy patterns if they exist
+            $content = $content -replace 'using FileParameter = ShopApiClient\.Client\.FileParameter;\r?\n', ''
+            $content = $content -replace 'using OpenAPIDateConverter = ShopApiClient\.Client\.OpenAPIDateConverter;\r?\n', ''
+            $content = $content -replace 'using OpenAPIClientUtils = ShopApiClient\.Client\.ClientUtils;\r?\n', ''
+            
+            # Only write if content changed
+            if ($content -ne $originalContent) {
+                if (Set-ContentSafely -Path $_.FullName -Value $content) {
+                    $cleanedModelCount++
+                    Write-Host "  ✓ Cleaned: $($_.Name)" -ForegroundColor Cyan
+                }
+            }
         }
         catch {
-            Write-Host "⚠ Skipped: $($_.Name) (file may be open in editor)" -ForegroundColor Yellow
+            Write-Host "  ⚠ Skipped: $($_.Name) (file may be open in editor)" -ForegroundColor Yellow
         }
+    }
+    
+    if ($cleanedModelCount -gt 0) {
+        Write-Host "✓ Cleaned $cleanedModelCount model file(s)" -ForegroundColor Green
+    }
+    else {
+        Write-Host "✓ No model files needed cleaning" -ForegroundColor Green
     }
 }
 

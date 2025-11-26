@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.Services;
 using ShopWeb.Data;
+using ShopWeb.Domain.Interfaces;
 using ShopWeb.Infrastructure.Extensions;
+using ShopWeb.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,10 +28,15 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// Add Infrastructure services with authentication
+// Add NSwag Infrastructure services with authentication
 builder.Services.AddInfrastructureServicesWithAuth(builder.Configuration);
+// Add OpenAPI generated clients
+builder.Services.AddOpenApiGeneratedClientsWithAuth(builder.Configuration);
+builder.Services.AddScoped<ILoginRepository, LoginRepository>();
+
 
 builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -46,6 +53,10 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+app.UseSession();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
