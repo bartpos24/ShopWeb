@@ -33,10 +33,11 @@ builder.Services.AddInfrastructureServicesWithAuth(builder.Configuration);
 // Add OpenAPI generated clients
 builder.Services.AddOpenApiGeneratedClientsWithAuth(builder.Configuration);
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
-
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ILoginService, LoginService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

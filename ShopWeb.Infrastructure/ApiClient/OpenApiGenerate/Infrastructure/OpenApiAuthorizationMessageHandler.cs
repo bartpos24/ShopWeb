@@ -15,9 +15,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
 			_httpContextAccessor = httpContextAccessor;
 		}
 
-		protected override async Task<HttpResponseMessage> SendAsync(
-			HttpRequestMessage request,
-			CancellationToken cancellationToken)
+		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 		{
 			// Get token from session
 			var token = _httpContextAccessor.HttpContext?.Session.GetString("JWTAccessSecretKey");

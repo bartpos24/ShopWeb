@@ -1,4 +1,6 @@
-﻿using ShopWeb.Domain.Interfaces;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using ShopWeb.Domain.Interfaces;
 using ShopWeb.Domain.Models;
 using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api;
 using System;
@@ -12,14 +14,21 @@ namespace ShopWeb.Infrastructure.Repositories
 	public class LoginRepository : ILoginRepository
 	{
 		private readonly ILoginApi loginApi;
-		public LoginRepository(ILoginApi _loginApi)
+		private readonly IHttpContextAccessor httpContextAccessor;
+		public LoginRepository(ILoginApi _loginApi, IHttpContextAccessor _httpContextAccessor)
 		{
 			loginApi = _loginApi;
+			httpContextAccessor = _httpContextAccessor;
 		}
 		public async Task<string> Login(string username, string password, string ssaid = null)
 		{
 			var loginModel = new LoginModel(username, password, ssaid, ELoginType.Web);
-			return await loginApi.ApiLoginLoginPostAsync(loginModel);
+			var token = await loginApi.ApiLoginLoginPostAsync(loginModel);
+			if (!string.IsNullOrEmpty(token))
+			{
+				httpContextAccessor.HttpContext?.Session.SetString("JWTAccessSecretKey", token);
+			}
+			return token;
 		}
 	}
 }
