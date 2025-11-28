@@ -21,12 +21,12 @@ namespace ShopWeb.Controllers
 
 		public async Task<IActionResult> Index()
         {
-            var x = await loginService.Login("temp_user", "temp_password"); //HttpContext.Connection.RemoteIpAddress?.ToString() ?? ""
-			if (!string.IsNullOrEmpty(x))
-			{
-                var product = await productService.GetProductByBarcode("5449000034519");
-                var c = product;
-			}
+            //var x = await loginService.Login("temp_user", "temp_password"); //HttpContext.Connection.RemoteIpAddress?.ToString() ?? ""
+			//if (!string.IsNullOrEmpty(x))
+			//{
+   //             var product = await productService.GetProductByBarcode("5449000034519");
+   //             var c = product;
+			//}
 			return View();
         }
 
