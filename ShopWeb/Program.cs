@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ShopWeb.Application.Interfaces;
-using ShopWeb.Application.Services;
 using ShopWeb.Data;
-using ShopWeb.Domain.Interfaces;
+using ShopWeb.Infrastructure;
 using ShopWeb.Infrastructure.Extensions;
-using ShopWeb.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,12 +29,8 @@ builder.Services.AddSession(options =>
 builder.Services.AddInfrastructureServicesWithAuth(builder.Configuration);
 // Add OpenAPI generated clients
 builder.Services.AddOpenApiGeneratedClientsWithAuth(builder.Configuration);
-builder.Services.AddScoped<ILoginRepository, LoginRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
-builder.Services.AddScoped<IInventoryService, InventoryService>();
-builder.Services.AddScoped<ILoginService, LoginService>();
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

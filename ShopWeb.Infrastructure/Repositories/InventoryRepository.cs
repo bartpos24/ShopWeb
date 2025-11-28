@@ -1,10 +1,5 @@
 ﻿using ShopWeb.Domain.Interfaces;
 using ShopWeb.Infrastructure.ApiClient.NSwag.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopWeb.Infrastructure.Repositories
 {

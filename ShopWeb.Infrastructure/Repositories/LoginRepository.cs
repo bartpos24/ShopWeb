@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json.Linq;
 using ShopWeb.Domain.Interfaces;
 using ShopWeb.Domain.Models;
 using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopWeb.Infrastructure.Repositories
 {
