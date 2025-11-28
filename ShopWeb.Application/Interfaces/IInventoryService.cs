@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopWeb.Application.TransferObjects.Inventory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace ShopWeb.Application.Interfaces
 {
     public interface IInventoryService
     {
-        Task<string> Login(string username, string password, string ssaid = null);
+        Task<List<InventoryVm>> AllInventories();
     }
 }

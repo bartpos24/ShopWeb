@@ -1,25 +1,20 @@
 ﻿using ShopWeb.Domain.Interfaces;
-using ShopWeb.Infrastructure.ApiClient.NSwag.Models;
+using ShopWeb.Domain.Models;
+using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api;
 
 namespace ShopWeb.Infrastructure.Repositories
 {
     public class InventoryRepository : IInventoryRepository
     {
-        private readonly IShopApiNSwagClient shopApi;
-        public InventoryRepository(IShopApiNSwagClient _shopApiClient)
+        private readonly IInventoryApi inventoryApi;
+        public InventoryRepository(IInventoryApi _inventoryApi)
         {
-            shopApi = _shopApiClient;
+            inventoryApi = _inventoryApi;
         }
-        public async Task<string> Login(string username, string password, string ssaid = null)
+
+        public async Task<List<Inventory>> AllInventories()
         {
-            var loginModel = new LoginModel
-            {
-                Username = username,
-                Password = password,
-                Ssaid = ssaid,
-                LoginType = ELoginType.Web
-            };
-            return await shopApi.LoginAsync(loginModel);
+            return await inventoryApi.ApiInventoryGetAllInventoriesGetAsync();
         }
     }
 }

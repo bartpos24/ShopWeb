@@ -1,6 +1,6 @@
 {
 	"generatorName": "csharp",
-	"inputSpec": "./ShopWeb.Infrastructure/ApiClient/shopApi.json",
+	"inputSpec": "http://192.168.137.1:5001/swagger/v1/swagger.json",
 	"outputDir": "./ShopWeb.Infrastructure/ApiClient/OpenApiGenerate",
 	"additionalProperties": {
 		"packageName": "ShopApiClient",
@@ -37,5 +37,5 @@
 		"apiDocs": "false",
 		"modelTests": "false",
 		"apiTests": "false"
-	}		
+	}
 }

@@ -36,21 +36,29 @@ namespace ShopWeb.Domain.Models
         /// <param name="id">id.</param>
         /// <param name="quantity">quantity.</param>
         /// <param name="price">price.</param>
-        /// <param name="inventoryDate">inventoryDate.</param>
+        /// <param name="scanDate">scanDate.</param>
         /// <param name="productId">productId.</param>
         /// <param name="userId">userId.</param>
+        /// <param name="inventoryId">inventoryId.</param>
+        /// <param name="modifiedByUserId">modifiedByUserId.</param>
         /// <param name="product">product.</param>
         /// <param name="user">user.</param>
-        public InventoryPosition(int id = default, double quantity = default, double price = default, DateTime inventoryDate = default, int productId = default, int userId = default, Product product = default, User user = default)
+        /// <param name="modifiedByUser">modifiedByUser.</param>
+        /// <param name="inventory">inventory.</param>
+        public InventoryPosition(int id = default, double quantity = default, double price = default, DateTime scanDate = default, int productId = default, int userId = default, int inventoryId = default, int? modifiedByUserId = default, Product product = default, User user = default, User modifiedByUser = default, Inventory inventory = default)
         {
             this.Id = id;
             this.Quantity = quantity;
             this.Price = price;
-            this.InventoryDate = inventoryDate;
+            this.ScanDate = scanDate;
             this.ProductId = productId;
             this.UserId = userId;
+            this.InventoryId = inventoryId;
+            this.ModifiedByUserId = modifiedByUserId;
             this.Product = product;
             this.User = user;
+            this.ModifiedByUser = modifiedByUser;
+            this.Inventory = inventory;
         }
 
         /// <summary>
@@ -72,10 +80,10 @@ namespace ShopWeb.Domain.Models
         public double Price { get; set; }
 
         /// <summary>
-        /// Gets or Sets InventoryDate
+        /// Gets or Sets ScanDate
         /// </summary>
-        [DataMember(Name = "inventoryDate", EmitDefaultValue = false)]
-        public DateTime InventoryDate { get; set; }
+        [DataMember(Name = "scanDate", EmitDefaultValue = false)]
+        public DateTime ScanDate { get; set; }
 
         /// <summary>
         /// Gets or Sets ProductId
@@ -90,6 +98,18 @@ namespace ShopWeb.Domain.Models
         public int UserId { get; set; }
 
         /// <summary>
+        /// Gets or Sets InventoryId
+        /// </summary>
+        [DataMember(Name = "inventoryId", EmitDefaultValue = false)]
+        public int InventoryId { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ModifiedByUserId
+        /// </summary>
+        [DataMember(Name = "modifiedByUserId", EmitDefaultValue = true)]
+        public int? ModifiedByUserId { get; set; }
+
+        /// <summary>
         /// Gets or Sets Product
         /// </summary>
         [DataMember(Name = "product", EmitDefaultValue = false)]
@@ -102,6 +122,18 @@ namespace ShopWeb.Domain.Models
         public User User { get; set; }
 
         /// <summary>
+        /// Gets or Sets ModifiedByUser
+        /// </summary>
+        [DataMember(Name = "modifiedByUser", EmitDefaultValue = false)]
+        public User ModifiedByUser { get; set; }
+
+        /// <summary>
+        /// Gets or Sets Inventory
+        /// </summary>
+        [DataMember(Name = "inventory", EmitDefaultValue = false)]
+        public Inventory Inventory { get; set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -112,11 +144,15 @@ namespace ShopWeb.Domain.Models
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Quantity: ").Append(Quantity).Append("\n");
             sb.Append("  Price: ").Append(Price).Append("\n");
-            sb.Append("  InventoryDate: ").Append(InventoryDate).Append("\n");
+            sb.Append("  ScanDate: ").Append(ScanDate).Append("\n");
             sb.Append("  ProductId: ").Append(ProductId).Append("\n");
             sb.Append("  UserId: ").Append(UserId).Append("\n");
+            sb.Append("  InventoryId: ").Append(InventoryId).Append("\n");
+            sb.Append("  ModifiedByUserId: ").Append(ModifiedByUserId).Append("\n");
             sb.Append("  Product: ").Append(Product).Append("\n");
             sb.Append("  User: ").Append(User).Append("\n");
+            sb.Append("  ModifiedByUser: ").Append(ModifiedByUser).Append("\n");
+            sb.Append("  Inventory: ").Append(Inventory).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

@@ -12,6 +12,7 @@ namespace ShopWeb.Infrastructure
             services.AddScoped<IInventoryService, InventoryService>();
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             return services;
         }
     }
