@@ -10,6 +10,7 @@ namespace ShopWeb.Infrastructure
         {
             services.AddScoped<ILoginRepository, LoginRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IInventoryRepository, InventoryRepository>();
             return services;
         }
     }

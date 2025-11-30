@@ -58,7 +58,15 @@ namespace ShopWeb.Infrastructure.Extensions
 				return new UserApi(httpClient, config);
 			});
 
-			return services;
+            services.AddScoped<IInventoryApi>(sp =>
+            {
+                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient("OpenApiShopClient");
+                var config = new Configuration { BasePath = apiBaseUrl };
+                return new InventoryApi(httpClient, config);
+            });
+
+            return services;
 		}
 
 		public static IServiceCollection AddOpenApiGeneratedClientsWithAuth(this IServiceCollection services, IConfiguration configuration)
@@ -113,7 +121,15 @@ namespace ShopWeb.Infrastructure.Extensions
 				return new UserApi(httpClient, config);
 			});
 
-			return services;
+            services.AddScoped<IInventoryApi>(sp =>
+            {
+                var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+                var httpClient = httpClientFactory.CreateClient("OpenApiShopClient");
+                var config = new Configuration { BasePath = apiBaseUrl };
+                return new InventoryApi(httpClient, config);
+            });
+
+            return services;
 		}
 	}
 }

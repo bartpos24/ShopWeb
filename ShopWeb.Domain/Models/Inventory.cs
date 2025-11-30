@@ -37,7 +37,7 @@ namespace ShopWeb.Domain.Models
         /// <param name="name">name.</param>
         /// <param name="type">type.</param>
         /// <param name="executeWay">executeWay.</param>
-        /// <param name="responsiblePersonName">responsiblePersonName.</param>
+        /// <param name="responsiblePerson">responsiblePerson.</param>
         /// <param name="companyName">companyName.</param>
         /// <param name="companyAddress">companyAddress.</param>
         /// <param name="comissionTeam">comissionTeam.</param>
@@ -50,13 +50,13 @@ namespace ShopWeb.Domain.Models
         /// <param name="inventoryStatusId">inventoryStatusId.</param>
         /// <param name="createdByUser">createdByUser.</param>
         /// <param name="inventoryStatus">inventoryStatus.</param>
-        public Inventory(int id = default, string name = default, string type = default, string executeWay = default, string responsiblePersonName = default, string companyName = default, string companyAddress = default, string comissionTeam = default, string personToValue = default, string personToCheck = default, DateTime createdAt = default, DateTime startDate = default, DateTime endDate = default, int createdByUserId = default, int inventoryStatusId = default, User createdByUser = default, InventoryStatus inventoryStatus = default)
+        public Inventory(int id = default, string name = default, string type = default, string executeWay = default, string responsiblePerson = default, string companyName = default, string companyAddress = default, string comissionTeam = default, string personToValue = default, string personToCheck = default, DateTime createdAt = default, DateTime startDate = default, DateTime? endDate = default, int createdByUserId = default, int inventoryStatusId = default, User createdByUser = default, InventoryStatus inventoryStatus = default)
         {
             this.Id = id;
             this.Name = name;
             this.Type = type;
             this.ExecuteWay = executeWay;
-            this.ResponsiblePersonName = responsiblePersonName;
+            this.ResponsiblePerson = responsiblePerson;
             this.CompanyName = companyName;
             this.CompanyAddress = companyAddress;
             this.ComissionTeam = comissionTeam;
@@ -96,10 +96,10 @@ namespace ShopWeb.Domain.Models
         public string ExecuteWay { get; set; }
 
         /// <summary>
-        /// Gets or Sets ResponsiblePersonName
+        /// Gets or Sets ResponsiblePerson
         /// </summary>
-        [DataMember(Name = "responsiblePersonName", EmitDefaultValue = true)]
-        public string ResponsiblePersonName { get; set; }
+        [DataMember(Name = "responsiblePerson", EmitDefaultValue = true)]
+        public string ResponsiblePerson { get; set; }
 
         /// <summary>
         /// Gets or Sets CompanyName
@@ -146,8 +146,8 @@ namespace ShopWeb.Domain.Models
         /// <summary>
         /// Gets or Sets EndDate
         /// </summary>
-        [DataMember(Name = "endDate", EmitDefaultValue = false)]
-        public DateTime EndDate { get; set; }
+        [DataMember(Name = "endDate", EmitDefaultValue = true)]
+        public DateTime? EndDate { get; set; }
 
         /// <summary>
         /// Gets or Sets CreatedByUserId
@@ -185,7 +185,7 @@ namespace ShopWeb.Domain.Models
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Type: ").Append(Type).Append("\n");
             sb.Append("  ExecuteWay: ").Append(ExecuteWay).Append("\n");
-            sb.Append("  ResponsiblePersonName: ").Append(ResponsiblePersonName).Append("\n");
+            sb.Append("  ResponsiblePerson: ").Append(ResponsiblePerson).Append("\n");
             sb.Append("  CompanyName: ").Append(CompanyName).Append("\n");
             sb.Append("  CompanyAddress: ").Append(CompanyAddress).Append("\n");
             sb.Append("  ComissionTeam: ").Append(ComissionTeam).Append("\n");

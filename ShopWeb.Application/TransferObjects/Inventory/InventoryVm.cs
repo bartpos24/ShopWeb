@@ -24,7 +24,6 @@ namespace ShopWeb.Application.TransferObjects.Inventory
         public void Mapping(Profile profile)
         {
             profile.CreateMap<ShopWeb.Domain.Models.Inventory, InventoryVm>()
-                .ForMember(d => d.ResponsiblePerson, opt => opt.MapFrom(s => s.ResponsiblePersonName))
                 .ForMember(d => d.CreatedByUser, opt => opt.MapFrom(s => s.CreatedByUser.Name + " " + s.CreatedByUser.Surname))
                 .ForMember(d => d.Status, opt => opt.MapFrom(s => s.InventoryStatus.Name));
         }

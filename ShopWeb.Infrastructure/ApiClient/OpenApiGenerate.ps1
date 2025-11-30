@@ -39,74 +39,165 @@ function Set-ContentSafely {
     }
 }
 
-# Function to extract interfaces from API file and create separate interface file
+# Function to update namespaces and using statements in content
+function Update-Namespaces {
+    param([string]$Content)
+    
+    # Update namespace
+    $Content = $Content -replace 'namespace ShopApiClient\.Api', 'namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api'
+    # Update Client namespace references
+    $Content = $Content -replace 'ShopApiClient\.Client\.', 'ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.'
+    $Content = $Content -replace 'using ShopApiClient\.Client;', 'using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;'
+    # Update Models namespace references
+    $Content = $Content -replace 'ShopApiClient\.Models\.', 'ShopWeb.Domain.Models.'
+    $Content = $Content -replace 'using ShopApiClient\.Models;', 'using ShopWeb.Domain.Models;'
+    
+    return $Content
+}
+
+# Function to extract interfaces from API content and create separate interface content
 function Split-ApiInterfaces {
     param(
-        [string]$ApiFilePath,
-        [string]$DestinationDir
+        [string]$Content,
+        [string]$FileName
     )
     
-    $content = Get-Content $ApiFilePath -Raw
-    $fileName = [System.IO.Path]::GetFileNameWithoutExtension($ApiFilePath)
-    
     # Extract header comment
-    $headerMatch = [regex]::Match($content, '(?s)(\/\*.*?\*\/)')
+    $headerMatch = [regex]::Match($Content, '(?s)(\/\*.*?\*\/)')
     $header = if ($headerMatch.Success) { $headerMatch.Value + "`r`n`r`n" } else { "" }
     
     # Extract using statements
     $usingPattern = '(?m)^using [^;]+;'
-    $usings = [regex]::Matches($content, $usingPattern) | ForEach-Object { $_.Value }
+    $usings = [regex]::Matches($Content, $usingPattern) | ForEach-Object { $_.Value }
     $usingBlock = ($usings | Select-Object -Unique | Sort-Object) -join "`r`n"
     
     # Extract namespace
-    $namespaceMatch = [regex]::Match($content, 'namespace ([^\r\n{]+)')
+    $namespaceMatch = [regex]::Match($Content, 'namespace ([^\r\n{]+)')
     $namespace = $namespaceMatch.Groups[1].Value.Trim()
     
-    # Extract all three interfaces with their XML comments
-    $interfacePattern = '(?s)((?:[ \t]*///[^\r\n]*\r?\n)*[ \t]*public interface I' + $fileName + '[^\{]*\{(?:[^\}]|\}(?![ \t]*\r?\n))*\})'
-    $interfaces = [regex]::Matches($content, $interfacePattern)
+    # Parse line by line to find and track interfaces
+    $lines = $Content -split "`r?`n"
+    $interfaces = @()
+    $interfaceLineRanges = @()  # Track line ranges to remove
+    $inInterface = $false
+    $currentInterfaceLines = @()
+    $braceDepth = 0
+    $interfaceStartLine = -1
+    $commentStartLine = -1
     
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        $line = $lines[$i]
+        
+        # Check if we're starting an interface (looking for public interface IXxxApi)
+        if (-not $inInterface -and $line -match '^\s*public interface I' + $FileName) {
+            $inInterface = $true
+            $interfaceStartLine = $i
+            $currentInterfaceLines = @()
+            $braceDepth = 0
+            
+            # Look backwards for XML comments and regions
+            $commentLine = $i - 1
+            $xmlComments = @()
+            $commentStartLine = $i
+            while ($commentLine -ge 0 -and ($lines[$commentLine] -match '^\s*(///|#region)' -or $lines[$commentLine] -match '^\s*$')) {
+                if ($lines[$commentLine] -match '^\s*(///|#region)') {
+                    $xmlComments = @($lines[$commentLine]) + $xmlComments
+                    $commentStartLine = $commentLine
+                }
+                $commentLine--
+            }
+            
+            # Add XML comments to interface
+            $currentInterfaceLines += $xmlComments
+        }
+        
+        if ($inInterface) {
+            $currentInterfaceLines += $line
+            
+            # Count braces to know when interface ends
+            $openBraces = ($line.ToCharArray() | Where-Object { $_ -eq '{' }).Count
+            $closeBraces = ($line.ToCharArray() | Where-Object { $_ -eq '}' }).Count
+            $braceDepth += ($openBraces - $closeBraces)
+            
+            # When braceDepth returns to 0, the interface is complete
+            if ($braceDepth -eq 0 -and $line -match '\}') {
+                $endLine = $i
+                
+                # Check for #endregion
+                if (($i + 1) -lt $lines.Count -and $lines[$i + 1] -match '^\s*#endregion') {
+                    $i++
+                    $currentInterfaceLines += $lines[$i]
+                    $endLine = $i
+                }
+                
+                $interfaceText = ($currentInterfaceLines -join "`r`n")
+                $interfaces += $interfaceText
+                
+                # Track the line range to remove (from comment start to end of interface)
+                $interfaceLineRanges += @{
+                    Start = $commentStartLine
+                    End = $endLine
+                }
+                
+                $inInterface = $false
+                $currentInterfaceLines = @()
+            }
+        }
+    }
+    
+    # Build interface file content if interfaces were found
+    $interfaceContent = $null
     if ($interfaces.Count -gt 0) {
-        # Build interface file content - keep the same namespace as the Api classes
         $interfaceContent = $header
         $interfaceContent += $usingBlock + "`r`n`r`n"
         $interfaceContent += "namespace $namespace`r`n{`r`n"
         
         foreach ($interface in $interfaces) {
-            $interfaceText = $interface.Groups[1].Value
-            # Clean up indentation
-            $interfaceText = $interfaceText -replace '(?m)^    ', ''
-            $interfaceContent += "`r`n" + $interfaceText.Trim() + "`r`n"
+            # Indent interface content
+            $interfaceLines = $interface -split "`r?`n"
+            $indentedInterface = ($interfaceLines | ForEach-Object { "    $_" }) -join "`r`n"
+            $interfaceContent += "`r`n$indentedInterface`r`n"
         }
         
         $interfaceContent += "}`r`n"
-        
-        # Write interface file in the same directory as API implementations
-        $interfaceFile = Join-Path $DestinationDir "I$fileName.cs"
-        if (Set-ContentSafely -Path $interfaceFile -Value $interfaceContent) {
-            Write-Host "  ✓ Created interface file: I$fileName.cs" -ForegroundColor Cyan
-        }
-        
-        # Remove interfaces from original content, keep only the implementation class
-        foreach ($interface in $interfaces) {
-            $content = $content -replace [regex]::Escape($interface.Groups[1].Value), ''
-        }
-        
-        # Clean up extra whitespace
-        $content = $content -replace '(?m)^\s*$(\r?\n){2,}', "`r`n"
-        
-        # Fix namespace opening brace - ensure only one blank line after the opening brace
-        $content = $content -replace '(?m)(namespace [^\r\n]+\r?\n\{)\s*(\r?\n)+', "`$1`r`n`r`n"
-        
-        # Write implementation-only file
-        if (Set-ContentSafely -Path $ApiFilePath -Value $content) {
-            Write-Host "  ✓ Updated implementation file: $fileName.cs" -ForegroundColor Cyan
-        }
-        
-        return $true
     }
     
-    return $false
+    # Remove interfaces from implementation by rebuilding the lines array
+    if ($interfaceLineRanges.Count -gt 0) {
+        # Sort ranges by start line descending to avoid index issues
+        $interfaceLineRanges = $interfaceLineRanges | Sort-Object -Property Start -Descending
+        
+        # Create a new lines array excluding interface ranges
+        $newLines = [System.Collections.ArrayList]::new()
+        $skipUntil = -1
+        
+        for ($i = 0; $i -lt $lines.Count; $i++) {
+            $shouldSkip = $false
+            
+            foreach ($range in $interfaceLineRanges) {
+                if ($i -ge $range.Start -and $i -le $range.End) {
+                    $shouldSkip = $true
+                    break
+                }
+            }
+            
+            if (-not $shouldSkip) {
+                [void]$newLines.Add($lines[$i])
+            }
+        }
+        
+        $Content = $newLines -join "`r`n"
+    }
+    
+    # Clean up the implementation content
+    $Content = $Content -replace '(?m)^\s*$(\r?\n){3,}', "`r`n`r`n"
+    $Content = $Content -replace '(?m)(namespace [^\r\n]+\r?\n\{)\s*(\r?\n){2,}', "`$1`r`n`r`n"
+    
+    return @{
+        InterfaceContent = $interfaceContent
+        ImplementationContent = $Content
+        InterfacesFound = $interfaces.Count
+    }
 }
 
 # Move models to Domain project
@@ -187,44 +278,55 @@ if (Test-Path $infrastructureDest) {
     Write-Host "✓ Infrastructure namespace references updated" -ForegroundColor Green
 }
 
-# Move API files to Api directory
+# Process API files: Read, Separate, Update Namespaces, and Move
 if (Test-Path $apiSource) {
+    Write-Host "`nProcessing API files..." -ForegroundColor Cyan
     New-Item -ItemType Directory -Force -Path $apiDest | Out-Null
-    Get-ChildItem -Path $apiSource -Filter "*.cs" | ForEach-Object {
-        $content = Get-Content $_.FullName -Raw
-        # Update namespace
-        $content = $content -replace 'namespace ShopApiClient\.Api', 'namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api'
-        # Update Client namespace references
-        $content = $content -replace 'ShopApiClient\.Client\.', 'ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.'
-        $content = $content -replace 'using ShopApiClient\.Client;', 'using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;'
-        # Update Models namespace references
-        $content = $content -replace 'ShopApiClient\.Models\.', 'ShopWeb.Domain.Models.'
-        $content = $content -replace 'using ShopApiClient\.Models;', 'using ShopWeb.Domain.Models;'
-        
-        # Write to destination
-        $destFile = Join-Path $apiDest $_.Name
-        Set-ContentSafely -Path $destFile -Value $content | Out-Null
-    }
     
-    # Remove original Api directory
-    Remove-Item -Path $apiSource -Recurse -Force
-    Write-Host "✓ API files moved to OpenApiGenerate/Api" -ForegroundColor Green
-}
-
-# Separate interfaces from API implementation classes
-if (Test-Path $apiDest) {
-    Write-Host "`nSeparating interfaces from API implementations..." -ForegroundColor Cyan
+    $processedCount = 0
     $separatedCount = 0
     
-    Get-ChildItem -Path $apiDest -Filter "*Api.cs" | Where-Object { $_.Name -notlike "I*" } | ForEach-Object {
+    Get-ChildItem -Path $apiSource -Filter "*.cs" | ForEach-Object {
         Write-Host "Processing: $($_.Name)" -ForegroundColor Gray
-        if (Split-ApiInterfaces -ApiFilePath $_.FullName -DestinationDir $apiDest) {
-            $separatedCount++
+        
+        # Step 1: Take content from file
+        $content = Get-Content $_.FullName -Raw
+        $fileName = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)
+        
+        # Step 2: Separate interfaces from api class
+        $result = Split-ApiInterfaces -Content $content -FileName $fileName
+        
+        # Step 3: Change all namespace and using in both contents
+        $implementationContent = Update-Namespaces -Content $result.ImplementationContent
+        
+        # Step 4: Move api file to $apiDest
+        $destFile = Join-Path $apiDest $_.Name
+        if (Set-ContentSafely -Path $destFile -Value $implementationContent) {
+            Write-Host "  ✓ Moved implementation: $($_.Name)" -ForegroundColor Green
+            $processedCount++
+        }
+        
+        # If interfaces were found, update and save them
+        if ($result.InterfaceContent) {
+            $interfaceContent = Update-Namespaces -Content $result.InterfaceContent
+            $interfaceFile = Join-Path $apiDest "I$fileName.cs"
+            
+            if (Set-ContentSafely -Path $interfaceFile -Value $interfaceContent) {
+                Write-Host "  ✓ Created interface: I$fileName.cs ($($result.InterfacesFound) interface(s))" -ForegroundColor Cyan
+                $separatedCount++
+            }
+        }
+        else {
+            Write-Host "  ⚠ No interfaces found in $($_.Name)" -ForegroundColor Yellow
         }
     }
     
+    # Step 5: Remove $apiSource directory after processing all files
+    Remove-Item -Path $apiSource -Recurse -Force
+    
+    Write-Host "✓ Processed $processedCount API file(s)" -ForegroundColor Green
     if ($separatedCount -gt 0) {
-        Write-Host "✓ Separated $separatedCount API interface(s) into individual files" -ForegroundColor Green
+        Write-Host "✓ Separated interfaces from $separatedCount API file(s)" -ForegroundColor Green
     }
 }
 
