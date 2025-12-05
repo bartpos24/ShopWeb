@@ -8,21 +8,39 @@ namespace ShopWeb.Infrastructure.Repositories
 	public class LoginRepository : ILoginRepository
 	{
 		private readonly ILoginApi loginApi;
-		private readonly IHttpContextAccessor httpContextAccessor;
-		public LoginRepository(ILoginApi _loginApi, IHttpContextAccessor _httpContextAccessor)
+		private readonly ITokenManager tokenManager;
+		public LoginRepository(ILoginApi _loginApi, ITokenManager _tokenManager)
 		{
 			loginApi = _loginApi;
-			httpContextAccessor = _httpContextAccessor;
+			tokenManager = _tokenManager;
 		}
-		public async Task<string> Login(string username, string password, string ssaid = null)
+		public async Task<string> Login(string username, string password, string? ssaid = null)
 		{
 			var loginModel = new LoginModel(username, password, ssaid, ELoginType.Web);
 			var token = await loginApi.ApiLoginLoginPostAsync(loginModel);
 			if (!string.IsNullOrEmpty(token))
 			{
-				httpContextAccessor.HttpContext?.Session.SetString("JWTAccessSecretKey", token);
+				tokenManager.StoreTokens(token, null);
 			}
 			return token;
 		}
+		public async Task<string> RefreshToken(string refreshToken, string? ssaid = null)
+		{
+			var newAccessToken = await loginApi.ApiLoginRefreshPostAsync(ssaid, refreshToken);
+			return newAccessToken;
+		}
+		public async Task Logout()
+		{
+			try
+			{
+				await loginApi.ApiLoginLogoutPostAsync();
+			}
+			finally
+			{
+				tokenManager.ClearTokens();
+			}
+		}
+
+		
 	}
 }

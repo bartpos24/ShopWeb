@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using ShopWeb.Domain.Interfaces;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -8,17 +9,17 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
 {
 	public class OpenApiAuthorizationMessageHandler : DelegatingHandler
 	{
-		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly ITokenManager tokenManager;
 
-		public OpenApiAuthorizationMessageHandler(IHttpContextAccessor httpContextAccessor)
+		public OpenApiAuthorizationMessageHandler(ITokenManager _tokenManager)
 		{
-			_httpContextAccessor = httpContextAccessor;
+			tokenManager = _tokenManager;
 		}
 
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 		{
 			// Get token from session
-			var token = _httpContextAccessor.HttpContext?.Session.GetString("JWTAccessSecretKey");
+			var token = tokenManager.GetAccessToken();
 
 			if (!string.IsNullOrEmpty(token))
 			{

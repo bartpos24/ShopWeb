@@ -8,7 +8,8 @@ namespace ShopWeb.Domain.Interfaces
 {
 	public interface ILoginRepository
 	{
-		Task<string> Login(string username, string password, string ssaid = null);
-
+		Task<string> Login(string username, string password, string? ssaid = null);
+		Task<string> RefreshToken(string refreshToken, string? ssaid = null);
+		Task Logout();
 	}
 }

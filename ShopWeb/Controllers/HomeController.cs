@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ShopWeb.Application.Interfaces;
+using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;
 using ShopWeb.Models;
 
 namespace ShopWeb.Controllers
@@ -21,12 +22,20 @@ namespace ShopWeb.Controllers
 
 		public async Task<IActionResult> Index()
         {
-            //var x = await loginService.Login("temp_user", "temp_password"); //HttpContext.Connection.RemoteIpAddress?.ToString() ?? ""
-			//if (!string.IsNullOrEmpty(x))
-			//{
-   //             var product = await productService.GetProductByBarcode("5449000034519");
-   //             var c = product;
-			//}
+            try
+            {
+				var product = await productService.GetProductByBarcode("5449000034519");
+				var c = product;
+			} catch (Exception ex)
+            {
+                if(ex is ApiException)
+                {
+                    ex = ex as ApiException;
+                    return View(new ErrorViewModel { RequestId = $"Wyst¹pi³ b³¹d: {ex.Message}" });
+				}
+                logger.LogError(ex, "Error in HomeController Index");
+			}
+			
 			return View();
         }
 

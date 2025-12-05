@@ -10,9 +10,19 @@ namespace ShopWeb.Application.Services
 		{
 			loginRepository = _loginRepository;
 		}
-		public async Task<string> Login(string username, string password, string ssaid = null)
+		public async Task<string> Login(string username, string password, string? ssaid = null)
 		{
 			return await loginRepository.Login(username, password, ssaid);
+		}
+
+		public async Task<string> RefreshToken(string refreshToken, string? ssaid = null)
+		{
+			return await loginRepository.RefreshToken(refreshToken, ssaid);
+		}
+
+		public async Task Logout()
+		{
+			await loginRepository.Logout();
 		}
 	}
 }

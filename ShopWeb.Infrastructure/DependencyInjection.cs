@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ShopWeb.Domain.Interfaces;
 using ShopWeb.Infrastructure.Repositories;
+using ShopWeb.Infrastructure.Services;
 
 namespace ShopWeb.Infrastructure
 {
@@ -11,7 +12,8 @@ namespace ShopWeb.Infrastructure
             services.AddScoped<ILoginRepository, LoginRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IInventoryRepository, InventoryRepository>();
-            return services;
+            services.AddScoped<ITokenManager, TokenManager>();
+			return services;
         }
     }
 }

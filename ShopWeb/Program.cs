@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShopWeb.Data;
+using ShopWeb.Extensions;
 using ShopWeb.Infrastructure;
 using ShopWeb.Infrastructure.Extensions;
+using ShopWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,8 +31,13 @@ builder.Services.AddSession(options =>
 builder.Services.AddInfrastructureServicesWithAuth(builder.Configuration);
 // Add OpenAPI generated clients
 builder.Services.AddOpenApiGeneratedClientsWithAuth(builder.Configuration);
+//Application services
 builder.Services.AddApplication();
+//Infrastructure services
 builder.Services.AddInfrastructure();
+
+// Register background service for token monitoring
+builder.Services.AddHostedService<TokenMonitorBackgroundService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,6 +57,8 @@ app.UseRouting();
 
 app.UseSession();
 
+// Add token refresh middleware
+app.UseMiddleware<TokenRefreshMiddleware>();
 app.UseAuthentication();
 
 app.UseAuthorization();
