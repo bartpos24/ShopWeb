@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShopWeb.Data;
@@ -26,6 +27,22 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Identity/Account/Login";
+        options.LogoutPath = "/Identity/Account/Logout";
+        //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+        //options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        //options.SlidingExpiration = true;
+        //options.Cookie.Name = "ShopWeb.Auth";
+        //options.Cookie.HttpOnly = true;
+        //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        //options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+
+builder.Services.AddAuthorization();
 
 // Add NSwag Infrastructure services with authentication
 builder.Services.AddInfrastructureServicesWithAuth(builder.Configuration);

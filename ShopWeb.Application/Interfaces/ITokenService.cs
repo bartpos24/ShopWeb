@@ -16,5 +16,7 @@ namespace ShopWeb.Application.Interfaces
 		bool IsTokenExpired();
 		void ClearTokens();
 		ClaimsPrincipal GetClaimsFromToken();
-	}
+        bool ValidateToken();
+        string? GetClaimValue(string claimType);
+    }
 }

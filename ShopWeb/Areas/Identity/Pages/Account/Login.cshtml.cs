@@ -3,6 +3,7 @@
 #nullable disable
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -10,12 +11,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ShopWeb.Application.Interfaces;
+using ShopWeb.Application.Services;
 using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;
 using ShopWeb.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace ShopWeb.Areas.Identity.Pages.Account
@@ -106,17 +109,36 @@ namespace ShopWeb.Areas.Identity.Pages.Account
                 {
 					var ssaid = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
 					var token = await loginService.Login(Input.Login, Input.Password, ssaid);
-					if (!string.IsNullOrEmpty(token))
+                    if(string.IsNullOrEmpty(token))
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        return Page();
+                    }
+					if (!tokenService.ValidateToken())
 					{
-						logger.LogInformation("User {Username} logged in successfully.", Input.Login);
-						return LocalRedirect(returnUrl);
+                        ModelState.AddModelError(string.Empty, "Invalid or expired token.");
+                        return Page();
 					}
-					else
-					{
-						ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-						return Page();
-					}
-				} catch (Exception ex)
+                    var principal = tokenService.GetClaimsFromToken();
+                    var claims = principal.Claims.ToList();
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    var newPrincipal = new ClaimsPrincipal(identity);
+                    // Configure authentication properties
+                    var authProperties = new AuthenticationProperties
+                    {
+                        IsPersistent = false,
+                        //ExpiresUtc = DateTimeOffset.UtcNow.AddHours(Input.RememberMe ? 24 * 7 : 8),
+                        AllowRefresh = true,
+                        IssuedUtc = DateTimeOffset.UtcNow
+                    };
+
+                    // Sign in the user with cookie authentication
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, newPrincipal, authProperties);
+
+                    return LocalRedirect(returnUrl);
+                } catch (Exception ex)
                 {
 					if (ex is ApiException)
 					{

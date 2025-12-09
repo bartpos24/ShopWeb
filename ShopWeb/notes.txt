@@ -1,0 +1,515 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-ShopWeb-cd1cec15-5bc3-4ee9-b3e9-03859f8eb95f</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShopWeb.Application\ShopWeb.Application.csproj" />
+    <ProjectReference Include="..\ShopWeb.Infrastructure\ShopWeb.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
+
+-------------------------------------------------------------------
+
+using System.Security.Claims;
+
+namespace ShopWeb.Application.Interfaces;
+
+public interface ITokenService
+{
+    ClaimsPrincipal GetPrincipalFromToken(string token);
+    bool ValidateToken(string token);
+    string? GetClaimValue(string token, string claimType);
+}
+
+
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using ShopWeb.Application.Interfaces;
+
+namespace ShopWeb.Application.Services;
+
+public class TokenService : ITokenService
+{
+    private readonly ILogger<TokenService> _logger;
+
+    public TokenService(ILogger<TokenService> logger)
+    {
+        _logger = logger;
+    }
+
+    public ClaimsPrincipal GetPrincipalFromToken(string token)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+
+            var claims = new List<Claim>();
+
+            // Extract standard claims
+            foreach (var claim in jwtToken.Claims)
+            {
+                switch (claim.Type)
+                {
+                    case "sub":
+                    case "userId":
+                        claims.Add(new Claim(ClaimTypes.NameIdentifier, claim.Value));
+                        break;
+                    case "unique_name":
+                    case "username":
+                        claims.Add(new Claim(ClaimTypes.Name, claim.Value));
+                        break;
+                    case "email":
+                        claims.Add(new Claim(ClaimTypes.Email, claim.Value));
+                        break;
+                    case "given_name":
+                    case "name":
+                        claims.Add(new Claim("given_name", claim.Value));
+                        break;
+                    case "family_name":
+                    case "surname":
+                        claims.Add(new Claim("family_name", claim.Value));
+                        break;
+                    case "role":
+                        claims.Add(new Claim(ClaimTypes.Role, claim.Value));
+                        break;
+                    default:
+                        claims.Add(claim);
+                        break;
+                }
+            }
+
+            var identity = new ClaimsIdentity(claims, "Bearer");
+            return new ClaimsPrincipal(identity);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error parsing JWT token");
+            throw;
+        }
+    }
+
+    public bool ValidateToken(string token)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            
+            if (!tokenHandler.CanReadToken(token))
+                return false;
+
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            
+            // Check if token is expired
+            return jwtToken.ValidTo > DateTime.UtcNow;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error validating token");
+            return false;
+        }
+    }
+
+    public string? GetClaimValue(string token, string claimType)
+    {
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            
+            return jwtToken.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error extracting claim from token");
+            return null;
+        }
+    }
+}
+
+
+
+---------------------------------------------------------------
+
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using ShopWeb.Application.Interfaces;
+using ShopWeb.Application.Services;
+using ShopWeb.Data;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+// Configure Cookie Authentication instead of Identity
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Identity/Account/Login";
+        options.LogoutPath = "/Identity/Account/Logout";
+        options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+        options.Cookie.Name = "ShopWeb.Auth";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
+
+// Register services
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+// Add other services...
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseMigrationsEndPoint();
+}
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapRazorPages();
+app.MapControllers();
+
+app.Run();
+
+
+---------------------------------------------------------------
+
+#nullable disable
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShopWeb.Application.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+
+namespace ShopWeb.Areas.Identity.Pages.Account;
+
+public class LoginModel : PageModel
+{
+    private readonly ILogger<LoginModel> _logger;
+    private readonly ILoginService _loginService;
+    private readonly ITokenService _tokenService;
+
+    public LoginModel(
+        ILogger<LoginModel> logger, 
+        ILoginService loginService,
+        ITokenService tokenService)
+    {
+        _logger = logger;
+        _loginService = loginService;
+        _tokenService = tokenService;
+    }
+
+    [BindProperty]
+    public InputModel Input { get; set; }
+
+    public string ReturnUrl { get; set; }
+
+    [TempData]
+    public string ErrorMessage { get; set; }
+
+    public class InputModel
+    {
+        [Required(ErrorMessage = "Login is required")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Username or Email")]
+        public string Login { get; set; }
+
+        [Required(ErrorMessage = "Password is required")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; }
+
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+    }
+
+    public async Task OnGetAsync(string returnUrl = null)
+    {
+        if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            ModelState.AddModelError(string.Empty, ErrorMessage);
+        }
+
+        returnUrl ??= Url.Content("~/");
+
+        // Clear any existing authentication
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        ReturnUrl = returnUrl;
+    }
+
+    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    {
+        returnUrl ??= Url.Content("~/");
+
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        try
+        {
+            // Get token from your REST API
+            var token = await _loginService.Login(Input.Login, Input.Password);
+
+            if (string.IsNullOrEmpty(token))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return Page();
+            }
+
+            // Validate token
+            if (!_tokenService.ValidateToken(token))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid or expired token.");
+                return Page();
+            }
+
+            // Extract claims from token
+            var principal = _tokenService.GetPrincipalFromToken(token);
+
+            // Add the token to claims for later API calls
+            var claims = principal.Claims.ToList();
+            claims.Add(new Claim("access_token", token));
+            claims.Add(new Claim("token_expires", DateTime.UtcNow.AddHours(8).ToString("O")));
+
+            // Create new identity with all claims
+            var identity = new ClaimsIdentity(
+                claims, 
+                CookieAuthenticationDefaults.AuthenticationScheme);
+            
+            var newPrincipal = new ClaimsPrincipal(identity);
+
+            // Configure authentication properties
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = Input.RememberMe,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(Input.RememberMe ? 24 * 7 : 8),
+                AllowRefresh = true,
+                IssuedUtc = DateTimeOffset.UtcNow
+            };
+
+            // Sign in the user with cookie authentication
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                newPrincipal,
+                authProperties);
+
+            _logger.LogInformation("User {Username} logged in successfully", Input.Login);
+
+            return LocalRedirect(returnUrl);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during login for user {Username}", Input.Login);
+            ModelState.AddModelError(string.Empty, "An error occurred during login. Please try again.");
+            return Page();
+        }
+    }
+}
+
+
+
+---------------------------------------------------------------
+
+#nullable disable
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ShopWeb.Areas.Identity.Pages.Account;
+
+public class LogoutModel : PageModel
+{
+    private readonly ILogger<LogoutModel> _logger;
+
+    public LogoutModel(ILogger<LogoutModel> logger)
+    {
+        _logger = logger;
+    }
+
+    public async Task<IActionResult> OnGet()
+    {
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPost(string returnUrl = null)
+    {
+        var userName = User.Identity?.Name ?? "Unknown";
+        
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        
+        _logger.LogInformation("User {UserName} logged out", userName);
+
+        if (returnUrl != null)
+        {
+            return LocalRedirect(returnUrl);
+        }
+        
+        return RedirectToPage("/Index");
+    }
+}
+
+
+
+---------------------------------------------------------------
+
+@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Log out";
+}
+
+<header>
+    <h1>@ViewData["Title"]</h1>
+    @{
+        if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <form class="form-inline" asp-page-handler="Post">
+                <button type="submit" class="btn btn-link">Click here to Logout</button>
+            </form>
+        }
+        else
+        {
+            <p>You have successfully logged out of the application.</p>
+        }
+    }
+</header>
+
+
+
+---------------------------------------------------------------
+
+using System.Net.Http.Headers;
+using System.Security.Claims;
+
+namespace ShopWeb.Infrastructure.ApiClient;
+
+public class AuthorizationMessageHandler : DelegatingHandler
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ILogger<AuthorizationMessageHandler> _logger;
+
+    public AuthorizationMessageHandler(
+        IHttpContextAccessor httpContextAccessor,
+        ILogger<AuthorizationMessageHandler> logger)
+    {
+        _httpContextAccessor = httpContextAccessor;
+        _logger = logger;
+    }
+
+    protected override async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken)
+    {
+        var httpContext = _httpContextAccessor.HttpContext;
+
+        if (httpContext?.User?.Identity?.IsAuthenticated == true)
+        {
+            var token = httpContext.User.FindFirst("access_token")?.Value;
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                _logger.LogDebug("Authorization header added to request");
+            }
+            else
+            {
+                _logger.LogWarning("User is authenticated but no access token found in claims");
+            }
+        }
+
+        return await base.SendAsync(request, cancellationToken);
+    }
+}
+
+
+---------------------------------------------------------------
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <p>Welcome, @User.Identity.Name!</p>
+    <p>Email: @User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</p>
+    
+    <form asp-area="Identity" asp-page="/Account/Logout" method="post">
+        <button type="submit" class="btn btn-link">Logout</button>
+    </form>
+}
+else
+{
+    <a asp-area="Identity" asp-page="/Account/Login">Login</a>
+}
+
+---------------------------------------------------------------
+
+public class MyPageModel : PageModel
+{
+    public void OnGet()
+    {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var username = User.Identity.Name;
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var token = User.FindFirst("access_token")?.Value;
+            
+            // Use for API calls
+        }
+    }
+}
+
+

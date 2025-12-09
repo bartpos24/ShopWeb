@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using ShopWeb.Domain.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -74,14 +75,93 @@ namespace ShopWeb.Infrastructure.Services
 
 		public ClaimsPrincipal GetClaimsFromToken()
 		{
-			var token = GetAccessToken();
-			if (string.IsNullOrEmpty(token)) return null;
+			try
+			{
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = tokenHandler.ReadJwtToken(GetAccessToken());
 
-			var handler = new JwtSecurityTokenHandler();
-			var jwtToken = handler.ReadJwtToken(token);
+                var claims = new List<Claim>();
 
-			var identity = new ClaimsIdentity(jwtToken.Claims, "jwt");
-			return new ClaimsPrincipal(identity);
+                // Extract standard claims
+                foreach (var claim in jwtToken.Claims)
+                {
+                    switch (claim.Type)
+                    {
+                        case "sub":
+                        case "userId":
+                            claims.Add(new Claim(ClaimTypes.NameIdentifier, claim.Value));
+                            break;
+                        case "unique_name":
+                        case "username":
+                            claims.Add(new Claim(ClaimTypes.Name, claim.Value));
+                            break;
+                        case "email":
+                            claims.Add(new Claim(ClaimTypes.Email, claim.Value));
+                            break;
+                        case "given_name":
+                        case "name":
+                            claims.Add(new Claim("given_name", claim.Value));
+                            break;
+                        case "family_name":
+                        case "surname":
+                            claims.Add(new Claim("family_name", claim.Value));
+                            break;
+                        case "role":
+                            claims.Add(new Claim(ClaimTypes.Role, claim.Value));
+                            break;
+                        case "login_type":
+                            claims.Add(new Claim("login_type", claim.Value));
+                            break;
+                        default:
+                            claims.Add(claim);
+                            break;
+                    }
+                }
+
+                var identity = new ClaimsIdentity(claims, "Bearer");
+                return new ClaimsPrincipal(identity);
+            }
+			catch (Exception ex)
+			{
+                //logger.LogError(ex, "Error parsing JWT token");
+                throw;
+            }
 		}
-	}
+
+        public bool ValidateToken()
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+				var token = GetAccessToken();
+                if (!tokenHandler.CanReadToken(token))
+                    return false;
+
+                var jwtToken = tokenHandler.ReadJwtToken(token);
+
+                // Check if token is expired
+                return jwtToken.ValidTo > DateTime.UtcNow;
+            }
+            catch (Exception ex)
+            {
+                //logger.LogError(ex, "Error validating token");
+                return false;
+            }
+        }
+        public string? GetClaimValue(string claimType)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var jwtToken = tokenHandler.ReadJwtToken(GetAccessToken());
+
+                return jwtToken.Claims.FirstOrDefault(c => c.Type == claimType)?.Value;
+            }
+            catch (Exception ex)
+            {
+                //logger.LogError(ex, "Error extracting claim from token");
+                return null;
+            }
+        }
+    }
 }

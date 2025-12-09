@@ -52,5 +52,13 @@ namespace ShopWeb.Application.Services
 		{
 			tokenManager.StoreTokens(accessToken, refreshToken);
 		}
-	}
+        public bool ValidateToken()
+        {
+            return tokenManager.ValidateToken();
+        }
+        public string? GetClaimValue(string claimType)
+        {
+            return tokenManager.GetClaimValue(claimType);
+        }
+    }
 }
