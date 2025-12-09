@@ -228,10 +228,11 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="product"> (optional)</param>
-        /// <returns></returns>
-        public void ApiProductAddProductPost(Product? product = default)
+        /// <returns>int</returns>
+        public int ApiProductAddProductPost(Product? product = default)
         {
-            ApiProductAddProductPostWithHttpInfo(product);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = ApiProductAddProductPostWithHttpInfo(product);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -239,8 +240,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="product"> (optional)</param>
-        /// <returns>ApiResponse of Object(void)</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<Object> ApiProductAddProductPostWithHttpInfo(Product? product = default)
+        /// <returns>ApiResponse of int</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> ApiProductAddProductPostWithHttpInfo(Product? product = default)
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -252,6 +253,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // to determine the Accept header
             string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
             };
 
             var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
@@ -269,7 +273,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Post<Object>("/api/Product/AddProduct", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Post<int>("/api/Product/AddProduct", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
@@ -286,10 +290,11 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="product"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task ApiProductAddProductPostAsync(Product? product = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of int</returns>
+        public async System.Threading.Tasks.Task<int> ApiProductAddProductPostAsync(Product? product = default, System.Threading.CancellationToken cancellationToken = default)
         {
-            await ApiProductAddProductPostWithHttpInfoAsync(product, cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = await ApiProductAddProductPostWithHttpInfoAsync(product, cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -298,8 +303,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="product"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<Object>> ApiProductAddProductPostWithHttpInfoAsync(Product? product = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of ApiResponse (int)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int>> ApiProductAddProductPostWithHttpInfoAsync(Product? product = default, System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -312,6 +317,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // to determine the Accept header
             string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
             };
 
 
@@ -331,7 +339,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.PostAsync<Object>("/api/Product/AddProduct", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.PostAsync<int>("/api/Product/AddProduct", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {
@@ -346,18 +354,19 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         ///  
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
-        /// <returns></returns>
-        public void ApiProductGetAllProductsGet()
+        /// <returns>List&lt;Product&gt;</returns>
+        public List<Product> ApiProductGetAllProductsGet()
         {
-            ApiProductGetAllProductsGetWithHttpInfo();
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Product>> localVarResponse = ApiProductGetAllProductsGetWithHttpInfo();
+            return localVarResponse.Data;
         }
 
         /// <summary>
         ///  
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object(void)</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<Object> ApiProductGetAllProductsGetWithHttpInfo()
+        /// <returns>ApiResponse of List&lt;Product&gt;</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Product>> ApiProductGetAllProductsGetWithHttpInfo()
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -366,6 +375,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // to determine the Accept header
             string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
             };
 
             var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
@@ -382,7 +394,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/api/Product/GetAllProducts", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Get<List<Product>>("/api/Product/GetAllProducts", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
@@ -398,10 +410,11 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task ApiProductGetAllProductsGetAsync(System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of List&lt;Product&gt;</returns>
+        public async System.Threading.Tasks.Task<List<Product>> ApiProductGetAllProductsGetAsync(System.Threading.CancellationToken cancellationToken = default)
         {
-            await ApiProductGetAllProductsGetWithHttpInfoAsync(cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Product>> localVarResponse = await ApiProductGetAllProductsGetWithHttpInfoAsync(cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -409,8 +422,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<Object>> ApiProductGetAllProductsGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of ApiResponse (List&lt;Product&gt;)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Product>>> ApiProductGetAllProductsGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -420,6 +433,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // to determine the Accept header
             string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
             };
 
 
@@ -438,7 +454,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.GetAsync<Object>("/api/Product/GetAllProducts", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<List<Product>>("/api/Product/GetAllProducts", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {
@@ -453,18 +469,19 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         ///  
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
-        /// <returns></returns>
-        public void ApiProductGetAllProductsTestOpenApiGenerateGet()
+        /// <returns>List&lt;Product&gt;</returns>
+        public List<Product> ApiProductGetAllProductsTestOpenApiGenerateGet()
         {
-            ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfo();
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Product>> localVarResponse = ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfo();
+            return localVarResponse.Data;
         }
 
         /// <summary>
         ///  
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
-        /// <returns>ApiResponse of Object(void)</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<Object> ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfo()
+        /// <returns>ApiResponse of List&lt;Product&gt;</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Product>> ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfo()
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -473,6 +490,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // to determine the Accept header
             string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
             };
 
             var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
@@ -489,7 +509,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Get<Object>("/api/Product/GetAllProductsTestOpenApiGenerate", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Get<List<Product>>("/api/Product/GetAllProductsTestOpenApiGenerate", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
@@ -505,10 +525,11 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task ApiProductGetAllProductsTestOpenApiGenerateGetAsync(System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of List&lt;Product&gt;</returns>
+        public async System.Threading.Tasks.Task<List<Product>> ApiProductGetAllProductsTestOpenApiGenerateGetAsync(System.Threading.CancellationToken cancellationToken = default)
         {
-            await ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfoAsync(cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Product>> localVarResponse = await ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfoAsync(cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
         }
 
         /// <summary>
@@ -516,8 +537,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<Object>> ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of ApiResponse (List&lt;Product&gt;)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Product>>> ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -527,6 +548,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // to determine the Accept header
             string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
             };
 
 
@@ -545,7 +569,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.GetAsync<Object>("/api/Product/GetAllProductsTestOpenApiGenerate", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<List<Product>>("/api/Product/GetAllProductsTestOpenApiGenerate", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {

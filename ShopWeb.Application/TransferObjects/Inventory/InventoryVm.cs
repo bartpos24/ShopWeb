@@ -12,7 +12,7 @@ namespace ShopWeb.Application.TransferObjects.Inventory
         public string ResponsiblePerson { get; set; }
         public string CompanyName { get; set; }
         public string CompanyAddress { get; set; }
-        public string CommissionTeam { get; set; }
+        public List<string> CommissionTeam { get; set; }
         public string PersonToValue { get; set; }
         public string PersonToCheck { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -25,7 +25,9 @@ namespace ShopWeb.Application.TransferObjects.Inventory
         {
             profile.CreateMap<ShopWeb.Domain.Models.Inventory, InventoryVm>()
                 .ForMember(d => d.CreatedByUser, opt => opt.MapFrom(s => s.CreatedByUser.Name + " " + s.CreatedByUser.Surname))
-                .ForMember(d => d.Status, opt => opt.MapFrom(s => s.InventoryStatus.Name));
+                .ForMember(d => d.Status, opt => opt.MapFrom(s => s.InventoryStatus.Name))
+                .ForMember(d => d.CommissionTeam, opt => opt.MapFrom(s => string.IsNullOrEmpty(s.ComissionTeam) ? new List<string>() : 
+                    s.ComissionTeam.Split(';', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList()));
         }
     }
 }

@@ -30,6 +30,42 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// 
             /// </summary>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryPosition"> (optional)</param>
+            /// <returns>int</returns>
+            int ApiInventoryAddInventoryPositionPost(InventoryPosition? inventoryPosition = default);
+    
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryPosition"> (optional)</param>
+            /// <returns>ApiResponse of int</returns>
+            ApiResponse<int> ApiInventoryAddInventoryPositionPostWithHttpInfo(InventoryPosition? inventoryPosition = default);
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventory"> (optional)</param>
+            /// <returns>int</returns>
+            int ApiInventoryCreateInventoryPost(Inventory? inventory = default);
+    
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventory"> (optional)</param>
+            /// <returns>ApiResponse of int</returns>
+            ApiResponse<int> ApiInventoryCreateInventoryPostWithHttpInfo(Inventory? inventory = default);
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <returns>List&lt;Inventory&gt;</returns>
             List<Inventory> ApiInventoryGetAllInventoriesGet();
     
@@ -42,6 +78,44 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <returns>ApiResponse of List&lt;Inventory&gt;</returns>
             ApiResponse<List<Inventory>> ApiInventoryGetAllInventoriesGetWithHttpInfo();
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryId"> (optional)</param>
+            /// <param name="userId"> (optional)</param>
+            /// <returns>List&lt;Inventory&gt;</returns>
+            List<Inventory> ApiInventoryGetAllInventoryPositionsForUserGet(int? inventoryId = default, int? userId = default);
+    
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryId"> (optional)</param>
+            /// <param name="userId"> (optional)</param>
+            /// <returns>ApiResponse of List&lt;Inventory&gt;</returns>
+            ApiResponse<List<Inventory>> ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfo(int? inventoryId = default, int? userId = default);
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryId"> (optional)</param>
+            /// <returns>List&lt;Inventory&gt;</returns>
+            List<Inventory> ApiInventoryGetAllInventoryPositionsGet(int? inventoryId = default);
+    
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryId"> (optional)</param>
+            /// <returns>ApiResponse of List&lt;Inventory&gt;</returns>
+            ApiResponse<List<Inventory>> ApiInventoryGetAllInventoryPositionsGetWithHttpInfo(int? inventoryId = default);
             /// <summary>
             /// 
             /// </summary>
@@ -76,6 +150,52 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// 
             /// </remarks>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryPosition"> (optional)</param>
+            /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+            /// <returns>Task of int</returns>
+            System.Threading.Tasks.Task<int> ApiInventoryAddInventoryPositionPostAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default);
+    
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryPosition"> (optional)</param>
+            /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+            /// <returns>Task of ApiResponse (int)</returns>
+            System.Threading.Tasks.Task<ApiResponse<int>> ApiInventoryAddInventoryPositionPostWithHttpInfoAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default);
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventory"> (optional)</param>
+            /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+            /// <returns>Task of int</returns>
+            System.Threading.Tasks.Task<int> ApiInventoryCreateInventoryPostAsync(Inventory? inventory = default, System.Threading.CancellationToken cancellationToken = default);
+    
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventory"> (optional)</param>
+            /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+            /// <returns>Task of ApiResponse (int)</returns>
+            System.Threading.Tasks.Task<ApiResponse<int>> ApiInventoryCreateInventoryPostWithHttpInfoAsync(Inventory? inventory = default, System.Threading.CancellationToken cancellationToken = default);
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
             /// <returns>Task of List&lt;Inventory&gt;</returns>
             System.Threading.Tasks.Task<List<Inventory>> ApiInventoryGetAllInventoriesGetAsync(System.Threading.CancellationToken cancellationToken = default);
@@ -90,6 +210,54 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
             /// <returns>Task of ApiResponse (List&lt;Inventory&gt;)</returns>
             System.Threading.Tasks.Task<ApiResponse<List<Inventory>>> ApiInventoryGetAllInventoriesGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default);
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryId"> (optional)</param>
+            /// <param name="userId"> (optional)</param>
+            /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+            /// <returns>Task of List&lt;Inventory&gt;</returns>
+            System.Threading.Tasks.Task<List<Inventory>> ApiInventoryGetAllInventoryPositionsForUserGetAsync(int? inventoryId = default, int? userId = default, System.Threading.CancellationToken cancellationToken = default);
+    
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryId"> (optional)</param>
+            /// <param name="userId"> (optional)</param>
+            /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+            /// <returns>Task of ApiResponse (List&lt;Inventory&gt;)</returns>
+            System.Threading.Tasks.Task<ApiResponse<List<Inventory>>> ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfoAsync(int? inventoryId = default, int? userId = default, System.Threading.CancellationToken cancellationToken = default);
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryId"> (optional)</param>
+            /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+            /// <returns>Task of List&lt;Inventory&gt;</returns>
+            System.Threading.Tasks.Task<List<Inventory>> ApiInventoryGetAllInventoryPositionsGetAsync(int? inventoryId = default, System.Threading.CancellationToken cancellationToken = default);
+    
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <remarks>
+            /// 
+            /// </remarks>
+            /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+            /// <param name="inventoryId"> (optional)</param>
+            /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+            /// <returns>Task of ApiResponse (List&lt;Inventory&gt;)</returns>
+            System.Threading.Tasks.Task<ApiResponse<List<Inventory>>> ApiInventoryGetAllInventoryPositionsGetWithHttpInfoAsync(int? inventoryId = default, System.Threading.CancellationToken cancellationToken = default);
             /// <summary>
             /// 
             /// </summary>

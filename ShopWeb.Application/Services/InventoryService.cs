@@ -18,7 +18,11 @@ namespace ShopWeb.Application.Services
 
         public async Task<List<InventoryVm>> AllInventories()
         {
-            return new List<InventoryVm>();//await inventoryRepository.AllInventories().ProjectTo<InventoryVm>(mapper.ConfigurationProvider);
+			return new List<InventoryVm>();
+			//return await inventoryRepository.AllInventories().ProjectTo<InventoryVm>(mapper.ConfigurationProvider);
+
+			//var inventories = await inventoryRepository.AllInventories();
+   //         return mapper.Map<List<InventoryVm>>(inventories);
         }
     }
 }

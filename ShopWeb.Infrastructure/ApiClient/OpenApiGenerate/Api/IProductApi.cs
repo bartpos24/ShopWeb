@@ -31,8 +31,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// </summary>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="product"> (optional)</param>
-            /// <returns></returns>
-            void ApiProductAddProductPost(Product? product = default);
+            /// <returns>int</returns>
+            int ApiProductAddProductPost(Product? product = default);
     
             /// <summary>
             /// 
@@ -42,14 +42,14 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// </remarks>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="product"> (optional)</param>
-            /// <returns>ApiResponse of Object(void)</returns>
-            ApiResponse<Object> ApiProductAddProductPostWithHttpInfo(Product? product = default);
+            /// <returns>ApiResponse of int</returns>
+            ApiResponse<int> ApiProductAddProductPostWithHttpInfo(Product? product = default);
             /// <summary>
             /// 
             /// </summary>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
-            /// <returns></returns>
-            void ApiProductGetAllProductsGet();
+            /// <returns>List&lt;Product&gt;</returns>
+            List<Product> ApiProductGetAllProductsGet();
     
             /// <summary>
             /// 
@@ -58,14 +58,14 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// 
             /// </remarks>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
-            /// <returns>ApiResponse of Object(void)</returns>
-            ApiResponse<Object> ApiProductGetAllProductsGetWithHttpInfo();
+            /// <returns>ApiResponse of List&lt;Product&gt;</returns>
+            ApiResponse<List<Product>> ApiProductGetAllProductsGetWithHttpInfo();
             /// <summary>
             /// 
             /// </summary>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
-            /// <returns></returns>
-            void ApiProductGetAllProductsTestOpenApiGenerateGet();
+            /// <returns>List&lt;Product&gt;</returns>
+            List<Product> ApiProductGetAllProductsTestOpenApiGenerateGet();
     
             /// <summary>
             /// 
@@ -74,8 +74,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// 
             /// </remarks>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
-            /// <returns>ApiResponse of Object(void)</returns>
-            ApiResponse<Object> ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfo();
+            /// <returns>ApiResponse of List&lt;Product&gt;</returns>
+            ApiResponse<List<Product>> ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfo();
             /// <summary>
             /// 
             /// </summary>
@@ -162,8 +162,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="product"> (optional)</param>
             /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-            /// <returns>Task of void</returns>
-            System.Threading.Tasks.Task ApiProductAddProductPostAsync(Product? product = default, System.Threading.CancellationToken cancellationToken = default);
+            /// <returns>Task of int</returns>
+            System.Threading.Tasks.Task<int> ApiProductAddProductPostAsync(Product? product = default, System.Threading.CancellationToken cancellationToken = default);
     
             /// <summary>
             /// 
@@ -174,8 +174,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="product"> (optional)</param>
             /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-            /// <returns>Task of ApiResponse</returns>
-            System.Threading.Tasks.Task<ApiResponse<Object>> ApiProductAddProductPostWithHttpInfoAsync(Product? product = default, System.Threading.CancellationToken cancellationToken = default);
+            /// <returns>Task of ApiResponse (int)</returns>
+            System.Threading.Tasks.Task<ApiResponse<int>> ApiProductAddProductPostWithHttpInfoAsync(Product? product = default, System.Threading.CancellationToken cancellationToken = default);
             /// <summary>
             /// 
             /// </summary>
@@ -184,8 +184,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// </remarks>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-            /// <returns>Task of void</returns>
-            System.Threading.Tasks.Task ApiProductGetAllProductsGetAsync(System.Threading.CancellationToken cancellationToken = default);
+            /// <returns>Task of List&lt;Product&gt;</returns>
+            System.Threading.Tasks.Task<List<Product>> ApiProductGetAllProductsGetAsync(System.Threading.CancellationToken cancellationToken = default);
     
             /// <summary>
             /// 
@@ -195,8 +195,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// </remarks>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-            /// <returns>Task of ApiResponse</returns>
-            System.Threading.Tasks.Task<ApiResponse<Object>> ApiProductGetAllProductsGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default);
+            /// <returns>Task of ApiResponse (List&lt;Product&gt;)</returns>
+            System.Threading.Tasks.Task<ApiResponse<List<Product>>> ApiProductGetAllProductsGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default);
             /// <summary>
             /// 
             /// </summary>
@@ -205,8 +205,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// </remarks>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-            /// <returns>Task of void</returns>
-            System.Threading.Tasks.Task ApiProductGetAllProductsTestOpenApiGenerateGetAsync(System.Threading.CancellationToken cancellationToken = default);
+            /// <returns>Task of List&lt;Product&gt;</returns>
+            System.Threading.Tasks.Task<List<Product>> ApiProductGetAllProductsTestOpenApiGenerateGetAsync(System.Threading.CancellationToken cancellationToken = default);
     
             /// <summary>
             /// 
@@ -216,8 +216,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             /// </remarks>
             /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
             /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-            /// <returns>Task of ApiResponse</returns>
-            System.Threading.Tasks.Task<ApiResponse<Object>> ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default);
+            /// <returns>Task of ApiResponse (List&lt;Product&gt;)</returns>
+            System.Threading.Tasks.Task<ApiResponse<List<Product>>> ApiProductGetAllProductsTestOpenApiGenerateGetWithHttpInfoAsync(System.Threading.CancellationToken cancellationToken = default);
             /// <summary>
             /// 
             /// </summary>
