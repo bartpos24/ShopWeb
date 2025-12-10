@@ -3,7 +3,7 @@ using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.Services;
 using System.Reflection;
 
-namespace ShopWeb.Infrastructure
+namespace ShopWeb.Application
 {
     public static class DependencyInjection
     {
@@ -14,7 +14,7 @@ namespace ShopWeb.Infrastructure
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ITokenRefreshService, TokenRefreshService>();
-			services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             return services;
         }
     }

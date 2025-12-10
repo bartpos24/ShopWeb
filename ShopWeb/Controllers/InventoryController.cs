@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.Services;
 using ShopWeb.Application.TransferObjects.Inventory;
+using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;
 using ShopWeb.Models;
 
 namespace ShopWeb.Controllers
@@ -34,15 +35,15 @@ namespace ShopWeb.Controllers
 			//	logger.LogError(ex, "Error in HomeController Index");
 			//}
 			try
-            {
+			{
 				var inventories = await inventoryService.AllInventories();
 				return View(inventories);
 			}
 			catch (Exception ex)
-            {
-                var x = ex;
-            }
-            return View(new List<InventoryVm>());
+			{
+				var x = ex;
+			}
+			return View(new List<InventoryVm>());
         }
     }
 }

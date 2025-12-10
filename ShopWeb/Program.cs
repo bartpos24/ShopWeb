@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using ShopWeb.Application;
 using ShopWeb.Data;
 using ShopWeb.Extensions;
 using ShopWeb.Infrastructure;
