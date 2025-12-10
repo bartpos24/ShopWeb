@@ -33,14 +33,38 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Identity/Account/Login";
         options.LogoutPath = "/Identity/Account/Logout";
-        //options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-        //options.ExpireTimeSpan = TimeSpan.FromHours(8);
-        //options.SlidingExpiration = true;
-        //options.Cookie.Name = "ShopWeb.Auth";
-        //options.Cookie.HttpOnly = true;
-        //options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        //options.Cookie.SameSite = SameSiteMode.Lax;
-    });
+		//options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+		//options.ExpireTimeSpan = TimeSpan.FromHours(8);
+		//options.SlidingExpiration = true;
+		//options.Cookie.Name = "ShopWeb.Auth";
+		//options.Cookie.HttpOnly = true;
+		//options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+		//options.Cookie.SameSite = SameSiteMode.Lax;
+		options.ReturnUrlParameter = "returnUrl";
+
+		// Handle 401 responses
+		options.Events = new CookieAuthenticationEvents
+		{
+			OnRedirectToLogin = context =>
+			{
+				// For API requests, return 401 instead of redirecting
+				if (context.Request.Path.StartsWithSegments("/api"))
+				{
+					context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+					return Task.CompletedTask;
+				}
+
+				// For regular requests, redirect to login with return URL
+				context.Response.Redirect(context.RedirectUri);
+				return Task.CompletedTask;
+			},
+			OnRedirectToAccessDenied = context =>
+			{
+				context.Response.Redirect(context.RedirectUri);
+				return Task.CompletedTask;
+			}
+		};
+	});
 
 builder.Services.AddAuthorization();
 

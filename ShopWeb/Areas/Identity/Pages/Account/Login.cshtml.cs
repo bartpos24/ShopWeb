@@ -88,7 +88,12 @@ namespace ShopWeb.Areas.Identity.Pages.Account
 
 			if (Request.Query.ContainsKey("expired"))
 			{
-				ModelState.AddModelError(string.Empty, "Your session has expired. Please log in again.");
+				ModelState.AddModelError(string.Empty, "Token wygasł. Zaloguj się ponownie");
+			}
+
+			if (Request.Query.ContainsKey("loggedOut"))
+			{
+				ViewData["Message"] = "Pomyślnie wylogowano użytkownika.";
 			}
 
 			returnUrl ??= Url.Content("~/");
@@ -125,12 +130,14 @@ namespace ShopWeb.Areas.Identity.Pages.Account
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     var newPrincipal = new ClaimsPrincipal(identity);
-                    // Configure authentication properties
-                    var authProperties = new AuthenticationProperties
+
+					var tokenExpiration = tokenService.GetTokenExpirationTime();
+					// Configure authentication properties
+					var authProperties = new AuthenticationProperties
                     {
                         IsPersistent = false,
-                        //ExpiresUtc = DateTimeOffset.UtcNow.AddHours(Input.RememberMe ? 24 * 7 : 8),
-                        AllowRefresh = true,
+                        ExpiresUtc = tokenExpiration.HasValue ? new DateTimeOffset(tokenExpiration.Value) : DateTimeOffset.UtcNow.AddHours(8),
+						AllowRefresh = true,
                         IssuedUtc = DateTimeOffset.UtcNow
                     };
 

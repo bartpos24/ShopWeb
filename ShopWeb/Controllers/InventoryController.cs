@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopWeb.Application.Interfaces;
+using ShopWeb.Application.Services;
 using ShopWeb.Application.TransferObjects.Inventory;
+using ShopWeb.Models;
 
 namespace ShopWeb.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class InventoryController : Controller
     {
         private readonly ILogger<InventoryController> logger;
@@ -17,7 +19,21 @@ namespace ShopWeb.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            try
+			//try
+			//{
+			//	var product = await productService.GetProductByBarcode("5449000034519");
+			//	var c = product;
+			//}
+			//catch (Exception ex)
+			//{
+			//	if (ex is ApiException)
+			//	{
+			//		ex = ex as ApiException;
+			//		return View(new ErrorViewModel { RequestId = $"Wystąpił błąd: {ex.Message}" });
+			//	}
+			//	logger.LogError(ex, "Error in HomeController Index");
+			//}
+			try
             {
 				var inventories = await inventoryService.AllInventories();
 				return View(inventories);

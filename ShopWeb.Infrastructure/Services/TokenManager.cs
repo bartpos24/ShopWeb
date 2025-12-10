@@ -87,35 +87,60 @@ namespace ShopWeb.Infrastructure.Services
                 {
                     switch (claim.Type)
                     {
-                        case "sub":
-                        case "userId":
-                            claims.Add(new Claim(ClaimTypes.NameIdentifier, claim.Value));
-                            break;
-                        case "unique_name":
-                        case "username":
-                            claims.Add(new Claim(ClaimTypes.Name, claim.Value));
-                            break;
-                        case "email":
-                            claims.Add(new Claim(ClaimTypes.Email, claim.Value));
-                            break;
-                        case "given_name":
-                        case "name":
-                            claims.Add(new Claim("given_name", claim.Value));
-                            break;
-                        case "family_name":
-                        case "surname":
-                            claims.Add(new Claim("family_name", claim.Value));
-                            break;
-                        case "role":
-                            claims.Add(new Claim(ClaimTypes.Role, claim.Value));
-                            break;
-                        case "login_type":
-                            claims.Add(new Claim("login_type", claim.Value));
-                            break;
-                        default:
-                            claims.Add(claim);
-                            break;
-                    }
+						case JwtRegisteredClaimNames.Sub:
+							claims.Add(new Claim(ClaimTypes.NameIdentifier, claim.Value));
+							claims.Add(claim); // Keep original
+							break;
+
+						case JwtRegisteredClaimNames.UniqueName:
+							claims.Add(new Claim(ClaimTypes.Name, claim.Value));
+							claims.Add(claim); // Keep original
+							break;
+
+						case JwtRegisteredClaimNames.Email:
+							claims.Add(new Claim(ClaimTypes.Email, claim.Value));
+							claims.Add(claim); // Keep original
+							break;
+
+						// Standard Claims from ClaimTypes
+						case ClaimTypes.Name:
+							claims.Add(new Claim("given_name", claim.Value));
+							claims.Add(claim); // Keep original
+							break;
+
+						case ClaimTypes.Surname:
+							claims.Add(new Claim("family_name", claim.Value));
+							claims.Add(claim); // Keep original
+							break;
+
+						case ClaimTypes.Role:
+							claims.Add(claim); // Roles can be multiple
+							break;
+
+						// Custom Claims
+						case "ssaid":
+							claims.Add(claim);
+							break;
+
+						// ShopLoginClaimsKey (login_type)
+						case var _ when claim.Type.Contains("ShopLoginClaimsKey") || claim.Type == "login_type":
+							claims.Add(new Claim("login_type", claim.Value));
+							claims.Add(claim); // Keep original
+							break;
+
+						// JWT Standard Claims (jti, iat, exp, iss, aud)
+						case JwtRegisteredClaimNames.Jti:
+						case JwtRegisteredClaimNames.Iat:
+						case JwtRegisteredClaimNames.Exp:
+						case JwtRegisteredClaimNames.Iss:
+						case JwtRegisteredClaimNames.Aud:
+							claims.Add(claim);
+							break;
+
+						default:
+							claims.Add(claim);
+							break;
+					}
                 }
 
                 var identity = new ClaimsIdentity(claims, "Bearer");
