@@ -1,0 +1,845 @@
+How to create a module/class to manage exception in #ShopWeb.csproj? When I invoke every endpoint from my rest api I could get NotFound or BadRequest response with specified message. In current situation I have to send this request with try-catch block and if these unsuccessfull response appear I can show it in catch block. For example in #Login.cshtml.cs OnPostAsync method I call "var token = await loginService.Login(Input.Login, Input.Password, ssaid);" from my rest api and this endpoint could return: NotFound("U¿ytkownik o podanej nazwie nazwie nie istnieje"); Unauthorized("Nieprawid³owy login lub has³o"); NotFound("Wyst¹pi³ b³¹d podczas logowania u¿ytkownika"); I want to have one general module in my #ShopWeb.csproj app to catch all exception from api and display it for the user by setting any error variable in current .cshtml, .cshtml.cs or controller file. How to do that?
+
+
+------------------------------------------------------
+
+//1. Create API Response Models
+
+namespace ShopWeb.Application.Models;
+
+public class ApiResult<T>
+{
+    public bool IsSuccess { get; set; }
+    public T? Data { get; set; }
+    public string? ErrorMessage { get; set; }
+    public int? StatusCode { get; set; }
+    public Dictionary<string, string[]>? ValidationErrors { get; set; }
+
+    public static ApiResult<T> Success(T data)
+    {
+        return new ApiResult<T>
+        {
+            IsSuccess = true,
+            Data = data,
+            StatusCode = 200
+        };
+    }
+
+    public static ApiResult<T> Failure(string errorMessage, int statusCode = 500, Dictionary<string, string[]>? validationErrors = null)
+    {
+        return new ApiResult<T>
+        {
+            IsSuccess = false,
+            ErrorMessage = errorMessage,
+            StatusCode = statusCode,
+            ValidationErrors = validationErrors
+        };
+    }
+}
+
+public class ApiResult : ApiResult<object>
+{
+    public static new ApiResult Success()
+    {
+        return new ApiResult
+        {
+            IsSuccess = true,
+            StatusCode = 200
+        };
+    }
+
+    public static new ApiResult Failure(string errorMessage, int statusCode = 500, Dictionary<string, string[]>? validationErrors = null)
+    {
+        return new ApiResult
+        {
+            IsSuccess = false,
+            ErrorMessage = errorMessage,
+            StatusCode = statusCode,
+            ValidationErrors = validationErrors
+        };
+    }
+}
+
+
+
+-------------------------------------------------------
+
+//2. Create Exception Handler Service
+
+
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using ShopWeb.Application.Models;
+using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;
+using System.Net;
+
+namespace ShopWeb.Application.Services;
+
+public interface IApiExceptionHandler
+{
+    ApiResult<T> HandleException<T>(Exception ex);
+    Task<ApiResult<T>> ExecuteAsync<T>(Func<Task<T>> apiCall);
+    Task<ApiResult> ExecuteAsync(Func<Task> apiCall);
+}
+
+public class ApiExceptionHandler : IApiExceptionHandler
+{
+    private readonly ILogger<ApiExceptionHandler> _logger;
+
+    public ApiExceptionHandler(ILogger<ApiExceptionHandler> logger)
+    {
+        _logger = logger;
+    }
+
+    public ApiResult<T> HandleException<T>(Exception ex)
+    {
+        if (ex is ApiException apiException)
+        {
+            return HandleApiException<T>(apiException);
+        }
+
+        // Generic exceptions
+        _logger.LogError(ex, "Unexpected error occurred");
+        return ApiResult<T>.Failure(
+            "Wyst¹pi³ nieoczekiwany b³¹d. Spróbuj ponownie póŸniej.",
+            500
+        );
+    }
+
+    public async Task<ApiResult<T>> ExecuteAsync<T>(Func<Task<T>> apiCall)
+    {
+        try
+        {
+            var result = await apiCall();
+            return ApiResult<T>.Success(result);
+        }
+        catch (Exception ex)
+        {
+            return HandleException<T>(ex);
+        }
+    }
+
+    public async Task<ApiResult> ExecuteAsync(Func<Task> apiCall)
+    {
+        try
+        {
+            await apiCall();
+            return ApiResult.Success();
+        }
+        catch (Exception ex)
+        {
+            if (ex is ApiException apiException)
+            {
+                return HandleApiException(apiException);
+            }
+
+            _logger.LogError(ex, "Unexpected error occurred");
+            return ApiResult.Failure(
+                "Wyst¹pi³ nieoczekiwany b³¹d. Spróbuj ponownie póŸniej.",
+                500
+            );
+        }
+    }
+
+    private ApiResult<T> HandleApiException<T>(ApiException apiException)
+    {
+        var statusCode = apiException.ErrorCode;
+        var errorMessage = ExtractErrorMessage(apiException);
+
+        _logger.LogWarning(
+            "API Exception: StatusCode={StatusCode}, Message={Message}",
+            statusCode,
+            errorMessage
+        );
+
+        // Extract validation errors if present
+        var validationErrors = ExtractValidationErrors(apiException);
+
+        return statusCode switch
+        {
+            400 => ApiResult<T>.Failure(errorMessage ?? "Nieprawid³owe ¿¹danie.", 400, validationErrors),
+            401 => ApiResult<T>.Failure(errorMessage ?? "Brak autoryzacji.", 401),
+            403 => ApiResult<T>.Failure(errorMessage ?? "Brak dostêpu do zasobu.", 403),
+            404 => ApiResult<T>.Failure(errorMessage ?? "Nie znaleziono zasobu.", 404),
+            409 => ApiResult<T>.Failure(errorMessage ?? "Konflikt danych.", 409),
+            422 => ApiResult<T>.Failure(errorMessage ?? "Nieprawid³owe dane walidacji.", 422, validationErrors),
+            500 => ApiResult<T>.Failure(errorMessage ?? "B³¹d serwera.", 500),
+            _ => ApiResult<T>.Failure(errorMessage ?? "Wyst¹pi³ b³¹d.", statusCode)
+        };
+    }
+
+    private ApiResult HandleApiException(ApiException apiException)
+    {
+        var statusCode = apiException.ErrorCode;
+        var errorMessage = ExtractErrorMessage(apiException);
+
+        _logger.LogWarning(
+            "API Exception: StatusCode={StatusCode}, Message={Message}",
+            statusCode,
+            errorMessage
+        );
+
+        var validationErrors = ExtractValidationErrors(apiException);
+
+        return statusCode switch
+        {
+            400 => ApiResult.Failure(errorMessage ?? "Nieprawid³owe ¿¹danie.", 400, validationErrors),
+            401 => ApiResult.Failure(errorMessage ?? "Brak autoryzacji.", 401),
+            403 => ApiResult.Failure(errorMessage ?? "Brak dostêpu do zasobu.", 403),
+            404 => ApiResult.Failure(errorMessage ?? "Nie znaleziono zasobu.", 404),
+            409 => ApiResult.Failure(errorMessage ?? "Konflikt danych.", 409),
+            422 => ApiResult.Failure(errorMessage ?? "Nieprawid³owe dane walidacji.", 422, validationErrors),
+            500 => ApiResult.Failure(errorMessage ?? "B³¹d serwera.", 500),
+            _ => ApiResult.Failure(errorMessage ?? "Wyst¹pi³ b³¹d.", statusCode)
+        };
+    }
+
+    private string? ExtractErrorMessage(ApiException apiException)
+    {
+        // Try to extract message from ErrorContent
+        if (apiException.ErrorContent != null)
+        {
+            try
+            {
+                var errorContentString = apiException.ErrorContent.ToString();
+                
+                // Try to parse as JSON
+                if (!string.IsNullOrEmpty(errorContentString))
+                {
+                    // Handle different error response formats
+                    if (errorContentString.StartsWith("{"))
+                    {
+                        dynamic errorObj = JsonConvert.DeserializeObject(errorContentString)!;
+                        
+                        // Common patterns in API responses
+                        if (errorObj.message != null)
+                            return errorObj.message.ToString();
+                        if (errorObj.error != null)
+                            return errorObj.error.ToString();
+                        if (errorObj.title != null)
+                            return errorObj.title.ToString();
+                    }
+                    else
+                    {
+                        // Plain text error message
+                        return errorContentString;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogDebug(ex, "Could not parse error content");
+            }
+        }
+
+        // Fallback to exception message
+        return apiException.Message;
+    }
+
+    private Dictionary<string, string[]>? ExtractValidationErrors(ApiException apiException)
+    {
+        if (apiException.ErrorContent == null)
+            return null;
+
+        try
+        {
+            var errorContentString = apiException.ErrorContent.ToString();
+            
+            if (string.IsNullOrEmpty(errorContentString) || !errorContentString.StartsWith("{"))
+                return null;
+
+            dynamic errorObj = JsonConvert.DeserializeObject(errorContentString)!;
+
+            // Check for ASP.NET Core validation errors format
+            if (errorObj.errors != null)
+            {
+                var errors = new Dictionary<string, string[]>();
+                foreach (var error in errorObj.errors)
+                {
+                    var property = error.Name;
+                    var messages = new List<string>();
+                    
+                    foreach (var message in error.Value)
+                    {
+                        messages.Add(message.ToString());
+                    }
+                    
+                    errors[property] = messages.ToArray();
+                }
+                return errors;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Could not extract validation errors");
+        }
+
+        return null;
+    }
+}
+
+
+-------------------------------------------------------
+
+//3. Create Base PageModel with Error Handling
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShopWeb.Application.Models;
+
+namespace ShopWeb.Pages;
+
+public abstract class BasePageModel : PageModel
+{
+    [TempData]
+    public string? SuccessMessage { get; set; }
+
+    [TempData]
+    public string? ErrorMessage { get; set; }
+
+    [TempData]
+    public string? WarningMessage { get; set; }
+
+    [TempData]
+    public string? InfoMessage { get; set; }
+
+    protected void SetSuccessMessage(string message)
+    {
+        SuccessMessage = message;
+    }
+
+    protected void SetErrorMessage(string message)
+    {
+        ErrorMessage = message;
+    }
+
+    protected void SetWarningMessage(string message)
+    {
+        WarningMessage = message;
+    }
+
+    protected void SetInfoMessage(string message)
+    {
+        InfoMessage = message;
+    }
+
+    protected void HandleApiResult<T>(ApiResult<T> result)
+    {
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationErrors != null && result.ValidationErrors.Any())
+            {
+                foreach (var error in result.ValidationErrors)
+                {
+                    foreach (var message in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, message);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(result.ErrorMessage))
+            {
+                ModelState.AddModelError(string.Empty, result.ErrorMessage);
+            }
+        }
+    }
+
+    protected void HandleApiResult(ApiResult result)
+    {
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationErrors != null && result.ValidationErrors.Any())
+            {
+                foreach (var error in result.ValidationErrors)
+                {
+                    foreach (var message in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, message);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(result.ErrorMessage))
+            {
+                ModelState.AddModelError(string.Empty, result.ErrorMessage);
+            }
+        }
+    }
+
+    protected IActionResult PageWithError(string errorMessage)
+    {
+        ModelState.AddModelError(string.Empty, errorMessage);
+        return Page();
+    }
+
+    protected IActionResult RedirectWithSuccess(string page, string message)
+    {
+        SetSuccessMessage(message);
+        return RedirectToPage(page);
+    }
+
+    protected IActionResult RedirectWithError(string page, string message)
+    {
+        SetErrorMessage(message);
+        return RedirectToPage(page);
+    }
+}
+
+-------------------------------------------------------
+
+//4. Create Base Controller with Error Handling
+
+using Microsoft.AspNetCore.Mvc;
+using ShopWeb.Application.Models;
+
+namespace ShopWeb.Controllers;
+
+public abstract class BaseController : Controller
+{
+    [TempData]
+    public string? SuccessMessage { get; set; }
+
+    [TempData]
+    public string? ErrorMessage { get; set; }
+
+    [TempData]
+    public string? WarningMessage { get; set; }
+
+    [TempData]
+    public string? InfoMessage { get; set; }
+
+    protected void SetSuccessMessage(string message)
+    {
+        SuccessMessage = message;
+    }
+
+    protected void SetErrorMessage(string message)
+    {
+        ErrorMessage = message;
+    }
+
+    protected void SetWarningMessage(string message)
+    {
+        WarningMessage = message;
+    }
+
+    protected void SetInfoMessage(string message)
+    {
+        InfoMessage = message;
+    }
+
+    protected void HandleApiResult<T>(ApiResult<T> result)
+    {
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationErrors != null && result.ValidationErrors.Any())
+            {
+                foreach (var error in result.ValidationErrors)
+                {
+                    foreach (var message in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, message);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(result.ErrorMessage))
+            {
+                ModelState.AddModelError(string.Empty, result.ErrorMessage);
+            }
+        }
+    }
+
+    protected void HandleApiResult(ApiResult result)
+    {
+        if (!result.IsSuccess)
+        {
+            if (result.ValidationErrors != null && result.ValidationErrors.Any())
+            {
+                foreach (var error in result.ValidationErrors)
+                {
+                    foreach (var message in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, message);
+                    }
+                }
+            }
+
+            if (!string.IsNullOrEmpty(result.ErrorMessage))
+            {
+                ModelState.AddModelError(string.Empty, result.ErrorMessage);
+            }
+        }
+    }
+
+    protected IActionResult ViewWithError(string errorMessage)
+    {
+        ModelState.AddModelError(string.Empty, errorMessage);
+        return View();
+    }
+
+    protected IActionResult RedirectWithSuccess(string action, string message, string? controller = null)
+    {
+        SetSuccessMessage(message);
+        return controller != null 
+            ? RedirectToAction(action, controller) 
+            : RedirectToAction(action);
+    }
+
+    protected IActionResult RedirectWithError(string action, string message, string? controller = null)
+    {
+        SetErrorMessage(message);
+        return controller != null 
+            ? RedirectToAction(action, controller) 
+            : RedirectToAction(action);
+    }
+}
+
+-------------------------------------------------------
+
+//5. Update Login Service to Use Exception Handler
+
+using ShopWeb.Application.Interfaces;
+using ShopWeb.Application.Models;
+using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api;
+
+namespace ShopWeb.Application.Services;
+
+public class LoginService : ILoginService
+{
+    private readonly IAuthenticationApi _authenticationApi;
+    private readonly IApiExceptionHandler _exceptionHandler;
+    private readonly ITokenService _tokenService;
+
+    public LoginService(
+        IAuthenticationApi authenticationApi,
+        IApiExceptionHandler exceptionHandler,
+        ITokenService tokenService)
+    {
+        _authenticationApi = authenticationApi;
+        _exceptionHandler = exceptionHandler;
+        _tokenService = tokenService;
+    }
+
+    public async Task<ApiResult<string>> LoginAsync(string username, string password, string? ssaid = null)
+    {
+        var result = await _exceptionHandler.ExecuteAsync(async () =>
+        {
+            var loginModel = new ShopWeb.Domain.Models.LoginModel(username, password, ssaid);
+            var response = await _authenticationApi.ApiAuthenticationLoginPostAsync(loginModel);
+            return response;
+        });
+
+        if (result.IsSuccess && !string.IsNullOrEmpty(result.Data))
+        {
+            // Extract tokens from response
+            _tokenService.StoreTokens(result.Data, string.Empty); // Adjust based on your API response
+        }
+
+        return result;
+    }
+
+    public async Task<ApiResult<string>> RefreshTokenAsync(string refreshToken, string? ssaid = null)
+    {
+        var result = await _exceptionHandler.ExecuteAsync(async () =>
+        {
+            // Implement refresh token logic
+            var response = await _authenticationApi.ApiAuthenticationRefreshTokenPostAsync(refreshToken);
+            return response;
+        });
+
+        if (result.IsSuccess && !string.IsNullOrEmpty(result.Data))
+        {
+            _tokenService.StoreTokens(result.Data, refreshToken);
+        }
+
+        return result;
+    }
+}
+
+
+-------------------------------------------------------
+
+//6. Update Login Interface
+
+using ShopWeb.Application.Models;
+
+namespace ShopWeb.Application.Interfaces;
+
+public interface ILoginService
+{
+    Task<ApiResult<string>> LoginAsync(string username, string password, string? ssaid = null);
+    Task<ApiResult<string>> RefreshTokenAsync(string refreshToken, string? ssaid = null);
+}
+
+-------------------------------------------------------
+
+//7. Update Login.cshtml.cs
+
+#nullable disable
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using ShopWeb.Application.Interfaces;
+using ShopWeb.Pages;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+
+namespace ShopWeb.Areas.Identity.Pages.Account;
+
+public class LoginModel : BasePageModel
+{
+    private readonly ILogger<LoginModel> _logger;
+    private readonly ILoginService _loginService;
+    private readonly ITokenService _tokenService;
+
+    public LoginModel(
+        ILogger<LoginModel> logger,
+        ILoginService loginService,
+        ITokenService tokenService)
+    {
+        _logger = logger;
+        _loginService = loginService;
+        _tokenService = tokenService;
+    }
+
+    [BindProperty]
+    public InputModel Input { get; set; }
+
+    public string ReturnUrl { get; set; }
+
+    public class InputModel
+    {
+        [Required(ErrorMessage = "Login jest wymagany")]
+        [DataType(DataType.Text)]
+        [Display(Name = "Login")]
+        public string Login { get; set; }
+
+        [Required(ErrorMessage = "Has³o jest wymagane")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Has³o")]
+        public string Password { get; set; }
+    }
+
+    public async Task OnGetAsync(string returnUrl = null)
+    {
+        if (Request.Query.ContainsKey("expired"))
+        {
+            ModelState.AddModelError(string.Empty, "Token wygas³. Zaloguj siê ponownie");
+        }
+
+        if (Request.Query.ContainsKey("loggedOut"))
+        {
+            SetSuccessMessage("Pomyœlnie wylogowano u¿ytkownika.");
+        }
+
+        returnUrl ??= Url.Content("~/");
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        ReturnUrl = returnUrl;
+    }
+
+    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    {
+        returnUrl ??= Url.Content("~/");
+
+        if (!ModelState.IsValid)
+        {
+            return Page();
+        }
+
+        var ssaid = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
+        var result = await _loginService.LoginAsync(Input.Login, Input.Password, ssaid);
+
+        // Handle the result
+        if (!result.IsSuccess)
+        {
+            HandleApiResult(result);
+            return Page();
+        }
+
+        // Validate token
+        if (!_tokenService.ValidateToken())
+        {
+            return PageWithError("Invalid or expired token.");
+        }
+
+        // Get claims and sign in
+        var principal = _tokenService.GetClaimsFromToken();
+        var claims = principal.Claims.ToList();
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var newPrincipal = new ClaimsPrincipal(identity);
+
+        var tokenExpiration = _tokenService.GetTokenExpirationTime();
+        var authProperties = new AuthenticationProperties
+        {
+            IsPersistent = false,
+            ExpiresUtc = tokenExpiration.HasValue 
+                ? new DateTimeOffset(tokenExpiration.Value) 
+                : DateTimeOffset.UtcNow.AddHours(8),
+            AllowRefresh = true,
+            IssuedUtc = DateTimeOffset.UtcNow
+        };
+
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            newPrincipal,
+            authProperties);
+
+        _logger.LogInformation("User {Username} logged in successfully", Input.Login);
+
+        return LocalRedirect(returnUrl);
+    }
+}
+
+-------------------------------------------------------
+
+//8. Register Services in DependencyInjection
+
+using Microsoft.Extensions.DependencyInjection;
+using ShopWeb.Application.Interfaces;
+using ShopWeb.Application.Services;
+using System.Reflection;
+
+namespace ShopWeb.Application;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        services.AddScoped<IInventoryService, InventoryService>();
+        services.AddScoped<ILoginService, LoginService>();
+        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<ITokenRefreshService, TokenRefreshService>();
+        
+        // Register exception handler
+        services.AddScoped<IApiExceptionHandler, ApiExceptionHandler>();
+        
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        return services;
+    }
+}
+
+
+-------------------------------------------------------
+
+
+//9. Create Partial View for Displaying Messages
+
+@if (!string.IsNullOrEmpty(TempData["SuccessMessage"] as string))
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(TempData["ErrorMessage"] as string))
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(TempData["WarningMessage"] as string))
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>
+        @TempData["WarningMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(TempData["InfoMessage"] as string))
+{
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        @TempData["InfoMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+-------------------------------------------------------
+
+//10. Include Alerts in Layout
+
+<body>
+    <header>
+        <!-- Your header content -->
+    </header>
+    
+    <div class="container">
+        <partial name="_AlertMessages" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    
+    <!-- Rest of your layout -->
+</body>
+
+
+-------------------------------------------------------
+
+//Usage Examples
+//In Controllers:
+
+public class InventoryController : BaseController
+{
+    private readonly IInventoryService _inventoryService;
+    
+    public async Task<IActionResult> Index()
+    {
+        var result = await _inventoryService.GetAllInventoriesAsync();
+        
+        if (!result.IsSuccess)
+        {
+            HandleApiResult(result);
+            return View(new List<InventoryVm>());
+        }
+        
+        return View(result.Data);
+    }
+}
+
+//In Razor Pages:
+
+public class InventoryPageModel : BasePageModel
+{
+    private readonly IInventoryService _inventoryService;
+    
+    public async Task<IActionResult> OnGetAsync()
+    {
+        var result = await _inventoryService.GetAllInventoriesAsync();
+        
+        if (!result.IsSuccess)
+        {
+            HandleApiResult(result);
+            return Page();
+        }
+        
+        Inventories = result.Data;
+        return Page();
+    }
+}
+
+
+
+
+-------------------------------------------------------
+
+How to manage exceptions from rest api in ASP.NET Core MVC web application. I have application wrote in onion architecture. I have in one solution: 
+1. ShopWeb.csproj - ASP.NET Core MVC razor web app. This project has reference to Application and Infrastructure project
+2. Application.csproj with transfer object models which mapping from and to rest api models from Domain project using AutoMapper, services with their interfaces which invoke repository method from infrastructure. This project has reference to Domain project
+3. Domain.csproj which contains rest api models and repository interfaces. This project has no reference to other part of application. Infrastructure and Applications have reference to this project.
+4. Infrastructure.csproj which contains all infrastructure to invoke rest api endpoints. It invoke endpoints from repositories which implements interfaces from Domain. This project has references to Domain project.
+Controllers or PageModels invoke services from application. Application services invoke repository method from Infrastructure. Infrastructure repositories call rest api endpoints and send response back to ShopWeb.csproj. Sometimes endpoint return BadRequest, NotFound, Unauthorize with specified message. How to manage this response in ShopWeb.csproj? How to create general module to manage this response and display user in appropriate layout, controller or page where user current used.
+
+
+

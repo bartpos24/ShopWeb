@@ -11,12 +11,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.Services;
+using ShopWeb.Pages;
 using System;
 using System.Threading.Tasks;
 
 namespace ShopWeb.Areas.Identity.Pages.Account
 {
-    public class LogoutModel : PageModel
+    public class LogoutModel : BasePageModel
     {
         private readonly ILogger<LogoutModel> logger;
         private readonly ITokenService tokenService;

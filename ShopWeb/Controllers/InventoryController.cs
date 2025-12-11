@@ -9,7 +9,7 @@ using ShopWeb.Models;
 namespace ShopWeb.Controllers
 {
     [Authorize]
-    public class InventoryController : Controller
+    public class InventoryController : BaseController
     {
         private readonly ILogger<InventoryController> logger;
         private readonly IInventoryService inventoryService;

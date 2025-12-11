@@ -14,6 +14,7 @@ using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.Services;
 using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;
 using ShopWeb.Models;
+using ShopWeb.Pages;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace ShopWeb.Areas.Identity.Pages.Account
 {
-    public class LoginModel : PageModel
+    public class LoginModel : BasePageModel
     {
         //private readonly SignInManager<IdentityUser> signInManager;
         private readonly ILogger<LoginModel> logger;
