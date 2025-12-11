@@ -23,5 +23,11 @@ namespace ShopWeb.Application.Services
             var inventories = await inventoryRepository.AllInventories();
             return mapper.Map<List<InventoryVm>>(inventories);
         }
-    }
+        public async Task<int> AddInventory(NewInventoryVm newInventoryVm)
+        {
+            var inventory = mapper.Map<Domain.Models.Inventory>(newInventoryVm);
+            var createdInventoryId = await inventoryRepository.AddInventory(inventory);
+            return createdInventoryId;
+		}
+	}
 }

@@ -10,5 +10,7 @@ namespace ShopWeb.Domain.Interfaces
     public interface IInventoryRepository
     {
         Task<List<Inventory>> AllInventories();
-    }
+        Task<int> AddInventory(Inventory inventory);
+
+	}
 }

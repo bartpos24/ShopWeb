@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ShopWeb.Application.Interfaces;
+using ShopWeb.Application.Mapping;
 using ShopWeb.Application.Services;
 using System.Reflection;
 
@@ -14,8 +15,15 @@ namespace ShopWeb.Application
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<ITokenRefreshService, TokenRefreshService>();
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            return services;
+            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<InventoryMapping>();
+
+                cfg.AllowNullCollections = true;
+                cfg.AllowNullDestinationValues = true;
+            }, Assembly.GetExecutingAssembly());
+			return services;
         }
     }
 }

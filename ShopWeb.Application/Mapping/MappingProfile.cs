@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ShopWeb.Application.TransferObjects.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +10,21 @@ namespace ShopWeb.Application.Mapping
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile()
-        {
-            ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
-        }
-        private void ApplyMappingsFromAssembly(Assembly assembly)
+		//     public MappingProfile()
+		//     {
+		//// Configure AutoMapper to be more lenient
+		//this.AllowNullCollections = true;
+		//this.AllowNullDestinationValues = true;
+		//ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+		//     }
+		public MappingProfile()
+		{
+			// Manual mapping for Inventory
+			
+			// Apply other mappings from assembly
+			ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+		}
+		private void ApplyMappingsFromAssembly(Assembly assembly)
         {
             var types = assembly.GetExportedTypes()
                 .Where(t => t.GetInterfaces().Any(i =>

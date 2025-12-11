@@ -13,11 +13,13 @@ namespace ShopWeb.Controllers
     {
         private readonly ILogger<InventoryController> logger;
         private readonly IInventoryService inventoryService;
-        public InventoryController(ILogger<InventoryController> _logger, IInventoryService _inventoryService)
-        {
+		//private readonly IProductService productService;
+		public InventoryController(ILogger<InventoryController> _logger, IInventoryService _inventoryService)//, IProductService _productService
+		{
             logger = _logger;
             inventoryService = _inventoryService;
-        }
+			//productService = _productService;
+		}
         public async Task<IActionResult> Index()
         {
 			//try
@@ -45,5 +47,31 @@ namespace ShopWeb.Controllers
 			}
 			return View(new List<InventoryVm>());
         }
-    }
+		[HttpGet]
+		public IActionResult CreateInventory()
+		{
+			return View(new NewInventoryVm());
+		}
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> CreateInventory(NewInventoryVm newInventoryVm)
+		{
+			if(!ModelState.IsValid)
+			{
+				return View(newInventoryVm);
+			}
+			try
+			{
+				var id = await inventoryService.AddInventory(newInventoryVm);
+				return RedirectToAction("Index");
+			} catch(Exception ex)
+			{
+				var x = ex;
+				return View(newInventoryVm);
+			}
+			
+		}
+
+	}
 }

@@ -10,5 +10,7 @@ namespace ShopWeb.Application.Interfaces
     public interface IInventoryService
     {
         Task<List<InventoryVm>> AllInventories();
-    }
+        Task<int> AddInventory(NewInventoryVm newInventoryVm);
+
+	}
 }

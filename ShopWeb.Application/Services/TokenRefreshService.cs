@@ -25,6 +25,14 @@ namespace ShopWeb.Application.Services
 		{
 			try
 			{
+				// First, check if token exists
+				var currentToken = tokenService.GetAccessToken();
+				if (string.IsNullOrEmpty(currentToken))
+				{
+					logger.LogWarning("No access token found in session");
+					return false;
+				}
+
 				// Check if token is expired or about to expire
 				if (!tokenService.IsTokenExpired())
 				{
