@@ -22,6 +22,8 @@ namespace ShopWeb.Controllers
 		}
         public async Task<IActionResult> Index()
         {
+			var inventories = await inventoryService.AllInventories();
+			return View(inventories);
 			//try
 			//{
 			//	var product = await productService.GetProductByBarcode("5449000034519");
@@ -36,17 +38,17 @@ namespace ShopWeb.Controllers
 			//	}
 			//	logger.LogError(ex, "Error in HomeController Index");
 			//}
-			try
-			{
-				var inventories = await inventoryService.AllInventories();
-				return View(inventories);
-			}
-			catch (Exception ex)
-			{
-				var x = ex;
-			}
-			return View(new List<InventoryVm>());
-        }
+			//try
+			//{
+			//	var inventories = await inventoryService.AllInventories();
+			//	return View(inventories);
+			//}
+			//catch (Exception ex)
+			//{
+			//	var x = ex;
+			//}
+			//return View(new List<InventoryVm>());
+		}
 		[HttpGet]
 		public IActionResult CreateInventory()
 		{

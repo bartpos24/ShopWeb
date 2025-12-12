@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">
+            <i class="bi bi-exclamation-triangle-fill"></i> Error
+        </h4>
+        <p>@ViewBag.ErrorMessage</p>
+        @if (ViewBag.ErrorCode != null)
+        {
+            <p class="mb-0"><small>Error Code: @ViewBag.ErrorCode</small></p>
+        }
+        @if (ViewBag.TraceId != null)
+        {
+            <p class="mb-0"><small>Trace ID: @ViewBag.TraceId</small></p>
+        }
+    </div>
+    <a href="/" class="btn btn-primary">Return to Home</a>
+</div>

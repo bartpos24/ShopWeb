@@ -544,7 +544,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return await ToApiResponse<T>(response, default, req.RequestUri).ConfigureAwait(false);
+                    HandleErrorResponse.HandleError(response, cancellationToken);//ToApiResponse<T>(response, default, req.RequestUri).ConfigureAwait(false);
                 }
 
                 object responseData = await deserializer.Deserialize<T>(response).ConfigureAwait(false);

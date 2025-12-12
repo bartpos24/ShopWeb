@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="ApiClient\Kiota\" />
     <Folder Include="ApiClient\OpenApiGenerate\Api\" />
-    <Folder Include="ApiClient\OpenApiGenerate\Infrastructure\" />
   </ItemGroup>
 
   <ItemGroup>
