@@ -108,59 +108,37 @@ namespace ShopWeb.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-
-            if (ModelState.IsValid)
+            if(!ModelState.IsValid)
+                return Page();
+            var ssaid = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
+            var (success, token) = await TryExecuteAsync(() => loginService.Login(Input.Login, Input.Password,ssaid));
+            if(!success || string.IsNullOrEmpty(token) || !tokenService.ValidateToken())
             {
-                try
-                {
-					var ssaid = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
-					var token = await loginService.Login(Input.Login, Input.Password, ssaid);
-                    if(string.IsNullOrEmpty(token))
-                    {
-                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                        return Page();
-                    }
-					if (!tokenService.ValidateToken())
-					{
-                        ModelState.AddModelError(string.Empty, "Invalid or expired token.");
-                        return Page();
-					}
-                    var principal = tokenService.GetClaimsFromToken();
-                    var claims = principal.Claims.ToList();
-
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                    var newPrincipal = new ClaimsPrincipal(identity);
-
-					var tokenExpiration = tokenService.GetTokenExpirationTime();
-					// Configure authentication properties
-					var authProperties = new AuthenticationProperties
-                    {
-                        IsPersistent = false,
-                        ExpiresUtc = tokenExpiration.HasValue ? new DateTimeOffset(tokenExpiration.Value) : DateTimeOffset.UtcNow.AddHours(8),
-						AllowRefresh = true,
-                        IssuedUtc = DateTimeOffset.UtcNow
-                    };
-
-                    // Sign in the user with cookie authentication
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, newPrincipal, authProperties);
-
-                    return LocalRedirect(returnUrl);
-                } catch (Exception ex)
-                {
-					if (ex is ApiException)
-					{
-						ex = ex as ApiException;
-                        var x = ex;
-					}
-					logger.LogError(ex, "Error during login for user {Username}", Input.Login);
-					ModelState.AddModelError(string.Empty, "An error occurred during login. Please try again.");
-					return Page();
-				}
+                //TempData["ErrorMessage"] = "Wystąpił błąd podczas logowania użytkownika";
+                return Page();
             }
 
-            // If we got this far, something failed, redisplay form
-            return Page();
+            var principal = tokenService.GetClaimsFromToken();
+            var claims = principal.Claims.ToList();
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var newPrincipal = new ClaimsPrincipal(identity);
+
+            var tokenExpiration = tokenService.GetTokenExpirationTime();
+            // Configure authentication properties
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = false,
+                ExpiresUtc = tokenExpiration.HasValue ? new DateTimeOffset(tokenExpiration.Value) : DateTimeOffset.UtcNow.AddHours(8),
+                AllowRefresh = true,
+                IssuedUtc = DateTimeOffset.UtcNow
+            };
+
+            // Sign in the user with cookie authentication
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, newPrincipal, authProperties);
+
+            return LocalRedirect(returnUrl);
         }
     }
 }

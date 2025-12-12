@@ -1,103 +1,88 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShopWeb.Application.Extensions;
+using ShopWeb.Domain.Exceptions;
 
 namespace ShopWeb.Pages
 {
     public abstract class BasePageModel : PageModel
     {
-        [TempData]
-        public string? SuccessMessage { get; set; }
-
-        [TempData]
-        public string? ErrorMessage { get; set; }
-
-        [TempData]
-        public string? WarningMessage { get; set; }
-
-        [TempData]
-        public string? InfoMessage { get; set; }
-
-        protected void SetSuccessMessage(string message)
+        /// <summary>
+        /// Executes an async action and handles API exceptions by adding them to ModelState
+        /// </summary>
+        protected async Task<IActionResult> ExecuteAsync(Func<Task<IActionResult>> action)
         {
-            SuccessMessage = message;
+            try
+            {
+                return await action();
+            }
+            catch (UnauthorizedException)
+            {
+                // Redirect to login for unauthorized
+                return RedirectToPage("/Account/Login", new { returnUrl = Request.Path });
+            }
+            catch (ForbiddenException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                return Page();
+            }
+            catch (ApiException ex)
+            {
+                ApiExceptionHandler.AddToModelState(ex, ModelState);
+                return Page();
+            }
+            catch (Exception ex)
+            {
+                // Log the exception here if needed
+                ModelState.AddModelError(string.Empty, "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.");
+                return Page();
+            }
         }
 
-        protected void SetErrorMessage(string message)
+        /// <summary>
+        /// Executes an async action and handles exceptions, returns true if successful
+        /// </summary>
+        protected async Task<bool> TryExecuteAsync(Func<Task> action)
         {
-            ErrorMessage = message;
+            try
+            {
+                await action();
+                return true;
+            }
+            catch (ApiException ex)
+            {
+                ApiExceptionHandler.AddToModelState(ex, ModelState);
+                return false;
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.");
+                return false;
+            }
         }
 
-        protected void SetWarningMessage(string message)
+        /// <summary>
+        /// Executes an async action and returns result, handles exceptions
+        /// </summary>
+        protected async Task<(bool Success, T? Result)> TryExecuteAsync<T>(Func<Task<T>> action)
         {
-            WarningMessage = message;
-        }
-
-        protected void SetInfoMessage(string message)
-        {
-            InfoMessage = message;
-        }
-
-        //protected void HandleApiResult<T>(ApiResult<T> result)
-        //{
-        //    if (!result.IsSuccess)
-        //    {
-        //        if (result.ValidationErrors != null && result.ValidationErrors.Any())
-        //        {
-        //            foreach (var error in result.ValidationErrors)
-        //            {
-        //                foreach (var message in error.Value)
-        //                {
-        //                    ModelState.AddModelError(error.Key, message);
-        //                }
-        //            }
-        //        }
-
-        //        if (!string.IsNullOrEmpty(result.ErrorMessage))
-        //        {
-        //            ModelState.AddModelError(string.Empty, result.ErrorMessage);
-        //        }
-        //    }
-        //}
-
-        //protected void HandleApiResult(ApiResult result)
-        //{
-        //    if (!result.IsSuccess)
-        //    {
-        //        if (result.ValidationErrors != null && result.ValidationErrors.Any())
-        //        {
-        //            foreach (var error in result.ValidationErrors)
-        //            {
-        //                foreach (var message in error.Value)
-        //                {
-        //                    ModelState.AddModelError(error.Key, message);
-        //                }
-        //            }
-        //        }
-
-        //        if (!string.IsNullOrEmpty(result.ErrorMessage))
-        //        {
-        //            ModelState.AddModelError(string.Empty, result.ErrorMessage);
-        //        }
-        //    }
-        //}
-
-        protected IActionResult PageWithError(string errorMessage)
-        {
-            ModelState.AddModelError(string.Empty, errorMessage);
-            return Page();
-        }
-
-        protected IActionResult RedirectWithSuccess(string page, string message)
-        {
-            SetSuccessMessage(message);
-            return RedirectToPage(page);
-        }
-
-        protected IActionResult RedirectWithError(string page, string message)
-        {
-            SetErrorMessage(message);
-            return RedirectToPage(page);
+            try
+            {
+                var result = await action();
+                return (true, result);
+            }
+            catch (ApiException ex)
+            {
+                ApiExceptionHandler.AddToModelState(ex, ModelState);
+                return (false, default);
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError(string.Empty, "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.");
+                return (false, default);
+            }
         }
     }
 }

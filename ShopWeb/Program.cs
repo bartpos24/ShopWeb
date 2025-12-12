@@ -102,7 +102,7 @@ app.UseSession();
 
 // Add token refresh middleware
 app.UseMiddleware<TokenRefreshMiddleware>();
-app.UseExceptionHandling();
+//app.UseExceptionHandling();
 app.UseAuthentication();
 
 app.UseAuthorization();

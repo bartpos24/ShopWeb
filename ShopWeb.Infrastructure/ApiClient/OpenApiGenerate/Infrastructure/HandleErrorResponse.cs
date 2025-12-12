@@ -60,8 +60,36 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure
 			}
 			catch
 			{
-				return new ApiErrorResponse { Message = content };
-			}
+                try
+                {
+                    // Try to deserialize as a plain JSON string (which removes the escaped quotes)
+                    var plainMessage = JsonSerializer.Deserialize<string>(content, _jsonOptions);
+                    if (!string.IsNullOrWhiteSpace(plainMessage))
+                    {
+                        return new ApiErrorResponse { Message = plainMessage };
+                    }
+                }
+                catch
+                {
+                    // If all else fails, return the raw content
+                    // But remove surrounding quotes if present
+                    var cleanedContent = content.Trim();
+                    if (cleanedContent.StartsWith("\"") && cleanedContent.EndsWith("\""))
+                    {
+                        cleanedContent = cleanedContent.Substring(1, cleanedContent.Length - 2);
+                        // Unescape any escaped characters
+                        cleanedContent = cleanedContent
+                            .Replace("\\\"", "\"")
+                            .Replace("\\\\", "\\")
+                            .Replace("\\n", "\n")
+                            .Replace("\\r", "\r")
+                            .Replace("\\t", "\t");
+                    }
+                    return new ApiErrorResponse { Message = cleanedContent };
+                }
+
+                return new ApiErrorResponse { Message = content };
+            }
 		}
 	}
 }

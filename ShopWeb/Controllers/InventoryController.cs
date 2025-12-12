@@ -22,33 +22,11 @@ namespace ShopWeb.Controllers
 		}
         public async Task<IActionResult> Index()
         {
-			var inventories = await inventoryService.AllInventories();
-			return View(inventories);
-			//try
-			//{
-			//	var product = await productService.GetProductByBarcode("5449000034519");
-			//	var c = product;
-			//}
-			//catch (Exception ex)
-			//{
-			//	if (ex is ApiException)
-			//	{
-			//		ex = ex as ApiException;
-			//		return View(new ErrorViewModel { RequestId = $"Wystąpił błąd: {ex.Message}" });
-			//	}
-			//	logger.LogError(ex, "Error in HomeController Index");
-			//}
-			//try
-			//{
-			//	var inventories = await inventoryService.AllInventories();
-			//	return View(inventories);
-			//}
-			//catch (Exception ex)
-			//{
-			//	var x = ex;
-			//}
-			//return View(new List<InventoryVm>());
-		}
+			var (success, inventories) = await TryExecuteAsync(() => inventoryService.AllInventories());
+			if (!success)
+				return View(new List<InventoryVm>());
+            return View(inventories);
+        }
 		[HttpGet]
 		public IActionResult CreateInventory()
 		{
