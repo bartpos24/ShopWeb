@@ -41,16 +41,12 @@ namespace ShopWeb.Controllers
 			{
 				return View(newInventoryVm);
 			}
-			try
+			var (success, inventoryId) = await TryExecuteAsync(() => inventoryService.AddInventory(newInventoryVm));
+			if(!success)
 			{
-				var id = await inventoryService.AddInventory(newInventoryVm);
-				return RedirectToAction("Index");
-			} catch(Exception ex)
-			{
-				var x = ex;
 				return View(newInventoryVm);
 			}
-			
+			return RedirectToAction("Index");
 		}
 
 	}

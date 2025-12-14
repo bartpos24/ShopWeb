@@ -165,13 +165,13 @@ namespace ShopWeb.Domain.Models
         /// Gets or Sets CreatedByUser
         /// </summary>
         [DataMember(Name = "createdByUser", EmitDefaultValue = false)]
-        public User CreatedByUser { get; set; }
+        public User? CreatedByUser { get; set; }
 
         /// <summary>
         /// Gets or Sets InventoryStatus
         /// </summary>
         [DataMember(Name = "inventoryStatus", EmitDefaultValue = false)]
-        public InventoryStatus InventoryStatus { get; set; }
+        public InventoryStatus? InventoryStatus { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

@@ -28,14 +28,17 @@ namespace ShopWeb.Application.Mapping
 			// Mapping: NewInventoryVm -> Inventory (Create/Update)
 			CreateMap<NewInventoryVm, ShopWeb.Domain.Models.Inventory>()
 				.ForMember(d => d.ComissionTeam, opt => opt.MapFrom(s =>
-					s.CommissionTeam != null && s.CommissionTeam.Any()
-						? string.Join(";", s.CommissionTeam)
-						: string.Empty));
-				// Properties not in NewInventoryVm - set defaults or ignore
-				//.ForMember(d => d.EndDate, opt => opt.Ignore())
-				//.ForMember(d => d.InventoryStatusId, opt => opt.Ignore())
-				//.ForMember(d => d.CreatedByUser, opt => opt.Ignore())
-				//.ForMember(d => d.InventoryStatus, opt => opt.Ignore());
-		}
+					s.ComissionTeam != null && s.ComissionTeam.Any()
+						? string.Join(";", s.ComissionTeam)
+						: string.Empty))
+				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => 0)) // Don't map Id for new entities
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.EndDate, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedByUserId, opt => opt.MapFrom(src => 1)) // Should be set from current user
+                .ForMember(dest => dest.InventoryStatusId, opt => opt.MapFrom(src => 1))
+                .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore())
+                .ForMember(dest => dest.InventoryStatus, opt => opt.Ignore());
+        }
 	}
 }

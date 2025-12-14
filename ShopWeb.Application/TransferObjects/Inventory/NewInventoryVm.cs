@@ -26,8 +26,8 @@ namespace ShopWeb.Application.TransferObjects.Inventory
 		[DisplayName("Adres firmy")]
 		public string CompanyAddress { get; set; }
 		[DisplayName("Skład komisji inwentaryzacyjnej")]
-		public List<string> CommissionTeam { get; set; }
-		[DisplayName("Wycenił")]
+		public List<string> ComissionTeam { get; set; } = new List<string>();
+        [DisplayName("Wycenił")]
 		public string PersonToValue { get; set; }
 		[DisplayName("Sprawdził")]
 		public string PersonToCheck { get; set; }
