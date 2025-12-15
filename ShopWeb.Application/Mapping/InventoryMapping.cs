@@ -35,8 +35,8 @@ namespace ShopWeb.Application.Mapping
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.EndDate, opt => opt.Ignore())
-                .ForMember(dest => dest.CreatedByUserId, opt => opt.MapFrom(src => 1)) // Should be set from current user
-                .ForMember(dest => dest.InventoryStatusId, opt => opt.MapFrom(src => 1))
+                .ForMember(dest => dest.CreatedByUserId, opt => opt.MapFrom(src => 0)) // Should be set from current user
+                .ForMember(dest => dest.InventoryStatusId, opt => opt.MapFrom(src => 0))
                 .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore())
                 .ForMember(dest => dest.InventoryStatus, opt => opt.Ignore());
         }

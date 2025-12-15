@@ -162,7 +162,7 @@
                 // Add hidden input for model binding
                 const inputGroup = `
                     <div class="input-group mb-2 team-member-item">
-                        <input type="text" name="CommissionTeam[${memberIndex}]" value="${memberName}" class="form-control" readonly />
+                        <input type="text" name="ComissionTeam[${memberIndex}]" value="${memberName}" class="form-control" readonly />
                         <button type="button" class="btn btn-danger btn-remove-member">
                             <i class="bi bi-trash"></i> Usuń
                         </button>
@@ -213,7 +213,7 @@
             // Reindex team members after removal
             function reindexTeamMembers() {
                 $('#commissionTeamList .team-member-item').each(function (index) {
-                    $(this).find('input').attr('name', `CommissionTeam[${index}]`);
+                    $(this).find('input').attr('name', `ComissionTeam[${index}]`);
                 });
 
                 $('#teamMembersDisplay li').each(function (index) {
