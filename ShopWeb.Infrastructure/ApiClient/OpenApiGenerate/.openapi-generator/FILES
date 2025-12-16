@@ -25,6 +25,7 @@ ShopApiClient/Client/RetryConfiguration.cs
 ShopApiClient/Client/WebRequestPathBuilder.cs
 ShopApiClient/Models/AbstractOpenAPISchema.cs
 ShopApiClient/Models/Barcode.cs
+ShopApiClient/Models/CommonInventoryPosition.cs
 ShopApiClient/Models/ELoginType.cs
 ShopApiClient/Models/Inventory.cs
 ShopApiClient/Models/InventoryPosition.cs
