@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ShopWeb.Application.TransferObjects.Inventory;
+using ShopWeb.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,14 @@ namespace ShopWeb.Application.Mapping
                 .ForMember(dest => dest.InventoryStatusId, opt => opt.MapFrom(src => 0))
                 .ForMember(dest => dest.CreatedByUser, opt => opt.Ignore())
                 .ForMember(dest => dest.InventoryStatus, opt => opt.Ignore());
+
+			CreateMap<CommonInventoryPositionVm, CommonInventoryPosition>()
+				.ForMember(d => d.UserId, opt => opt.MapFrom(s => 0))
+				.ForMember(d => d.Inventory, opt => opt.Ignore())
+				.ForMember(d => d.Unit, opt => opt.Ignore())
+				.ForMember(d => d.User, opt => opt.Ignore())
+				.ForMember(d => d.ModifiedByUser, opt => opt.Ignore());
+
         }
 	}
 }
