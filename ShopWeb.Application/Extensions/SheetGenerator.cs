@@ -24,11 +24,11 @@ namespace ShopWeb.Application.Extensions
                 {
                     container.Page(page =>
                     {
-                        page.Size(PageSizes.A4.Landscape());
-                        page.Margin(20);
-                        page.DefaultTextStyle(x => x.FontSize(9).FontFamily("Arial"));
+                        page.Size(PageSizes.A4);
+                        page.Margin(15);
+                        page.DefaultTextStyle(x => x.FontSize(8).FontFamily("Arial"));
 
-                        page.Header().Element(Header);
+                        page.Header().Element(content => Header(content, inventorySummaryVm));
                         page.Content().Element(content => Content(content, inventorySummaryVm));
                         page.Footer().Element(Footer);
                     });
@@ -38,54 +38,82 @@ namespace ShopWeb.Application.Extensions
             });
         }
 
-        private void Header(IContainer container)
+        private void Header(IContainer container, InventorySummaryVm model)
         {
             var headerColor = "#FF9999"; // Pink/red color from template
+            var lightPink = "#FFE0E0";
 
             container.Column(column =>
             {
                 // Title section
-                column.Item().Background(headerColor).Padding(10).Row(row =>
+                column.Item().Background(headerColor).Padding(8).Row(row =>
                 {
                     row.RelativeItem().Column(col =>
                     {
                         col.Item().Text("ARKUSZ SPISU Z NATURY")
-                            .FontSize(14).Bold();
+                            .FontSize(12).Bold();
                         col.Item().Text("(uniwersalny)")
-                            .FontSize(10);
+                            .FontSize(8);
                     });
 
                     row.RelativeItem().Column(col =>
                     {
-                        col.Item().AlignRight().Text("Rodzaj inwentaryzacji").FontSize(8);
-                        col.Item().AlignRight().Text("Strona nr").FontSize(8);
-                        col.Item().AlignRight().Text("Sposób przeprowadzenia").FontSize(8);
+                        col.Item().AlignRight().Text($"Rodzaj inwentaryzacji: {model.Inventory.Type ?? ""}").FontSize(7);
+                        col.Item().AlignRight().Text("Strona nr: 1").FontSize(7);
+                        col.Item().AlignRight().Text($"Sposób przeprowadzenia: {model.Inventory.ExecuteWay ?? ""}").FontSize(7);
                     });
                 });
 
-                // Info section
-                column.Item().Background("#FFE0E0").Padding(5).Text(text =>
+                // Company info section
+                column.Item().Background(lightPink).Padding(4).Text(text =>
                 {
-                    text.Span("Firma (nazwa i siedziba): ").FontSize(8);
-                    text.Span("Miejło materiałów odpowiedzialnej").FontSize(8);
+                    text.Span("Firma (nazwa i siedziba): ").FontSize(7).Bold();
+                    text.Span(model.Inventory.CompanyInformation ?? "").FontSize(7);
                 });
 
-                column.Item().Background("#FFE0E0").Padding(5).Row(row =>
+                column.Item().Background(lightPink).Padding(4).Row(row =>
                 {
-                    row.RelativeItem().Text("Nazwę i adres:").FontSize(8);
-                    row.RelativeItem().Text("Jednostki inwentaryzacyjnej:").FontSize(8);
+                    row.RelativeItem().Text(text =>
+                    {
+                        text.Span("Nazwa: ").FontSize(7).Bold();
+                        text.Span(model.Inventory.Name ?? "").FontSize(7);
+                    });
+                    row.RelativeItem().Text(text =>
+                    {
+                        text.Span("Osoba odpowiedzialna: ").FontSize(7).Bold();
+                        text.Span(model.Inventory.ResponsiblePerson ?? "").FontSize(7);
+                    });
                 });
 
-                // Additional info row
-                column.Item().Background("#FFE0E0").Padding(5).Row(row =>
+                // Commission team section
+                column.Item().Background(lightPink).Padding(4).Column(col =>
                 {
-                    row.RelativeItem().Text("SKŁAD KOMISJI INWENTARYZACYJNEJ (imię, nazwisko i stanowisko służbowe):")
-                        .FontSize(7);
-                    row.RelativeItem().Text("IMIĘ I OSÓBY OBECNE PRZY SPISIE (imię, nazwisko i stanowisko służbowe):")
-                        .FontSize(7);
+                    col.Item().Text("SKŁAD KOMISJI INWENTARYZACYJNEJ (imię, nazwisko i stanowisko służbowe):")
+                        .FontSize(7).Bold();
+
+                    if (model.Inventory.CommissionTeam != null && model.Inventory.CommissionTeam.Any())
+                    {
+                        col.Item().Text(string.Join(", ", model.Inventory.CommissionTeam))
+                            .FontSize(6);
+                    }
                 });
 
-                column.Item().PaddingVertical(5);
+                // Verification persons section
+                column.Item().Background(lightPink).Padding(4).Row(row =>
+                {
+                    row.RelativeItem().Text(text =>
+                    {
+                        text.Span("Wycenił: ").FontSize(7).Bold();
+                        text.Span(model.Inventory.PersonToValue ?? "").FontSize(7);
+                    });
+                    row.RelativeItem().Text(text =>
+                    {
+                        text.Span("Sprawdził: ").FontSize(7).Bold();
+                        text.Span(model.Inventory.PersonToCheck ?? "").FontSize(7);
+                    });
+                });
+
+                column.Item().PaddingVertical(3);
             });
         }
 
@@ -100,58 +128,54 @@ namespace ShopWeb.Application.Extensions
                 // Date information
                 column.Item().Row(row =>
                 {
-                    row.RelativeItem().Text($"Data rozpoczęcia dnia: {model.Inventory.StartDate:dd.MM.yyyy}");
-                    row.RelativeItem().Text($"Data zakończenia dnia: {model.Inventory.EndDate?.ToString("dd.MM.yyyy") ?? ""}");
+                    row.RelativeItem().Text($"Data rozpoczęcia: {model.Inventory.StartDate:dd.MM.yyyy}").FontSize(7);
+                    row.RelativeItem().Text($"Data zakończenia: {model.Inventory.EndDate?.ToString("dd.MM.yyyy") ?? ""}").FontSize(7);
                 });
 
-                column.Item().PaddingVertical(5);
+                column.Item().PaddingVertical(3);
 
                 // Main table
                 column.Item().Table(table =>
                 {
-                    // Define columns
+                    // Define columns - removed "Ilość księgowa"
                     table.ColumnsDefinition(columns =>
                     {
-                        columns.ConstantColumn(30);  // Lp.
-                        columns.RelativeColumn(3);   // Nazwa (opis/artykuł)
-                        columns.ConstantColumn(60);  // Cecha, symbol, numer, gatunek
-                        columns.ConstantColumn(40);  // Jednostka miary
-                        columns.ConstantColumn(50);  // Ilość księgowa
+                        columns.ConstantColumn(25);  // Lp.
+                        columns.RelativeColumn(4);   // Nazwa (opis/artykuł) - increased
+                        columns.ConstantColumn(50);  // Cecha, symbol, numer, gatunek
+                        columns.ConstantColumn(35);  // Jednostka miary
                         columns.ConstantColumn(50);  // Ilość faktyczna
-                        columns.ConstantColumn(60);  // Cena jednostkowa
-                        columns.ConstantColumn(70);  // Wartość (zł)
-                        columns.ConstantColumn(60);  // Uwagi
+                        columns.ConstantColumn(50);  // Cena jednostkowa
+                        columns.ConstantColumn(60);  // Wartość (zł)
+                        columns.ConstantColumn(50);  // Uwagi
                     });
 
                     // Header row
                     table.Header(header =>
                     {
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                            .Text("Lp.").FontSize(7).Bold();
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignCenter().Text("Lp.").FontSize(6).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                            .Text("PRZEDMIOT SPISYWANY\nNazwa (opis/artykuł)").FontSize(7).Bold();
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignCenter().Text("PRZEDMIOT SPISYWANY\nNazwa (opis/artykuł)").FontSize(6).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                            .Text("Cecha, symbol, numer, gatunek").FontSize(7).Bold();
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .Text("Cecha, symbol, numer, gatunek").FontSize(6).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                            .Text("Jednostka miary").FontSize(7).Bold();
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .Text("Jednostka miary").FontSize(6).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                            .Text("Ilość księgowa").FontSize(7).Bold();
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .Text("Ilość stwierdzona").FontSize(6).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                            .Text("Ilość faktyczna\nz przymierzenia").FontSize(7).Bold();
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .Text("Cena jednostkowa").FontSize(6).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                            .Text("Cena jednostkowa").FontSize(7).Bold();
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .Text("Wartość").FontSize(6).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                            .Text("Wartość\n(zł)").FontSize(7).Bold();
-
-                        header.Cell().Background(lightPink).Border(0.5f).Padding(3)
-                            .Text("Uwagi").FontSize(7).Bold();
+                        header.Cell().Background(lightPink).Border(0.5f).Padding(2)
+                            .Text("Uwagi").FontSize(6).Bold();
                     });
 
                     // Data rows
@@ -160,59 +184,56 @@ namespace ShopWeb.Application.Extensions
                     {
                         var rowColor = index % 2 == 0 ? Colors.White : alternateRowColor;
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(3)
-                            .AlignCenter().AlignMiddle().Text(index.ToString()).FontSize(8);
+                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                            .AlignCenter().AlignMiddle().Text(index.ToString()).FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(3)
-                            .AlignLeft().AlignMiddle().Text(position.ProductName).FontSize(8);
+                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                            .AlignLeft().AlignMiddle().Text(position.ProductName).FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(3)
-                            .AlignCenter().AlignMiddle().Text("").FontSize(8);
+                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                            .AlignCenter().AlignMiddle().Text("").FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(3)
-                            .AlignCenter().AlignMiddle().Text(position.Unit).FontSize(8);
+                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                            .AlignCenter().AlignMiddle().Text(position.Unit).FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(3)
-                            .AlignRight().AlignMiddle().Text("").FontSize(8);
+                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                            .AlignRight().AlignMiddle().Text(position.Quantity.ToString("N2")).FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(3)
-                            .AlignRight().AlignMiddle().Text(position.Quantity.ToString("N2")).FontSize(8);
+                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                            .AlignRight().AlignMiddle().Text(position.Price.ToString("N2")).FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(3)
-                            .AlignRight().AlignMiddle().Text(position.Price.ToString("N2")).FontSize(8);
+                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                            .AlignRight().AlignMiddle().Text((position.Quantity * position.Price).ToString("N2")).FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(3)
-                            .AlignRight().AlignMiddle().Text((position.Quantity * position.Price).ToString("N2")).FontSize(8);
-
-                        table.Cell().Background(lightPink).Border(0.5f).Padding(3)
-                            .AlignLeft().AlignMiddle().Text("").FontSize(8);
+                        table.Cell().Background(lightPink).Border(0.5f).Padding(2)
+                            .AlignLeft().AlignMiddle().Text("").FontSize(7);
 
                         index++;
                     }
 
-                    // Add empty rows to fill the page (approximately 20 more rows)
-                    for (int i = index; i <= index + 15; i++)
+                    // Add empty rows to fill the page (more rows for portrait)
+                    for (int i = index; i <= index + 25; i++)
                     {
                         var rowColor = i % 2 == 0 ? Colors.White : alternateRowColor;
 
-                        for (int col = 0; col < 9; col++)
+                        for (int col = 0; col < 8; col++) // Changed from 9 to 8
                         {
-                            var bgColor = col == 8 ? Color.FromHex(lightPink) : alternateRowColor;
-                            table.Cell().Background(bgColor).Border(0.5f).Padding(3)
-                                .Text("").FontSize(8);
+                            var bgColor = col == 7 ? Color.FromHex(lightPink) : rowColor;
+                            table.Cell().Background(bgColor).Border(0.5f).Padding(2)
+                                .Text("").FontSize(7);
                         }
                     }
 
                     // Summary row
-                    table.Cell().ColumnSpan(7).Background(headerColor).Border(0.5f).Padding(3)
-                        .AlignCenter().Text("RAZEM").FontSize(8).Bold();
+                    table.Cell().ColumnSpan(6).Background(headerColor).Border(0.5f).Padding(2)
+                        .AlignCenter().Text("RAZEM").FontSize(7).Bold();
 
                     var totalValue = model.Positions.Sum(p => p.Quantity * p.Price);
-                    table.Cell().Background(headerColor).Border(0.5f).Padding(3)
-                        .AlignRight().Text(totalValue.ToString("N2")).FontSize(8).Bold();
+                    table.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                        .AlignRight().Text(totalValue.ToString("N2")).FontSize(7).Bold();
 
-                    table.Cell().Background(lightPink).Border(0.5f).Padding(3)
-                        .Text("").FontSize(8);
+                    table.Cell().Background(lightPink).Border(0.5f).Padding(2)
+                        .Text("").FontSize(7);
                 });
             });
         }
@@ -221,34 +242,34 @@ namespace ShopWeb.Application.Extensions
         {
             container.Column(column =>
             {
-                column.Item().PaddingTop(10).Row(row =>
+                column.Item().PaddingTop(8).Row(row =>
                 {
                     row.RelativeItem().Column(col =>
                     {
-                        col.Item().Text("Wykonał:").FontSize(8);
-                        col.Item().PaddingTop(20).BorderBottom(0.5f).Text("");
-                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(7);
+                        col.Item().Text("Wykonał:").FontSize(7);
+                        col.Item().PaddingTop(15).BorderBottom(0.5f).Text("");
+                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(6);
                     });
 
                     row.RelativeItem().Column(col =>
                     {
-                        col.Item().Text("Wycenił:").FontSize(8);
-                        col.Item().PaddingTop(20).BorderBottom(0.5f).Text("");
-                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(7);
+                        col.Item().Text("Wycenił:").FontSize(7);
+                        col.Item().PaddingTop(15).BorderBottom(0.5f).Text("");
+                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(6);
                     });
 
                     row.RelativeItem().Column(col =>
                     {
-                        col.Item().Text("Sprawdził:").FontSize(8);
-                        col.Item().PaddingTop(20).BorderBottom(0.5f).Text("");
-                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(7);
+                        col.Item().Text("Sprawdził:").FontSize(7);
+                        col.Item().PaddingTop(15).BorderBottom(0.5f).Text("");
+                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(6);
                     });
                 });
 
-                column.Item().PaddingTop(10).Text(text =>
+                column.Item().PaddingTop(8).Text(text =>
                 {
-                    text.Span("Podpisy: osoby odpowiedzialnej materialnie i człenkow zespołu   Sprawdzil: ").FontSize(7);
-                    text.Span("(czytelny podpis)").FontSize(6).Italic();
+                    text.Span("Podpisy: osoby odpowiedzialnej materialnie i członków zespołu   Sprawdził: ").FontSize(6);
+                    text.Span("(czytelny podpis)").FontSize(5).Italic();
                 });
             });
         }
