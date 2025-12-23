@@ -35,6 +35,7 @@ ShopApiClient/Models/Product.cs
 ShopApiClient/Models/ProductUnit.cs
 ShopApiClient/Models/RegisterModel.cs
 ShopApiClient/Models/RoleForUser.cs
+ShopApiClient/Models/SummaryInventoryPosition.cs
 ShopApiClient/Models/User.cs
 ShopApiClient/Models/UserInfo.cs
 ShopApiClient/Models/UserRole.cs
