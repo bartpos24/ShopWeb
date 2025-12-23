@@ -5,6 +5,7 @@ using ShopWeb.Application.TransferObjects.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,7 +31,7 @@ namespace ShopWeb.Application.Extensions
 
                         page.Header().Element(content => Header(content, inventorySummaryVm));
                         page.Content().Element(content => Content(content, inventorySummaryVm));
-                        page.Footer().Element(Footer);
+                        page.Footer().Element(content => Footer(content, inventorySummaryVm));
                     });
                 });
 
@@ -328,38 +329,50 @@ namespace ShopWeb.Application.Extensions
             });
         }
 
-        private void Footer(IContainer container)
+        private void Footer(IContainer container, InventorySummaryVm inventorySummaryVm)
         {
             container.Column(column =>
             {
-                column.Item().PaddingTop(8).Row(row =>
+                column.Item().Row(row =>
                 {
-                    row.RelativeItem().Column(col =>
-                    {
-                        col.Item().Text("Wykonał:").FontSize(7);
-                        col.Item().PaddingTop(15).BorderBottom(0.5f).Text("");
-                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(6);
-                    });
+                    // Left: m.p. box
+                    row.ConstantItem(230).Padding(4).AlignLeft().Text("").FontSize(7);
 
-                    row.RelativeItem().Column(col =>
+                    // Right: Inventory details
+                    row.RelativeItem().Padding(4).Column(col =>
                     {
-                        col.Item().Text("Wycenił:").FontSize(7);
-                        col.Item().PaddingTop(15).BorderBottom(0.5f).Text("");
-                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(6);
-                    });
-
-                    row.RelativeItem().Column(col =>
-                    {
-                        col.Item().Text("Sprawdził:").FontSize(7);
-                        col.Item().PaddingTop(15).BorderBottom(0.5f).Text("");
-                        col.Item().PaddingTop(2).Text("(czytelny podpis)").FontSize(6);
+                        // First row: Rodzaj inwentaryzacji with value
+                        col.Item().Row(r =>
+                        {
+                            r.AutoItem().PaddingRight(10).Text("Wycenił: ").FontSize(7);
+                            r.RelativeItem(200).BorderBottom(0.5f).AlignCenter()
+                                .Text($"{inventorySummaryVm.Inventory.PersonToValue}").FontSize(9);
+                            r.ConstantItem(5);
+                            r.ConstantItem(110).BorderBottom(0.5f).AlignCenter().AlignBottom().PaddingBottom(-10)
+                                .Text("(podpis)").FontSize(5);
+                        });
                     });
                 });
 
-                column.Item().PaddingTop(8).Text(text =>
+                column.Item().Row(row =>
                 {
-                    text.Span("Podpisy: osoby odpowiedzialnej materialnie i członków zespołu   Sprawdził: ").FontSize(6);
-                    text.Span("(czytelny podpis)").FontSize(5).Italic();
+                    // Left: m.p. box
+                    row.ConstantItem(230).Padding(4).AlignLeft().Text("Podpisy: osoby odpowiedzialnej materialnie i członków zespołu").FontSize(7);
+
+                    // Right: Inventory details
+                    row.RelativeItem().Padding(4).Column(col =>
+                    {
+                        // First row: Rodzaj inwentaryzacji with value
+                        col.Item().Row(r =>
+                        {
+                            r.AutoItem().PaddingRight(10).Text("Sprawdził: ").FontSize(7);
+                            r.RelativeItem(200).BorderBottom(0.5f).AlignCenter()
+                                .Text($"{inventorySummaryVm.Inventory.PersonToCheck}").FontSize(9);
+                            r.ConstantItem(5);
+                            r.ConstantItem(110).BorderBottom(0.5f).AlignCenter().AlignBottom().PaddingBottom(-10)
+                                .Text("(podpis)").FontSize(5);
+                        });
+                    });
                 });
             });
         }
