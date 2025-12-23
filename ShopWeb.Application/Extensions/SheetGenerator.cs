@@ -113,6 +113,20 @@ namespace ShopWeb.Application.Extensions
                     });
                 });
 
+                column.Item().Background(lightPink).Padding(4).Row(row =>
+                {
+                    row.RelativeItem().Text(text =>
+                    {
+                        text.Span("Data rozpoczęcia: ").FontSize(7).Bold();
+                        text.Span($"{model.Inventory.StartDate:dd.MM.yyyy}").FontSize(7);
+                    });
+                    row.RelativeItem().Text(text =>
+                    {
+                        text.Span("Data zakończenia: ").FontSize(7).Bold();
+                        text.Span($"{(model.Inventory.EndDate != null ? model.Inventory.EndDate : DateTime.Now):dd.MM.yyyy}").FontSize(7);
+                    });
+                });
+
                 column.Item().PaddingVertical(3);
             });
         }
@@ -125,15 +139,6 @@ namespace ShopWeb.Application.Extensions
 
             container.Column(column =>
             {
-                // Date information
-                column.Item().Row(row =>
-                {
-                    row.RelativeItem().Text($"Data rozpoczęcia: {model.Inventory.StartDate:dd.MM.yyyy}").FontSize(7);
-                    row.RelativeItem().Text($"Data zakończenia: {model.Inventory.EndDate?.ToString("dd.MM.yyyy") ?? ""}").FontSize(7);
-                });
-
-                column.Item().PaddingVertical(3);
-
                 // Main table
                 column.Item().Table(table =>
                 {
