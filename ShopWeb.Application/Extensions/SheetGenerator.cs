@@ -117,7 +117,7 @@ namespace ShopWeb.Application.Extensions
                     row.RelativeItem().Padding(4).Column(col =>
                     {
                         col.Item().Background(lightPink).Text("SKŁAD KOMISJI INWENTARYZACYJNEJ (Imię, nazwisko i stanowisko służbowe)")
-                            .FontSize(6).Bold();
+                            .FontSize(6).AlignCenter();
 
                         if (model.Inventory.CommissionTeam != null && model.Inventory.CommissionTeam.Any())
                         {
@@ -155,10 +155,10 @@ namespace ShopWeb.Application.Extensions
                     });
 
                     // Right: Other persons present
-                    row.RelativeItem().Background(lightPink).Padding(4).Column(col =>
+                    row.RelativeItem().Padding(4).Column(col =>
                     {
-                        col.Item().Text("INNE OSOBY OBECNE PRZY SPISIE (Imię, nazwisko i stanowisko służbowe)")
-                            .FontSize(6).Bold();
+                        col.Item().Background(lightPink).Text("INNE OSOBY OBECNE PRZY SPISIE (Imię, nazwisko i stanowisko służbowe)")
+                            .FontSize(6).AlignCenter();
 
                         for (int i = 0; i < 3; i++)
                         {
