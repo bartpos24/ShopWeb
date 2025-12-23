@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.Services;
 using ShopWeb.Application.TransferObjects.Inventory;
+using ShopWeb.Domain.Models;
 using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;
 using ShopWeb.Models;
+using System.Threading.Tasks;
 
 namespace ShopWeb.Controllers
 {
@@ -49,5 +51,33 @@ namespace ShopWeb.Controllers
 			return RedirectToAction("Index");
 		}
 
-	}
+        [HttpGet]
+        public async Task<IActionResult> InventorySummary(InventoryVm inventory)
+		{
+			var (success, inventorySummary) = await TryExecuteAsync(() => inventoryService.GetInventorySummary(inventory.Id));
+			if (!success)
+				return RedirectToAction("Index");
+
+			inventorySummary.Inventory = inventory;
+            TempData["InventorySummary"] = System.Text.Json.JsonSerializer.Serialize(inventorySummary);
+            return View(inventorySummary);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GenerateSheet()
+        {
+            if (TempData["InventorySummary"] is string json)
+            {
+                var inventorySummary = System.Text.Json.JsonSerializer.Deserialize<InventorySummaryVm>(json);
+
+				// TODO: Generate PDF using inventorySummary
+				var (success, file) = await TryExecuteAsync(() => inventoryService.GenerateSheet(inventorySummary));
+				if(!success)
+					return RedirectToAction("InventorySummary", new { inventory = inventorySummary.Inventory });
+				return File(file, "application/pdf", $"Inventory_{inventorySummary.Inventory.Name}.pdf");
+            }
+
+            return RedirectToAction("Index");
+        }
+    }
 }

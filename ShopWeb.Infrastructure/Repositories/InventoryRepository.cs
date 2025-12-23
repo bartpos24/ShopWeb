@@ -21,5 +21,9 @@ namespace ShopWeb.Infrastructure.Repositories
             var createdInventoryId = await inventoryApi.ApiInventoryCreateInventoryPostAsync(inventory);
             return createdInventoryId;
 		}
-	}
+        public async Task<List<SummaryInventoryPosition>> GetInventorySummary(int inventoryId)
+        {
+            return await inventoryApi.ApiInventoryGetAllSummaryPositionsGetAsync(inventoryId);
+        }
+    }
 }

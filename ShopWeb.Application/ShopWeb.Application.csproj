@@ -13,7 +13,6 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="TransferObjects\Login\" />
-    <Folder Include="TransferObjects\Inventory\" />
     <Folder Include="TransferObjects\Products\" />
   </ItemGroup>
 
@@ -24,6 +23,7 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageReference Include="QuestPDF" Version="2025.12.0" />
   </ItemGroup>
 
 </Project>

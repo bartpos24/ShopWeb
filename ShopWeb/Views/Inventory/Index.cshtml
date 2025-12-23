@@ -37,7 +37,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr class="clickable-row" data-url="@Url.Action("InventorySummary", "Inventory", item)" style="cursor: pointer;" >
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -59,12 +59,33 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
-            <td>
+            <td onclick="event.stopPropagation();">
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                    <i class="bi bi-pencil"></i> Edytuj
+                </a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                    <i class="bi bi-eye"></i> Szczegóły
+                </a>
+                @* <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                    <i class="bi bi-trash"></i> Usuń
+                </a> *@
+            </td>
+            @* <td >
                 @Html.ActionLink("Edytuj", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Szczegóły", "Details", new { id = item.Id }) |
-                @* @Html.ActionLink("Usuń", "Delete", new { id = item.Id }) *@
-            </td>
+                @* @Html.ActionLink("Usuń", "Delete", new { id = item.Id }) 
+            </td>*@
         </tr>
 }
     </tbody>
 </table>
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Make table rows clickable
+            $('.clickable-row').click(function() {
+                window.location = $(this).data('url');
+            });
+        });
+    </script>
+}

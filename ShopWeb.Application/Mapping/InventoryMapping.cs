@@ -48,6 +48,9 @@ namespace ShopWeb.Application.Mapping
 				.ForMember(d => d.User, opt => opt.Ignore())
 				.ForMember(d => d.ModifiedByUser, opt => opt.Ignore());
 
+			CreateMap<SummaryInventoryPosition, SummaryInventoryPositionVm>()
+				.ForMember(d => d.ScanDate, opt => opt.MapFrom(s => s.DateOfScanOrModification));
+
         }
 	}
 }

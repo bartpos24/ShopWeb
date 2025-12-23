@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ShopWeb.Application.Extensions;
 using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.TransferObjects.Inventory;
 using ShopWeb.Domain.Interfaces;
@@ -10,10 +11,12 @@ namespace ShopWeb.Application.Services
     {
         private readonly IInventoryRepository inventoryRepository;
         private readonly IMapper mapper;
+        private readonly SheetGenerator sheetGenerator;
         public InventoryService(IInventoryRepository _inventoryRepository, IMapper _mapper)
         {
             inventoryRepository = _inventoryRepository;
             mapper = _mapper;
+            sheetGenerator = new SheetGenerator();
         }
 
         public async Task<List<InventoryVm>> AllInventories()
@@ -29,5 +32,18 @@ namespace ShopWeb.Application.Services
             var createdInventoryId = await inventoryRepository.AddInventory(inventory);
             return createdInventoryId;
 		}
-	}
+        public async Task<InventorySummaryVm> GetInventorySummary(int inventoryId)
+        {
+            var summaryPositions = await inventoryRepository.GetInventorySummary(inventoryId);
+            return new InventorySummaryVm()
+            {
+                Positions = mapper.Map<List<SummaryInventoryPositionVm>>(summaryPositions),
+                Count = summaryPositions.Count
+            };
+        }
+        public async Task<byte[]> GenerateSheet(InventorySummaryVm inventorySummaryVm)
+        {
+            return await sheetGenerator.GenerateSheet(inventorySummaryVm);
+        }
+    }
 }

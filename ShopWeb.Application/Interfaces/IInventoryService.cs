@@ -11,6 +11,7 @@ namespace ShopWeb.Application.Interfaces
     {
         Task<List<InventoryVm>> AllInventories();
         Task<int> AddInventory(NewInventoryVm newInventoryVm);
-
-	}
+        Task<InventorySummaryVm> GetInventorySummary(int inventoryId);
+        Task<byte[]> GenerateSheet(InventorySummaryVm inventorySummaryVm);
+    }
 }

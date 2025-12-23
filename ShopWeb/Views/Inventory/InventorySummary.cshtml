@@ -1,0 +1,59 @@
+﻿@model ShopWeb.Application.TransferObjects.Inventory.InventorySummaryVm
+
+@{
+    ViewData["Title"] = "InventorySummary";
+}
+
+<h1>InventorySummary</h1>
+
+<p>
+    <a asp-action="GenerateSheet">Wygeneruj arkusz</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Nazwa produktu
+            </th>
+            <th>
+                Ilość
+            </th>
+            <th>
+                J.M.
+            </th>
+            <th>
+                Cena
+            </th>
+            <th>
+                Data skanowania
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Positions) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Unit)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ScanDate)
+            </td>
+            @* <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td> *@
+        </tr>
+}
+    </tbody>
+</table>
