@@ -228,10 +228,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="commonInventoryPosition"> (optional)</param>
-        /// <returns>int</returns>
-        public int ApiInventoryAddCommonInventoryPositionPost(CommonInventoryPosition? commonInventoryPosition = default)
+        /// <returns>CommonInventoryPosition</returns>
+        public CommonInventoryPosition ApiInventoryAddCommonInventoryPositionPost(CommonInventoryPosition? commonInventoryPosition = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = ApiInventoryAddCommonInventoryPositionPostWithHttpInfo(commonInventoryPosition);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<CommonInventoryPosition> localVarResponse = ApiInventoryAddCommonInventoryPositionPostWithHttpInfo(commonInventoryPosition);
             return localVarResponse.Data;
         }
 
@@ -240,8 +240,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="commonInventoryPosition"> (optional)</param>
-        /// <returns>ApiResponse of int</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> ApiInventoryAddCommonInventoryPositionPostWithHttpInfo(CommonInventoryPosition? commonInventoryPosition = default)
+        /// <returns>ApiResponse of CommonInventoryPosition</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<CommonInventoryPosition> ApiInventoryAddCommonInventoryPositionPostWithHttpInfo(CommonInventoryPosition? commonInventoryPosition = default)
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -273,7 +273,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Post<int>("/api/Inventory/AddCommonInventoryPosition", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Post<CommonInventoryPosition>("/api/Inventory/AddCommonInventoryPosition", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
@@ -290,10 +290,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="commonInventoryPosition"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of int</returns>
-        public async System.Threading.Tasks.Task<int> ApiInventoryAddCommonInventoryPositionPostAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of CommonInventoryPosition</returns>
+        public async System.Threading.Tasks.Task<CommonInventoryPosition> ApiInventoryAddCommonInventoryPositionPostAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = await ApiInventoryAddCommonInventoryPositionPostWithHttpInfoAsync(commonInventoryPosition, cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<CommonInventoryPosition> localVarResponse = await ApiInventoryAddCommonInventoryPositionPostWithHttpInfoAsync(commonInventoryPosition, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
         }
 
@@ -303,8 +303,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="commonInventoryPosition"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (int)</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int>> ApiInventoryAddCommonInventoryPositionPostWithHttpInfoAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of ApiResponse (CommonInventoryPosition)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<CommonInventoryPosition>> ApiInventoryAddCommonInventoryPositionPostWithHttpInfoAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -339,7 +339,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.PostAsync<int>("/api/Inventory/AddCommonInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.PostAsync<CommonInventoryPosition>("/api/Inventory/AddCommonInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {
@@ -355,10 +355,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryPosition"> (optional)</param>
-        /// <returns>int</returns>
-        public int ApiInventoryAddInventoryPositionPost(InventoryPosition? inventoryPosition = default)
+        /// <returns>InventoryPosition</returns>
+        public InventoryPosition ApiInventoryAddInventoryPositionPost(InventoryPosition? inventoryPosition = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = ApiInventoryAddInventoryPositionPostWithHttpInfo(inventoryPosition);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<InventoryPosition> localVarResponse = ApiInventoryAddInventoryPositionPostWithHttpInfo(inventoryPosition);
             return localVarResponse.Data;
         }
 
@@ -367,8 +367,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryPosition"> (optional)</param>
-        /// <returns>ApiResponse of int</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> ApiInventoryAddInventoryPositionPostWithHttpInfo(InventoryPosition? inventoryPosition = default)
+        /// <returns>ApiResponse of InventoryPosition</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<InventoryPosition> ApiInventoryAddInventoryPositionPostWithHttpInfo(InventoryPosition? inventoryPosition = default)
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -400,7 +400,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Post<int>("/api/Inventory/AddInventoryPosition", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Post<InventoryPosition>("/api/Inventory/AddInventoryPosition", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
@@ -417,10 +417,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryPosition"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of int</returns>
-        public async System.Threading.Tasks.Task<int> ApiInventoryAddInventoryPositionPostAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of InventoryPosition</returns>
+        public async System.Threading.Tasks.Task<InventoryPosition> ApiInventoryAddInventoryPositionPostAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = await ApiInventoryAddInventoryPositionPostWithHttpInfoAsync(inventoryPosition, cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<InventoryPosition> localVarResponse = await ApiInventoryAddInventoryPositionPostWithHttpInfoAsync(inventoryPosition, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
         }
 
@@ -430,8 +430,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryPosition"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (int)</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int>> ApiInventoryAddInventoryPositionPostWithHttpInfoAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of ApiResponse (InventoryPosition)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<InventoryPosition>> ApiInventoryAddInventoryPositionPostWithHttpInfoAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -466,7 +466,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.PostAsync<int>("/api/Inventory/AddInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.PostAsync<InventoryPosition>("/api/Inventory/AddInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {
@@ -610,9 +610,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="commonInventoryPosition"> (optional)</param>
         /// <returns>int</returns>
-        public int ApiInventoryEditCommonInventoryPositionPost(CommonInventoryPosition? commonInventoryPosition = default)
+        public int ApiInventoryDeleteCommonInventoryPositionPost(CommonInventoryPosition? commonInventoryPosition = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = ApiInventoryEditCommonInventoryPositionPostWithHttpInfo(commonInventoryPosition);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = ApiInventoryDeleteCommonInventoryPositionPostWithHttpInfo(commonInventoryPosition);
             return localVarResponse.Data;
         }
 
@@ -622,7 +622,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="commonInventoryPosition"> (optional)</param>
         /// <returns>ApiResponse of int</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> ApiInventoryEditCommonInventoryPositionPostWithHttpInfo(CommonInventoryPosition? commonInventoryPosition = default)
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> ApiInventoryDeleteCommonInventoryPositionPostWithHttpInfo(CommonInventoryPosition? commonInventoryPosition = default)
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -654,11 +654,11 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Post<int>("/api/Inventory/EditCommonInventoryPosition", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Post<int>("/api/Inventory/DeleteCommonInventoryPosition", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("ApiInventoryEditCommonInventoryPositionPost", localVarResponse);
+                Exception _exception = this.ExceptionFactory("ApiInventoryDeleteCommonInventoryPositionPost", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -672,9 +672,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <param name="commonInventoryPosition"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of int</returns>
-        public async System.Threading.Tasks.Task<int> ApiInventoryEditCommonInventoryPositionPostAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.Task<int> ApiInventoryDeleteCommonInventoryPositionPostAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = await ApiInventoryEditCommonInventoryPositionPostWithHttpInfoAsync(commonInventoryPosition, cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = await ApiInventoryDeleteCommonInventoryPositionPostWithHttpInfoAsync(commonInventoryPosition, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
         }
 
@@ -685,7 +685,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <param name="commonInventoryPosition"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (int)</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int>> ApiInventoryEditCommonInventoryPositionPostWithHttpInfoAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int>> ApiInventoryDeleteCommonInventoryPositionPostWithHttpInfoAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -720,11 +720,11 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.PostAsync<int>("/api/Inventory/EditCommonInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.PostAsync<int>("/api/Inventory/DeleteCommonInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("ApiInventoryEditCommonInventoryPositionPost", localVarResponse);
+                Exception _exception = this.ExceptionFactory("ApiInventoryDeleteCommonInventoryPositionPost", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -737,9 +737,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryPosition"> (optional)</param>
         /// <returns>int</returns>
-        public int ApiInventoryEditInventoryPositionPost(InventoryPosition? inventoryPosition = default)
+        public int ApiInventoryDeleteInventoryPositionPost(InventoryPosition? inventoryPosition = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = ApiInventoryEditInventoryPositionPostWithHttpInfo(inventoryPosition);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = ApiInventoryDeleteInventoryPositionPostWithHttpInfo(inventoryPosition);
             return localVarResponse.Data;
         }
 
@@ -749,7 +749,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryPosition"> (optional)</param>
         /// <returns>ApiResponse of int</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> ApiInventoryEditInventoryPositionPostWithHttpInfo(InventoryPosition? inventoryPosition = default)
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> ApiInventoryDeleteInventoryPositionPostWithHttpInfo(InventoryPosition? inventoryPosition = default)
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -781,11 +781,11 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Post<int>("/api/Inventory/EditInventoryPosition", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Post<int>("/api/Inventory/DeleteInventoryPosition", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
-                Exception _exception = this.ExceptionFactory("ApiInventoryEditInventoryPositionPost", localVarResponse);
+                Exception _exception = this.ExceptionFactory("ApiInventoryDeleteInventoryPositionPost", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -799,9 +799,9 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <param name="inventoryPosition"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of int</returns>
-        public async System.Threading.Tasks.Task<int> ApiInventoryEditInventoryPositionPostAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.Task<int> ApiInventoryDeleteInventoryPositionPostAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = await ApiInventoryEditInventoryPositionPostWithHttpInfoAsync(inventoryPosition, cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int> localVarResponse = await ApiInventoryDeleteInventoryPositionPostWithHttpInfoAsync(inventoryPosition, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
         }
 
@@ -812,7 +812,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <param name="inventoryPosition"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (int)</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int>> ApiInventoryEditInventoryPositionPostWithHttpInfoAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<int>> ApiInventoryDeleteInventoryPositionPostWithHttpInfoAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -847,11 +847,531 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.PostAsync<int>("/api/Inventory/EditInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.PostAsync<int>("/api/Inventory/DeleteInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiInventoryDeleteInventoryPositionPost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="commonInventoryPosition"> (optional)</param>
+        /// <returns>CommonInventoryPosition</returns>
+        public CommonInventoryPosition ApiInventoryEditCommonInventoryPositionPost(CommonInventoryPosition? commonInventoryPosition = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<CommonInventoryPosition> localVarResponse = ApiInventoryEditCommonInventoryPositionPostWithHttpInfo(commonInventoryPosition);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="commonInventoryPosition"> (optional)</param>
+        /// <returns>ApiResponse of CommonInventoryPosition</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<CommonInventoryPosition> ApiInventoryEditCommonInventoryPositionPostWithHttpInfo(CommonInventoryPosition? commonInventoryPosition = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json",
+                "text/json",
+                "application/*+json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = commonInventoryPosition;
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Post<CommonInventoryPosition>("/api/Inventory/EditCommonInventoryPosition", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiInventoryEditCommonInventoryPositionPost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="commonInventoryPosition"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of CommonInventoryPosition</returns>
+        public async System.Threading.Tasks.Task<CommonInventoryPosition> ApiInventoryEditCommonInventoryPositionPostAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<CommonInventoryPosition> localVarResponse = await ApiInventoryEditCommonInventoryPositionPostWithHttpInfoAsync(commonInventoryPosition, cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="commonInventoryPosition"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (CommonInventoryPosition)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<CommonInventoryPosition>> ApiInventoryEditCommonInventoryPositionPostWithHttpInfoAsync(CommonInventoryPosition? commonInventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json", 
+                "text/json", 
+                "application/*+json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+
+            var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = commonInventoryPosition;
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.PostAsync<CommonInventoryPosition>("/api/Inventory/EditCommonInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiInventoryEditCommonInventoryPositionPost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryPosition"> (optional)</param>
+        /// <returns>InventoryPosition</returns>
+        public InventoryPosition ApiInventoryEditInventoryPositionPost(InventoryPosition? inventoryPosition = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<InventoryPosition> localVarResponse = ApiInventoryEditInventoryPositionPostWithHttpInfo(inventoryPosition);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryPosition"> (optional)</param>
+        /// <returns>ApiResponse of InventoryPosition</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<InventoryPosition> ApiInventoryEditInventoryPositionPostWithHttpInfo(InventoryPosition? inventoryPosition = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json",
+                "text/json",
+                "application/*+json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = inventoryPosition;
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Post<InventoryPosition>("/api/Inventory/EditInventoryPosition", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("ApiInventoryEditInventoryPositionPost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryPosition"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of InventoryPosition</returns>
+        public async System.Threading.Tasks.Task<InventoryPosition> ApiInventoryEditInventoryPositionPostAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<InventoryPosition> localVarResponse = await ApiInventoryEditInventoryPositionPostWithHttpInfoAsync(inventoryPosition, cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryPosition"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (InventoryPosition)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<InventoryPosition>> ApiInventoryEditInventoryPositionPostWithHttpInfoAsync(InventoryPosition? inventoryPosition = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+                "application/json", 
+                "text/json", 
+                "application/*+json"
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+
+            var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            localVarRequestOptions.Data = inventoryPosition;
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.PostAsync<InventoryPosition>("/api/Inventory/EditInventoryPosition", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiInventoryEditInventoryPositionPost", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryId"> (optional)</param>
+        /// <param name="userId"> (optional)</param>
+        /// <returns>List&lt;CommonInventoryPosition&gt;</returns>
+        public List<CommonInventoryPosition> ApiInventoryGetAllCommonInventoryPositionsForUserGet(int? inventoryId = default, int? userId = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<CommonInventoryPosition>> localVarResponse = ApiInventoryGetAllCommonInventoryPositionsForUserGetWithHttpInfo(inventoryId, userId);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryId"> (optional)</param>
+        /// <param name="userId"> (optional)</param>
+        /// <returns>ApiResponse of List&lt;CommonInventoryPosition&gt;</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<CommonInventoryPosition>> ApiInventoryGetAllCommonInventoryPositionsForUserGetWithHttpInfo(int? inventoryId = default, int? userId = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (inventoryId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.ParameterToMultiMap("", "inventoryId", inventoryId));
+            }
+            if (userId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.ParameterToMultiMap("", "userId", userId));
+            }
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Get<List<CommonInventoryPosition>>("/api/Inventory/GetAllCommonInventoryPositionsForUser", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiInventoryGetAllCommonInventoryPositionsForUserGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryId"> (optional)</param>
+        /// <param name="userId"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of List&lt;CommonInventoryPosition&gt;</returns>
+        public async System.Threading.Tasks.Task<List<CommonInventoryPosition>> ApiInventoryGetAllCommonInventoryPositionsForUserGetAsync(int? inventoryId = default, int? userId = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<CommonInventoryPosition>> localVarResponse = await ApiInventoryGetAllCommonInventoryPositionsForUserGetWithHttpInfoAsync(inventoryId, userId, cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryId"> (optional)</param>
+        /// <param name="userId"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (List&lt;CommonInventoryPosition&gt;)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<CommonInventoryPosition>>> ApiInventoryGetAllCommonInventoryPositionsForUserGetWithHttpInfoAsync(int? inventoryId = default, int? userId = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+
+            var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (inventoryId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.ParameterToMultiMap("", "inventoryId", inventoryId));
+            }
+            if (userId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.ParameterToMultiMap("", "userId", userId));
+            }
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.GetAsync<List<CommonInventoryPosition>>("/api/Inventory/GetAllCommonInventoryPositionsForUser", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiInventoryGetAllCommonInventoryPositionsForUserGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryId"> (optional)</param>
+        /// <returns>List&lt;CommonInventoryPosition&gt;</returns>
+        public List<CommonInventoryPosition> ApiInventoryGetAllCommonInventoryPositionsGet(int? inventoryId = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<CommonInventoryPosition>> localVarResponse = ApiInventoryGetAllCommonInventoryPositionsGetWithHttpInfo(inventoryId);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryId"> (optional)</param>
+        /// <returns>ApiResponse of List&lt;CommonInventoryPosition&gt;</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<CommonInventoryPosition>> ApiInventoryGetAllCommonInventoryPositionsGetWithHttpInfo(int? inventoryId = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+            var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (inventoryId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.ParameterToMultiMap("", "inventoryId", inventoryId));
+            }
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+            var localVarResponse = this.Client.Get<List<CommonInventoryPosition>>("/api/Inventory/GetAllCommonInventoryPositions", localVarRequestOptions, this.Configuration);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiInventoryGetAllCommonInventoryPositionsGet", localVarResponse);
+                if (_exception != null) throw _exception;
+            }
+
+            return localVarResponse;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryId"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of List&lt;CommonInventoryPosition&gt;</returns>
+        public async System.Threading.Tasks.Task<List<CommonInventoryPosition>> ApiInventoryGetAllCommonInventoryPositionsGetAsync(int? inventoryId = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<CommonInventoryPosition>> localVarResponse = await ApiInventoryGetAllCommonInventoryPositionsGetWithHttpInfoAsync(inventoryId, cancellationToken).ConfigureAwait(false);
+            return localVarResponse.Data;
+        }
+
+        /// <summary>
+        ///  
+        /// </summary>
+        /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="inventoryId"> (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse (List&lt;CommonInventoryPosition&gt;)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<CommonInventoryPosition>>> ApiInventoryGetAllCommonInventoryPositionsGetWithHttpInfoAsync(int? inventoryId = default, System.Threading.CancellationToken cancellationToken = default)
+        {
+
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
+
+            string[] _contentTypes = new string[] {
+            };
+
+            // to determine the Accept header
+            string[] _accepts = new string[] {
+                "text/plain",
+                "application/json",
+                "text/json"
+            };
+
+
+            var localVarContentType = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderContentType(_contentTypes);
+            if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
+
+            var localVarAccept = ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.SelectHeaderAccept(_accepts);
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
+
+            if (inventoryId != null)
+            {
+                localVarRequestOptions.QueryParameters.Add(ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ClientUtils.ParameterToMultiMap("", "inventoryId", inventoryId));
+            }
+
+            // authentication (Bearer) required
+            if (!string.IsNullOrEmpty(this.Configuration.GetApiKeyWithPrefix("Authorization")))
+            {
+                localVarRequestOptions.HeaderParameters.Add("Authorization", this.Configuration.GetApiKeyWithPrefix("Authorization"));
+            }
+
+            // make the HTTP request
+
+            var localVarResponse = await this.AsynchronousClient.GetAsync<List<CommonInventoryPosition>>("/api/Inventory/GetAllCommonInventoryPositions", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+
+            if (this.ExceptionFactory != null)
+            {
+                Exception _exception = this.ExceptionFactory("ApiInventoryGetAllCommonInventoryPositionsGet", localVarResponse);
                 if (_exception != null) throw _exception;
             }
 
@@ -979,10 +1499,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryId"> (optional)</param>
         /// <param name="userId"> (optional)</param>
-        /// <returns>List&lt;Inventory&gt;</returns>
-        public List<Inventory> ApiInventoryGetAllInventoryPositionsForUserGet(int? inventoryId = default, int? userId = default)
+        /// <returns>List&lt;InventoryPosition&gt;</returns>
+        public List<InventoryPosition> ApiInventoryGetAllInventoryPositionsForUserGet(int? inventoryId = default, int? userId = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Inventory>> localVarResponse = ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfo(inventoryId, userId);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<InventoryPosition>> localVarResponse = ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfo(inventoryId, userId);
             return localVarResponse.Data;
         }
 
@@ -992,8 +1512,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryId"> (optional)</param>
         /// <param name="userId"> (optional)</param>
-        /// <returns>ApiResponse of List&lt;Inventory&gt;</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Inventory>> ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfo(int? inventoryId = default, int? userId = default)
+        /// <returns>ApiResponse of List&lt;InventoryPosition&gt;</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<InventoryPosition>> ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfo(int? inventoryId = default, int? userId = default)
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -1029,7 +1549,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Get<List<Inventory>>("/api/Inventory/GetAllInventoryPositionsForUser", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Get<List<InventoryPosition>>("/api/Inventory/GetAllInventoryPositionsForUser", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
@@ -1047,10 +1567,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <param name="inventoryId"> (optional)</param>
         /// <param name="userId"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of List&lt;Inventory&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Inventory>> ApiInventoryGetAllInventoryPositionsForUserGetAsync(int? inventoryId = default, int? userId = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of List&lt;InventoryPosition&gt;</returns>
+        public async System.Threading.Tasks.Task<List<InventoryPosition>> ApiInventoryGetAllInventoryPositionsForUserGetAsync(int? inventoryId = default, int? userId = default, System.Threading.CancellationToken cancellationToken = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Inventory>> localVarResponse = await ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfoAsync(inventoryId, userId, cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<InventoryPosition>> localVarResponse = await ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfoAsync(inventoryId, userId, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
         }
 
@@ -1061,8 +1581,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <param name="inventoryId"> (optional)</param>
         /// <param name="userId"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (List&lt;Inventory&gt;)</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Inventory>>> ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfoAsync(int? inventoryId = default, int? userId = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of ApiResponse (List&lt;InventoryPosition&gt;)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<InventoryPosition>>> ApiInventoryGetAllInventoryPositionsForUserGetWithHttpInfoAsync(int? inventoryId = default, int? userId = default, System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -1101,7 +1621,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.GetAsync<List<Inventory>>("/api/Inventory/GetAllInventoryPositionsForUser", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<List<InventoryPosition>>("/api/Inventory/GetAllInventoryPositionsForUser", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {
@@ -1117,10 +1637,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryId"> (optional)</param>
-        /// <returns>List&lt;Inventory&gt;</returns>
-        public List<Inventory> ApiInventoryGetAllInventoryPositionsGet(int? inventoryId = default)
+        /// <returns>List&lt;InventoryPosition&gt;</returns>
+        public List<InventoryPosition> ApiInventoryGetAllInventoryPositionsGet(int? inventoryId = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Inventory>> localVarResponse = ApiInventoryGetAllInventoryPositionsGetWithHttpInfo(inventoryId);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<InventoryPosition>> localVarResponse = ApiInventoryGetAllInventoryPositionsGetWithHttpInfo(inventoryId);
             return localVarResponse.Data;
         }
 
@@ -1129,8 +1649,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// </summary>
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryId"> (optional)</param>
-        /// <returns>ApiResponse of List&lt;Inventory&gt;</returns>
-        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Inventory>> ApiInventoryGetAllInventoryPositionsGetWithHttpInfo(int? inventoryId = default)
+        /// <returns>ApiResponse of List&lt;InventoryPosition&gt;</returns>
+        public ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<InventoryPosition>> ApiInventoryGetAllInventoryPositionsGetWithHttpInfo(int? inventoryId = default)
         {
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
 
@@ -1162,7 +1682,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
             }
 
             // make the HTTP request
-            var localVarResponse = this.Client.Get<List<Inventory>>("/api/Inventory/GetAllInventoryPositions", localVarRequestOptions, this.Configuration);
+            var localVarResponse = this.Client.Get<List<InventoryPosition>>("/api/Inventory/GetAllInventoryPositions", localVarRequestOptions, this.Configuration);
 
             if (this.ExceptionFactory != null)
             {
@@ -1179,10 +1699,10 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryId"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of List&lt;Inventory&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Inventory>> ApiInventoryGetAllInventoryPositionsGetAsync(int? inventoryId = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of List&lt;InventoryPosition&gt;</returns>
+        public async System.Threading.Tasks.Task<List<InventoryPosition>> ApiInventoryGetAllInventoryPositionsGetAsync(int? inventoryId = default, System.Threading.CancellationToken cancellationToken = default)
         {
-            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Inventory>> localVarResponse = await ApiInventoryGetAllInventoryPositionsGetWithHttpInfoAsync(inventoryId, cancellationToken).ConfigureAwait(false);
+            ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<InventoryPosition>> localVarResponse = await ApiInventoryGetAllInventoryPositionsGetWithHttpInfoAsync(inventoryId, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
         }
 
@@ -1192,8 +1712,8 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
         /// <exception cref="ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiException">Thrown when fails to make API call</exception>
         /// <param name="inventoryId"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse (List&lt;Inventory&gt;)</returns>
-        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<Inventory>>> ApiInventoryGetAllInventoryPositionsGetWithHttpInfoAsync(int? inventoryId = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns>Task of ApiResponse (List&lt;InventoryPosition&gt;)</returns>
+        public async System.Threading.Tasks.Task<ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.ApiResponse<List<InventoryPosition>>> ApiInventoryGetAllInventoryPositionsGetWithHttpInfoAsync(int? inventoryId = default, System.Threading.CancellationToken cancellationToken = default)
         {
 
             ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions localVarRequestOptions = new ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure.RequestOptions();
@@ -1228,7 +1748,7 @@ namespace ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Api
 
             // make the HTTP request
 
-            var localVarResponse = await this.AsynchronousClient.GetAsync<List<Inventory>>("/api/Inventory/GetAllInventoryPositions", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<List<InventoryPosition>>("/api/Inventory/GetAllInventoryPositions", localVarRequestOptions, this.Configuration, cancellationToken).ConfigureAwait(false);
 
             if (this.ExceptionFactory != null)
             {

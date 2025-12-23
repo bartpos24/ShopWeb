@@ -32,9 +32,9 @@ ShopApiClient/Models/InventoryPosition.cs
 ShopApiClient/Models/InventoryStatus.cs
 ShopApiClient/Models/LoginModel.cs
 ShopApiClient/Models/Product.cs
+ShopApiClient/Models/ProductUnit.cs
 ShopApiClient/Models/RegisterModel.cs
 ShopApiClient/Models/RoleForUser.cs
-ShopApiClient/Models/Unit.cs
 ShopApiClient/Models/User.cs
 ShopApiClient/Models/UserInfo.cs
 ShopApiClient/Models/UserRole.cs

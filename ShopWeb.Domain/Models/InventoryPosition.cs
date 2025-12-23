@@ -41,11 +41,13 @@ namespace ShopWeb.Domain.Models
         /// <param name="userId">userId.</param>
         /// <param name="inventoryId">inventoryId.</param>
         /// <param name="modifiedByUserId">modifiedByUserId.</param>
+        /// <param name="isDeleted">isDeleted.</param>
+        /// <param name="modificationDate">modificationDate.</param>
         /// <param name="product">product.</param>
         /// <param name="user">user.</param>
         /// <param name="modifiedByUser">modifiedByUser.</param>
         /// <param name="inventory">inventory.</param>
-        public InventoryPosition(int id = default, double quantity = default, double price = default, DateTime scanDate = default, int productId = default, int userId = default, int inventoryId = default, int? modifiedByUserId = default, Product product = default, User user = default, User modifiedByUser = default, Inventory inventory = default)
+        public InventoryPosition(int id = default, double quantity = default, double price = default, DateTime scanDate = default, int productId = default, int userId = default, int inventoryId = default, int? modifiedByUserId = default, int? isDeleted = default, DateTime? modificationDate = default, Product product = default, User user = default, User modifiedByUser = default, Inventory inventory = default)
         {
             this.Id = id;
             this.Quantity = quantity;
@@ -55,6 +57,8 @@ namespace ShopWeb.Domain.Models
             this.UserId = userId;
             this.InventoryId = inventoryId;
             this.ModifiedByUserId = modifiedByUserId;
+            this.IsDeleted = isDeleted;
+            this.ModificationDate = modificationDate;
             this.Product = product;
             this.User = user;
             this.ModifiedByUser = modifiedByUser;
@@ -110,6 +114,18 @@ namespace ShopWeb.Domain.Models
         public int? ModifiedByUserId { get; set; }
 
         /// <summary>
+        /// Gets or Sets IsDeleted
+        /// </summary>
+        [DataMember(Name = "isDeleted", EmitDefaultValue = true)]
+        public int? IsDeleted { get; set; }
+
+        /// <summary>
+        /// Gets or Sets ModificationDate
+        /// </summary>
+        [DataMember(Name = "modificationDate", EmitDefaultValue = true)]
+        public DateTime? ModificationDate { get; set; }
+
+        /// <summary>
         /// Gets or Sets Product
         /// </summary>
         [DataMember(Name = "product", EmitDefaultValue = false)]
@@ -149,6 +165,8 @@ namespace ShopWeb.Domain.Models
             sb.Append("  UserId: ").Append(UserId).Append("\n");
             sb.Append("  InventoryId: ").Append(InventoryId).Append("\n");
             sb.Append("  ModifiedByUserId: ").Append(ModifiedByUserId).Append("\n");
+            sb.Append("  IsDeleted: ").Append(IsDeleted).Append("\n");
+            sb.Append("  ModificationDate: ").Append(ModificationDate).Append("\n");
             sb.Append("  Product: ").Append(Product).Append("\n");
             sb.Append("  User: ").Append(User).Append("\n");
             sb.Append("  ModifiedByUser: ").Append(ModifiedByUser).Append("\n");

@@ -42,8 +42,7 @@ namespace ShopWeb.Domain.Models
         /// <param name="unitId">unitId.</param>
         /// <param name="unit">unit.</param>
         /// <param name="barcodes">barcodes.</param>
-        /// <param name="inventoryPositions">inventoryPositions.</param>
-        public Product(int id = default, string name = default, string brand = default, string capacity = default, string label = default, bool isGeneral = default, int unitId = default, Unit unit = default, List<Barcode> barcodes = default, List<InventoryPosition> inventoryPositions = default)
+        public Product(int id = default, string name = default, string brand = default, string capacity = default, string label = default, bool isGeneral = default, int unitId = default, ProductUnit unit = default, List<Barcode> barcodes = default)
         {
             this.Id = id;
             this.Name = name;
@@ -54,7 +53,6 @@ namespace ShopWeb.Domain.Models
             this.UnitId = unitId;
             this.Unit = unit;
             this.Barcodes = barcodes;
-            this.InventoryPositions = inventoryPositions;
         }
 
         /// <summary>
@@ -103,19 +101,13 @@ namespace ShopWeb.Domain.Models
         /// Gets or Sets Unit
         /// </summary>
         [DataMember(Name = "unit", EmitDefaultValue = false)]
-        public Unit Unit { get; set; }
+        public ProductUnit Unit { get; set; }
 
         /// <summary>
         /// Gets or Sets Barcodes
         /// </summary>
         [DataMember(Name = "barcodes", EmitDefaultValue = true)]
         public List<Barcode> Barcodes { get; set; }
-
-        /// <summary>
-        /// Gets or Sets InventoryPositions
-        /// </summary>
-        [DataMember(Name = "inventoryPositions", EmitDefaultValue = true)]
-        public List<InventoryPosition> InventoryPositions { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -134,7 +126,6 @@ namespace ShopWeb.Domain.Models
             sb.Append("  UnitId: ").Append(UnitId).Append("\n");
             sb.Append("  Unit: ").Append(Unit).Append("\n");
             sb.Append("  Barcodes: ").Append(Barcodes).Append("\n");
-            sb.Append("  InventoryPositions: ").Append(InventoryPositions).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
