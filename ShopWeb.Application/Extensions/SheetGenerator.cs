@@ -49,8 +49,8 @@ namespace ShopWeb.Application.Extensions
                 column.Item().Row(row =>
                 {
                     // Left: m.p. box
-                    row.ConstantItem(170).Border(0.5f).Padding(4)
-                        .AlignMiddle().Text("m.p.").FontSize(7);
+                    row.ConstantItem(170).BorderTop(0.5f).BorderLeft(0.5f).BorderRight(0.5f).Padding(4).AlignTop()
+                        .AlignLeft().Text("m.p.").FontSize(7);
 
                     // Center: Title
                     row.RelativeItem().Background(headerColor).Border(0.5f).Padding(6).Column(col =>
@@ -62,48 +62,61 @@ namespace ShopWeb.Application.Extensions
                     });
 
                     // Right: Inventory details
-                    row.RelativeItem().Background(lightPink).Border(0.5f).Padding(4).Column(col =>
+                    row.RelativeItem().Border(0.5f).Padding(4).Column(col =>
                     {
-                        col.Item().Text($"Rodzaj inwentaryzacji").FontSize(7);
-                        col.Item().BorderBottom(0.5f).Padding(2)
-                            .Text(model.Inventory.Type ?? "").FontSize(7);
-                        col.Item().PaddingTop(2).Text("Sposób przeprowadzenia").FontSize(7);
-                        col.Item().BorderBottom(0.5f).Padding(2)
-                            .Text(model.Inventory.ExecuteWay ?? "").FontSize(7);
+                        // First row: Rodzaj inwentaryzacji with value
+                        col.Item().Row(r =>
+                        {
+                            r.AutoItem().Text("Rodzaj inwentaryzacji ").FontSize(7);
+                            r.RelativeItem().BorderBottom(0.5f).Padding(1).AlignCenter()
+                                .Text(model.Inventory.Type ?? "").FontSize(9);
+                        });
+
+                        // Second row: Sposób przeprowadzenia with value
+                        col.Item().PaddingTop(3).Row(r =>
+                        {
+                            r.AutoItem().Text("Sposób przeprowadzenia ").FontSize(7);
+                            r.RelativeItem().BorderBottom(0.5f).Padding(1).AlignCenter()
+                                .Text(model.Inventory.ExecuteWay ?? "").FontSize(9);
+                        });
                     });
                 });
 
                 // Company name and address section
                 column.Item().Row(row =>
                 {
-                    row.ConstantItem(170).Border(0.5f).Padding(4)
+                    row.ConstantItem(170).BorderBottom(0.5f).BorderLeft(0.5f).BorderRight(0.5f).Padding(4).AlignBottom().AlignCenter()
                         .Text("Firma (nazwisko i imię), adres").FontSize(6);
 
                     row.RelativeItem().Background(lightPink).Border(0.5f).Padding(4).Column(col =>
                     {
-                        col.Item().Text("Imię i nazwisko").FontSize(7);
-                        col.Item().Text("osoby materialnie odpowiedzialnej").FontSize(7);
-                        col.Item().BorderBottom(0.5f).Padding(2)
-                            .Text(model.Inventory.ResponsiblePerson ?? "").FontSize(7);
+                        col.Item().Row(r =>
+                        {
+                            r.AutoItem().Text("Imię i nazwisko\nosoby materialnie odpowiedzialnej").FontSize(7);
+                            r.RelativeItem().BorderBottom(0.5f).Padding(1).AlignCenter()
+                                .Text(model.Inventory.ResponsiblePerson ?? "").FontSize(9);
+                        });
                     });
                 });
 
                 // Unit name and address
                 column.Item().Background(lightPink).Border(0.5f).Padding(4).Column(col =>
                 {
-                    col.Item().Text("Nazwa i adres").FontSize(7);
-                    col.Item().Text("jednostki inwentaryzowanej").FontSize(7);
-                    col.Item().BorderBottom(0.5f).Padding(2)
-                        .Text(model.Inventory.CompanyInformation ?? "").FontSize(7);
+                    col.Item().Row(r =>
+                    {
+                        r.AutoItem().Text("Nazwa i adres\njednostki inwentaryzowanej").FontSize(7);
+                        r.RelativeItem().BorderBottom(0.5f).Padding(1).AlignCenter()
+                            .Text(model.Inventory.CompanyInformation ?? "").FontSize(9);
+                    });
                 });
 
                 // Commission team and other persons section
-                column.Item().Background(lightPink).Border(0.5f).Row(row =>
+                column.Item().Row(row =>
                 {
                     // Left: Commission team
                     row.RelativeItem().Padding(4).Column(col =>
                     {
-                        col.Item().Text("SKŁAD KOMISJI INWENTARYZACYJNEJ (Imię, nazwisko i stanowisko służbowe)")
+                        col.Item().Background(lightPink).Text("SKŁAD KOMISJI INWENTARYZACYJNEJ (Imię, nazwisko i stanowisko służbowe)")
                             .FontSize(6).Bold();
 
                         if (model.Inventory.CommissionTeam != null && model.Inventory.CommissionTeam.Any())
@@ -142,7 +155,7 @@ namespace ShopWeb.Application.Extensions
                     });
 
                     // Right: Other persons present
-                    row.RelativeItem().Padding(4).Column(col =>
+                    row.RelativeItem().Background(lightPink).Padding(4).Column(col =>
                     {
                         col.Item().Text("INNE OSOBY OBECNE PRZY SPISIE (Imię, nazwisko i stanowisko służbowe)")
                             .FontSize(6).Bold();
@@ -159,7 +172,7 @@ namespace ShopWeb.Application.Extensions
                 });
 
                 // Date section at the bottom of header
-                column.Item().Background(lightPink).Border(0.5f).Padding(4).Row(row =>
+                column.Item().Padding(4).Row(row =>
                 {
                     row.RelativeItem().Row(r =>
                     {
