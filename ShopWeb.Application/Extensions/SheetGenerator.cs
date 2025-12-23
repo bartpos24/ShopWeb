@@ -45,85 +45,157 @@ namespace ShopWeb.Application.Extensions
 
             container.Column(column =>
             {
-                // Title section
-                column.Item().Background(headerColor).Padding(8).Row(row =>
+                // Top section with m.p. and title
+                column.Item().Row(row =>
                 {
-                    row.RelativeItem().Column(col =>
+                    // Left: m.p. box
+                    row.ConstantItem(170).Border(0.5f).Padding(4)
+                        .AlignMiddle().Text("m.p.").FontSize(7);
+
+                    // Center: Title
+                    row.RelativeItem().Background(headerColor).Border(0.5f).Padding(6).Column(col =>
                     {
-                        col.Item().Text("ARKUSZ SPISU Z NATURY")
-                            .FontSize(12).Bold();
-                        col.Item().Text("(uniwersalny)")
-                            .FontSize(8);
+                        col.Item().AlignCenter().Text("ARKUSZ SPISU Z NATURY")
+                            .FontSize(11).Bold();
+                        col.Item().AlignCenter().Text("(uniwersalny) Strona nr ___________")
+                            .FontSize(7);
                     });
 
-                    row.RelativeItem().Column(col =>
+                    // Right: Inventory details
+                    row.RelativeItem().Background(lightPink).Border(0.5f).Padding(4).Column(col =>
                     {
-                        col.Item().AlignRight().Text($"Rodzaj inwentaryzacji: {model.Inventory.Type ?? ""}").FontSize(7);
-                        col.Item().AlignRight().Text("Strona nr: 1").FontSize(7);
-                        col.Item().AlignRight().Text($"Sposób przeprowadzenia: {model.Inventory.ExecuteWay ?? ""}").FontSize(7);
+                        col.Item().Text($"Rodzaj inwentaryzacji").FontSize(7);
+                        col.Item().BorderBottom(0.5f).Padding(2)
+                            .Text(model.Inventory.Type ?? "").FontSize(7);
+                        col.Item().PaddingTop(2).Text("Sposób przeprowadzenia").FontSize(7);
+                        col.Item().BorderBottom(0.5f).Padding(2)
+                            .Text(model.Inventory.ExecuteWay ?? "").FontSize(7);
                     });
                 });
 
-                // Company info section
-                column.Item().Background(lightPink).Padding(4).Text(text =>
+                // Company name and address section
+                column.Item().Row(row =>
                 {
-                    text.Span("Firma (nazwa i siedziba): ").FontSize(7).Bold();
-                    text.Span(model.Inventory.CompanyInformation ?? "").FontSize(7);
-                });
+                    row.ConstantItem(170).Border(0.5f).Padding(4)
+                        .Text("Firma (nazwisko i imię), adres").FontSize(6);
 
-                column.Item().Background(lightPink).Padding(4).Row(row =>
-                {
-                    row.RelativeItem().Text(text =>
+                    row.RelativeItem().Background(lightPink).Border(0.5f).Padding(4).Column(col =>
                     {
-                        text.Span("Nazwa: ").FontSize(7).Bold();
-                        text.Span(model.Inventory.Name ?? "").FontSize(7);
-                    });
-                    row.RelativeItem().Text(text =>
-                    {
-                        text.Span("Osoba odpowiedzialna: ").FontSize(7).Bold();
-                        text.Span(model.Inventory.ResponsiblePerson ?? "").FontSize(7);
+                        col.Item().Text("Imię i nazwisko").FontSize(7);
+                        col.Item().Text("osoby materialnie odpowiedzialnej").FontSize(7);
+                        col.Item().BorderBottom(0.5f).Padding(2)
+                            .Text(model.Inventory.ResponsiblePerson ?? "").FontSize(7);
                     });
                 });
 
-                // Commission team section
-                column.Item().Background(lightPink).Padding(4).Column(col =>
+                // Unit name and address
+                column.Item().Background(lightPink).Border(0.5f).Padding(4).Column(col =>
                 {
-                    col.Item().Text("SKŁAD KOMISJI INWENTARYZACYJNEJ (imię, nazwisko i stanowisko służbowe):")
-                        .FontSize(7).Bold();
-
-                    if (model.Inventory.CommissionTeam != null && model.Inventory.CommissionTeam.Any())
-                    {
-                        col.Item().Text(string.Join(", ", model.Inventory.CommissionTeam))
-                            .FontSize(6);
-                    }
+                    col.Item().Text("Nazwa i adres").FontSize(7);
+                    col.Item().Text("jednostki inwentaryzowanej").FontSize(7);
+                    col.Item().BorderBottom(0.5f).Padding(2)
+                        .Text(model.Inventory.CompanyInformation ?? "").FontSize(7);
                 });
 
-                // Verification persons section
-                column.Item().Background(lightPink).Padding(4).Row(row =>
+                // Commission team and other persons section
+                column.Item().Background(lightPink).Border(0.5f).Row(row =>
                 {
-                    row.RelativeItem().Text(text =>
+                    // Left: Commission team
+                    row.RelativeItem().Padding(4).Column(col =>
                     {
-                        text.Span("Wycenił: ").FontSize(7).Bold();
-                        text.Span(model.Inventory.PersonToValue ?? "").FontSize(7);
+                        col.Item().Text("SKŁAD KOMISJI INWENTARYZACYJNEJ (Imię, nazwisko i stanowisko służbowe)")
+                            .FontSize(6).Bold();
+
+                        if (model.Inventory.CommissionTeam != null && model.Inventory.CommissionTeam.Any())
+                        {
+                            for (int i = 0; i < Math.Min(model.Inventory.CommissionTeam.Count, 3); i++)
+                            {
+                                col.Item().Row(r =>
+                                {
+                                    r.ConstantItem(15).Text($"{i + 1}.").FontSize(6);
+                                    r.RelativeItem().BorderBottom(0.5f).Padding(1)
+                                        .Text(model.Inventory.CommissionTeam[i]).FontSize(6);
+                                });
+                            }
+
+                            // Add empty lines if less than 3
+                            for (int i = model.Inventory.CommissionTeam.Count; i < 3; i++)
+                            {
+                                col.Item().Row(r =>
+                                {
+                                    r.ConstantItem(15).Text($"{i + 1}.").FontSize(6);
+                                    r.RelativeItem().BorderBottom(0.5f).Padding(1).Text("").FontSize(6);
+                                });
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < 3; i++)
+                            {
+                                col.Item().Row(r =>
+                                {
+                                    r.ConstantItem(15).Text($"{i + 1}.").FontSize(6);
+                                    r.RelativeItem().BorderBottom(0.5f).Padding(1).Text("").FontSize(6);
+                                });
+                            }
+                        }
                     });
-                    row.RelativeItem().Text(text =>
+
+                    // Right: Other persons present
+                    row.RelativeItem().Padding(4).Column(col =>
                     {
-                        text.Span("Sprawdził: ").FontSize(7).Bold();
-                        text.Span(model.Inventory.PersonToCheck ?? "").FontSize(7);
+                        col.Item().Text("INNE OSOBY OBECNE PRZY SPISIE (Imię, nazwisko i stanowisko służbowe)")
+                            .FontSize(6).Bold();
+
+                        for (int i = 0; i < 3; i++)
+                        {
+                            col.Item().Row(r =>
+                            {
+                                r.ConstantItem(15).Text($"{i + 1}.").FontSize(6);
+                                r.RelativeItem().BorderBottom(0.5f).Padding(1).Text("").FontSize(6);
+                            });
+                        }
                     });
                 });
 
-                column.Item().Background(lightPink).Padding(4).Row(row =>
+                // Date section at the bottom of header
+                column.Item().Background(lightPink).Border(0.5f).Padding(4).Row(row =>
                 {
-                    row.RelativeItem().Text(text =>
+                    row.RelativeItem().Row(r =>
                     {
-                        text.Span("Data rozpoczęcia: ").FontSize(7).Bold();
-                        text.Span($"{model.Inventory.StartDate:dd.MM.yyyy}").FontSize(7);
+                        r.AutoItem().Text("Spis rozpoczęto dnia: ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {model.Inventory.StartDate.Day:D2}  ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {model.Inventory.StartDate.Month:D2}  ").FontSize(7);
+                        r.AutoItem().Text(" 20 ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {model.Inventory.StartDate.Year.ToString().Substring(2)}  ").FontSize(7);
+                        r.AutoItem().Text(" r. o godz. ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {model.Inventory.StartDate.Hour:D2}  ").FontSize(7);
+                        r.AutoItem().Text(" : ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {model.Inventory.StartDate.Minute:D2}  ").FontSize(7);
                     });
-                    row.RelativeItem().Text(text =>
+
+                    row.RelativeItem().Row(r =>
                     {
-                        text.Span("Data zakończenia: ").FontSize(7).Bold();
-                        text.Span($"{(model.Inventory.EndDate != null ? model.Inventory.EndDate : DateTime.Now):dd.MM.yyyy}").FontSize(7);
+                        r.AutoItem().Text("Spis zakończono dnia: ").FontSize(7);
+                        var endDate = model.Inventory.EndDate ?? DateTime.Now;
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {endDate.Day:D2}  ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {endDate.Month:D2}  ").FontSize(7);
+                        r.AutoItem().Text(" 20 ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {endDate.Year.ToString().Substring(2)}  ").FontSize(7);
+                        r.AutoItem().Text(" r. o godz. ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {endDate.Hour:D2}  ").FontSize(7);
+                        r.AutoItem().Text(" : ").FontSize(7);
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                            .Text($"  {endDate.Minute:D2}  ").FontSize(7);
                     });
                 });
 
