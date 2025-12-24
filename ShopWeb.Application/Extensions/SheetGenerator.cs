@@ -315,16 +315,17 @@ namespace ShopWeb.Application.Extensions
                         }
                     }
 
+                    table.Cell().Padding(2)
+                        .Text("").FontSize(7);
+                    table.Cell().Padding(2)
+                        .Text("").FontSize(7);
                     // Summary row
-                    table.Cell().ColumnSpan(6).Background(headerColor).Border(0.5f).Padding(2)
+                    table.Cell().ColumnSpan(4).Background(headerColor).Border(0.5f).Padding(2)
                         .AlignCenter().Text("RAZEM").FontSize(7).Bold();
 
                     var totalValue = model.Positions.Sum(p => p.Quantity * p.Price);
                     table.Cell().Background(headerColor).Border(0.5f).Padding(2)
                         .AlignRight().Text(totalValue.ToString("N2")).FontSize(7).Bold();
-
-                    table.Cell().Background(lightPink).Border(0.5f).Padding(2)
-                        .Text("").FontSize(7);
                 });
             });
         }
