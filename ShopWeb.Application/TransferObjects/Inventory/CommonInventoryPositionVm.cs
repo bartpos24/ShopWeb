@@ -13,9 +13,9 @@ namespace ShopWeb.Application.TransferObjects.Inventory
         public double Quantity { get; set; }
         public double Price { get; set; }
         public DateTime ScanDate { get; set; }
-        public int UserId { get; set; }
         public int InventoryId { get; set; }
         public int? ModifiedByUserId { get; set; }
         public int UnitId { get; set; }
+        public string Unit { get; set; }
     }
 }

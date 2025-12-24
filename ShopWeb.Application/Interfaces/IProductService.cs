@@ -1,4 +1,5 @@
-﻿using ShopWeb.Domain.Models;
+﻿using ShopWeb.Application.TransferObjects.Products;
+using ShopWeb.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace ShopWeb.Application.Interfaces
 	public interface IProductService
 	{
 		Task<List<Product>> GetProductByBarcode(string barcode);
+		Task<List<ProductUnitVm>> GetAllUnits();
 	}
 }

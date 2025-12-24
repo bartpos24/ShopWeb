@@ -16,5 +16,9 @@ namespace ShopWeb.Infrastructure.Repositories
 		{
 			return await productApi.ApiProductGetProductByBarcodeGetAsync(barcode);
 		}
-	}
+		public async Task<List<ProductUnit>> GetAllUnits()
+		{
+			return await productApi.ApiProductGetAllUnitsGetAsync();
+        }
+    }
 }

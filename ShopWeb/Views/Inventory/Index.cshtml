@@ -37,7 +37,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr class="clickable-row" data-url="@Url.Action("InventorySummary", "Inventory", item)" style="cursor: pointer;" >
+        <tr class="clickable-row" data-url="@Url.Action("Inventory", "Inventory", item)" style="cursor: pointer;" >
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>

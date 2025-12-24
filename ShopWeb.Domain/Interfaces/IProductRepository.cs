@@ -10,5 +10,6 @@ namespace ShopWeb.Domain.Interfaces
 	public interface IProductRepository
 	{
 		Task<List<Product>> GetProductByBarcode(string barcode);
-	}
+        Task<List<ProductUnit>> GetAllUnits();
+    }
 }

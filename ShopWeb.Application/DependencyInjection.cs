@@ -19,6 +19,7 @@ namespace ShopWeb.Application
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<InventoryMapping>();
+                cfg.AddProfile<ProductMapping>();
 
                 cfg.AllowNullCollections = true;
                 cfg.AllowNullDestinationValues = true;

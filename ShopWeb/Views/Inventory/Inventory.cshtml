@@ -1,0 +1,233 @@
+﻿@using ShopWeb.Application.TransferObjects.Products
+@model ShopWeb.Application.TransferObjects.Inventory.CommonInventoryPositionVm
+@{
+    ViewData["Title"] = "Dodaj pozycje inwentaryzacyjne";
+    var inventory = ViewBag.Inventory as ShopWeb.Application.TransferObjects.Inventory.InventoryVm;
+    var positions = ViewBag.Positions as List<ShopWeb.Application.TransferObjects.Inventory.CommonInventoryPositionVm> ?? new List<ShopWeb.Application.TransferObjects.Inventory.CommonInventoryPositionVm>();
+    var units = ViewBag.Units as List<ProductUnitVm> ?? new List<ProductUnitVm>();
+    var defaultUnit = units.FirstOrDefault(u => u.Code == "szt") ?? units.FirstOrDefault();
+}
+
+<h2>@ViewData["Title"]</h2>
+<h4>Inwentaryzacja: @inventory?.Name</h4>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Dodaj nową pozycję</h5>
+            </div>
+            <div class="card-body">
+                <form id="addPositionForm">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="InventoryId" />
+
+                    <div class="mb-3">
+                        <label asp-for="ProductName" class="form-label">Nazwa produktu</label>
+                        <input asp-for="ProductName" class="form-control" required />
+                        <span asp-validation-for="ProductName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Quantity" class="form-label">Ilość</label>
+                        <input asp-for="Quantity" type="number" step="0.01" class="form-control" required />
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Price" class="form-label">Cena</label>
+                        <input asp-for="Price" type="number" step="0.01" class="form-control" required />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="UnitId" class="form-label">Jednostka</label>
+                        <select asp-for="UnitId" class="form-select" required>
+                            <option value="">Wybierz jednostkę</option>
+                            @foreach (var unit in units)
+                            {
+                                <option value="@unit.Id"
+                                        data-unit-name="@unit.Code"
+                                        selected="@(unit.Code == "szt.")">
+                                    @unit.Name
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="UnitId" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Dodaj pozycję
+                    </button>
+                </form>
+
+                <div id="alertContainer" class="mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>Dodane pozycje (@positions.Count)</h5>
+                @if (positions.Any())
+                {
+                    <button type="button" class="btn btn-sm btn-danger" onclick="clearPositions()">
+                        Wyczyść listę
+                    </button>
+                }
+            </div>
+            <div class="card-body">
+                <div id="positionsList">
+                    @if (positions.Any())
+                    {
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Produkt</th>
+                                    <th>Ilość</th>
+                                    <th>J.M.</th>
+                                    <th>Cena</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="positionsTableBody">
+                                @foreach (var position in positions)
+                                {
+                                    <tr>
+                                        <td>@position.ProductName</td>
+                                        <td>@position.Quantity</td>
+                                        <td>@position.Unit</td>
+                                        <td>@position.Price.ToString("C")</td>
+                                        <td>@position.ScanDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center" id="emptyMessage">Brak dodanych pozycji</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+    @if (positions.Any())
+    {
+        <a asp-action="InventorySummary" asp-route-id="@inventory?.Id" class="btn btn-success">
+            Przejdź do podsumowania
+        </a>
+    }
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        const inventoryId = @Model.InventoryId;
+
+        document.getElementById('addPositionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = {
+                inventoryId: inventoryId,
+                productName: document.querySelector('[name="ProductName"]').value,
+                quantity: parseFloat(document.querySelector('[name="Quantity"]').value),
+                price: parseFloat(document.querySelector('[name="Price"]').value),
+                unitId: parseInt(document.querySelector('[name="UnitId"]').value)
+            };
+
+            try {
+                const response = await fetch('@Url.Action("AddInventoryPosition", "Inventory")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('success', result.message);
+                    addPositionToList(result.position);
+                    this.reset();
+                    document.querySelector('[name="InventoryId"]').value = inventoryId;
+                } else {
+                    showAlert('danger', result.message);
+                }
+            } catch (error) {
+                showAlert('danger', 'Wystąpił błąd podczas dodawania pozycji');
+                console.error(error);
+            }
+        });
+
+        function addPositionToList(position) {
+            const emptyMessage = document.getElementById('emptyMessage');
+            if (emptyMessage) {
+                emptyMessage.remove();
+                document.getElementById('positionsList').innerHTML = `
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Produkt</th>
+                                <th>Ilość</th>
+                                <th>Cena</th>
+                                <th>Data</th>
+                            </tr>
+                        </thead>
+                        <tbody id="positionsTableBody"></tbody>
+                    </table>
+                `;
+            }
+
+            const tableBody = document.getElementById('positionsTableBody');
+            const row = tableBody.insertRow(0);
+            row.innerHTML = `
+                <td>${position.productName}</td>
+                <td>${position.quantity}</td>
+                <td>${new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(position.price)}</td>
+                <td>${new Date(position.scanDate).toLocaleString('pl-PL')}</td>
+            `;
+        }
+
+        function showAlert(type, message) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            setTimeout(() => alertContainer.innerHTML = '', 5000);
+        }
+
+        async function clearPositions() {
+            if (!confirm('Czy na pewno chcesz wyczyścić wszystkie pozycje?')) return;
+
+            try {
+                const response = await fetch('@Url.Action("ClearInventoryPositions", "Inventory")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ inventoryId: inventoryId })
+                });
+
+                if (response.ok) {
+                    location.reload();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    </script>
+}

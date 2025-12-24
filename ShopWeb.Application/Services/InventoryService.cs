@@ -45,5 +45,16 @@ namespace ShopWeb.Application.Services
         {
             return await sheetGenerator.GenerateSheet(inventorySummaryVm);
         }
+        public async Task<CommonInventoryPositionVm> AddCommonInventoryPosition(CommonInventoryPositionVm commonInventoryPositionVm)
+        {
+            var commonInventoryPosition = mapper.Map<Domain.Models.CommonInventoryPosition>(commonInventoryPositionVm);
+            var createdPosition = await inventoryRepository.AddCommonInventoryPosition(commonInventoryPosition);
+            return mapper.Map<CommonInventoryPositionVm>(createdPosition);
+        }
+        public async Task<List<CommonInventoryPositionVm>> GetAllCommonInventoryPositionsForUser(int inventoryId, int? userId = null)
+        {
+            var positionsForUser = await inventoryRepository.GetAllCommonInventoryPositionsForUser(inventoryId, userId);
+            return mapper.Map<List<CommonInventoryPositionVm>>(positionsForUser);
+        }
     }
 }

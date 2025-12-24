@@ -12,5 +12,7 @@ namespace ShopWeb.Domain.Interfaces
         Task<List<Inventory>> AllInventories();
         Task<int> AddInventory(Inventory inventory);
         Task<List<SummaryInventoryPosition>> GetInventorySummary(int inventoryId);
+        Task<CommonInventoryPosition> AddCommonInventoryPosition(CommonInventoryPosition commonInventoryPosition);
+        Task<List<CommonInventoryPosition>> GetAllCommonInventoryPositionsForUser(int inventoryId, int? userId = null);
     }
 }

@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.Services;
 using ShopWeb.Application.TransferObjects.Inventory;
-using ShopWeb.Domain.Models;
-using ShopWeb.Infrastructure.ApiClient.OpenApiGenerate.Infrastructure;
+using ShopWeb.Application.TransferObjects.Products;
+using ShopWeb.Extensions;
 using ShopWeb.Models;
 using System.Threading.Tasks;
 
@@ -15,12 +16,14 @@ namespace ShopWeb.Controllers
     {
         private readonly ILogger<InventoryController> logger;
         private readonly IInventoryService inventoryService;
-		//private readonly IProductService productService;
-		public InventoryController(ILogger<InventoryController> _logger, IInventoryService _inventoryService)//, IProductService _productService
+        private readonly IProductService productService;
+        private const string SessionKeyInventoryPositions = "_InventoryPositions";
+        
+        public InventoryController(ILogger<InventoryController> _logger, IInventoryService _inventoryService, IProductService _productService)
 		{
             logger = _logger;
             inventoryService = _inventoryService;
-			//productService = _productService;
+			productService = _productService;
 		}
         public async Task<IActionResult> Index()
         {
@@ -78,6 +81,75 @@ namespace ShopWeb.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+		public async Task<IActionResult> Inventory(InventoryVm inventory)
+		{
+            if (inventory == null)
+                return RedirectToAction("Index");
+            var (successUnits, units) = await TryExecuteAsync(() => productService.GetAllUnits());
+            if (!successUnits || units == null)
+            {
+                // Fallback to empty list if units can't be loaded
+                units = new List<ProductUnitVm>();
+            }
+
+            List<CommonInventoryPositionVm> positions = new List<CommonInventoryPositionVm>();
+            var (success, positionsForUser) = await TryExecuteAsync(() => inventoryService.GetAllCommonInventoryPositionsForUser(inventory.Id));
+            if (positionsForUser != null)
+                positions = positionsForUser;
+            var sessionKey = $"{SessionKeyInventoryPositions}_{inventory.Id}";
+            HttpContext.Session.SetObject(sessionKey, positions);
+            ViewBag.Inventory = inventory;
+            ViewBag.Positions = positions;
+            ViewBag.Units = units;
+
+            return View(new CommonInventoryPositionVm { InventoryId = inventory.Id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddInventoryPosition([FromBody] CommonInventoryPositionVm positionVm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Nieprawidłowe dane" });
+            }
+
+            // Set scan date
+            positionVm.ScanDate = DateTime.Now;
+
+            // Add position to database via API
+            var (success, addedPosition) = await TryExecuteAsync(() => inventoryService.AddCommonInventoryPosition(positionVm));
+
+            if (!success)
+            {
+                return Json(new { success = false, message = "Nie udało się dodać pozycji" });
+            }
+
+            // Add to session list
+            var sessionKey = $"{SessionKeyInventoryPositions}_{positionVm.InventoryId}";
+            var positions = HttpContext.Session.GetObject<List<CommonInventoryPositionVm>>(sessionKey)
+                ?? new List<CommonInventoryPositionVm>();
+
+            positions.Add(addedPosition);
+            HttpContext.Session.SetObject(sessionKey, positions);
+
+            return Json(new
+            {
+                success = true,
+                position = addedPosition,
+                message = "Pozycja została dodana pomyślnie"
+            });
+        }
+
+        [HttpPost]
+        public IActionResult ClearInventoryPositions(int inventoryId)
+        {
+            var sessionKey = $"{SessionKeyInventoryPositions}_{inventoryId}";
+            HttpContext.Session.Remove(sessionKey);
+            return Json(new { success = true });
         }
     }
 }
