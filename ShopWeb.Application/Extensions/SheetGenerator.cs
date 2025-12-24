@@ -94,14 +94,14 @@ namespace ShopWeb.Application.Extensions
                         col.Item().Row(r =>
                         {
                             r.AutoItem().Text("Imię i nazwisko\nosoby materialnie odpowiedzialnej").FontSize(7);
-                            r.RelativeItem().BorderBottom(0.5f).Padding(1).AlignCenter()
+                            r.RelativeItem().BorderBottom(0.5f).AlignCenter()
                                 .Text(model.Inventory.ResponsiblePerson ?? "").FontSize(9);
                         });
                     });
                 });
 
                 // Unit name and address
-                column.Item().Background(lightPink).Border(0.5f).Padding(4).Column(col =>
+                column.Item().Background(lightPink).Border(0.5f).Column(col =>
                 {
                     col.Item().Row(r =>
                     {
@@ -126,9 +126,9 @@ namespace ShopWeb.Application.Extensions
                             {
                                 col.Item().Row(r =>
                                 {
-                                    r.ConstantItem(15).Text($"{i + 1}.").FontSize(6);
-                                    r.RelativeItem().BorderBottom(0.5f).Padding(1)
-                                        .Text(model.Inventory.CommissionTeam[i]).FontSize(7);
+                                    r.ConstantItem(15).Text($"{i + 1}.").FontSize(8);
+                                    r.RelativeItem().BorderBottom(0.5f)
+                                        .Text(model.Inventory.CommissionTeam[i]).FontSize(8);
                                 });
                             }
 
@@ -137,8 +137,8 @@ namespace ShopWeb.Application.Extensions
                             {
                                 col.Item().Row(r =>
                                 {
-                                    r.ConstantItem(15).Text($"{i + 1}.").FontSize(6);
-                                    r.RelativeItem().BorderBottom(0.5f).Padding(1).Text("").FontSize(6);
+                                    r.ConstantItem(15).Text($"{i + 1}.").FontSize(8);
+                                    r.RelativeItem().BorderBottom(0.5f).Text("").FontSize(8);
                                 });
                             }
                         }
@@ -165,7 +165,7 @@ namespace ShopWeb.Application.Extensions
                         {
                             col.Item().Row(r =>
                             {
-                                r.ConstantItem(15).Text($"{i + 1}.").FontSize(6);
+                                r.ConstantItem(15).Text($"{i + 1}.").FontSize(8);
                                 r.RelativeItem().BorderBottom(0.5f).Padding(1).Text("").FontSize(6);
                             });
                         }
@@ -273,7 +273,7 @@ namespace ShopWeb.Application.Extensions
                     int index = 1;
                     foreach (var position in model.Positions)
                     {
-                        var rowColor = index % 2 == 0 ? Colors.White : alternateRowColor;
+                        var rowColor = Colors.White;//index % 2 == 0 ? Colors.White : alternateRowColor;
 
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
                             .AlignCenter().AlignMiddle().Text(index.ToString()).FontSize(7);
@@ -303,24 +303,24 @@ namespace ShopWeb.Application.Extensions
                     }
 
                     // Add empty rows to fill the page (more rows for portrait)
-                    for (int i = index; i <= index + 40; i++)
+                    for (int i = index; i <= 45; i++)
                     {
-                        var rowColor = i % 2 == 0 ? Colors.White : alternateRowColor;
+                        var rowColor = Colors.White;//i % 2 == 0 ? Colors.White : alternateRowColor;
 
                         for (int col = 0; col < 8; col++) // Changed from 9 to 8
                         {
                             var bgColor = col == 2 ? Color.FromHex(lightPink) : rowColor;
-                            if(col == 1)
+                            if (col == 1)
                             {
                                 table.Cell().Background(bgColor).BorderLeft(0.5f).BorderHorizontal(0.5f).Padding(2)
                                     .Text("").FontSize(7);
                             }
-                            if (col == 2)
+                            else if (col == 2)
                             {
                                 table.Cell().Background(bgColor).BorderRight(0.5f).BorderHorizontal(0.5f).Padding(2)
                                     .Text("").FontSize(7);
                             }
-                            else 
+                            else
                             {
                                 table.Cell().Background(bgColor).Border(0.5f).Padding(2)
                                     .Text("").FontSize(7);
