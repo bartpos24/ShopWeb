@@ -57,9 +57,13 @@ namespace ShopWeb.Application.Extensions
                     row.RelativeItem().Background(headerColor).Border(0.5f).Padding(6).Column(col =>
                     {
                         col.Item().AlignCenter().Text("ARKUSZ SPISU Z NATURY")
-                            .FontSize(11).Bold();
-                        col.Item().AlignCenter().Text("(uniwersalny) Strona nr ___________")
-                            .FontSize(7);
+                            .FontSize(13).Bold();
+                        col.Item().Row(r =>
+                        {
+                            r.AutoItem().Text("(uniwersalny)").FontSize(11);
+                            r.RelativeItem().AlignCenter()
+                                .Text("Strona nr ___________").FontSize(9);
+                        });
                     });
 
                     // Right: Inventory details
@@ -94,20 +98,23 @@ namespace ShopWeb.Application.Extensions
                         col.Item().Row(r =>
                         {
                             r.AutoItem().Text("Imię i nazwisko\nosoby materialnie odpowiedzialnej").FontSize(7);
-                            r.RelativeItem().BorderBottom(0.5f).AlignCenter()
+                            r.RelativeItem().BorderBottom(0.5f).AlignCenter().AlignMiddle()
                                 .Text(model.Inventory.ResponsiblePerson ?? "").FontSize(9);
                         });
                     });
                 });
 
                 // Unit name and address
-                column.Item().Background(lightPink).Border(0.5f).Column(col =>
+                column.Item().Row(row =>//.Background(lightPink).Border(0.5f).Column(col =>
                 {
-                    col.Item().Row(r =>
+                    row.RelativeItem().Background(lightPink).Border(0.5f).Padding(4).Column(col =>
                     {
-                        r.AutoItem().Text("Nazwa i adres\njednostki inwentaryzowanej").FontSize(7);
-                        r.RelativeItem().BorderBottom(0.5f).Padding(1).AlignCenter()
-                            .Text(model.Inventory.CompanyInformation ?? "").FontSize(9);
+                        col.Item().Row(r =>
+                        {
+                            r.AutoItem().Text("Nazwa i adres\njednostki inwentaryzowanej").FontSize(7);
+                            r.RelativeItem().BorderBottom(0.5f).AlignCenter().AlignMiddle()
+                                .Text(model.Inventory.CompanyInformation ?? "").FontSize(9);
+                        });
                     });
                 });
 
