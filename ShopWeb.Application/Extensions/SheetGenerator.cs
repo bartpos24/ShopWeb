@@ -128,7 +128,7 @@ namespace ShopWeb.Application.Extensions
                                 {
                                     r.ConstantItem(15).Text($"{i + 1}.").FontSize(6);
                                     r.RelativeItem().BorderBottom(0.5f).Padding(1)
-                                        .Text(model.Inventory.CommissionTeam[i]).FontSize(6);
+                                        .Text(model.Inventory.CommissionTeam[i]).FontSize(7);
                                 });
                             }
 
@@ -178,18 +178,18 @@ namespace ShopWeb.Application.Extensions
                     row.RelativeItem().Row(r =>
                     {
                         r.AutoItem().Text("Spis rozpoczęto dnia: ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {model.Inventory.StartDate.Day:D2}  ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {model.Inventory.StartDate.Month:D2}  ").FontSize(7);
                         r.AutoItem().Text(" 20 ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {model.Inventory.StartDate.Year.ToString().Substring(2)}  ").FontSize(7);
                         r.AutoItem().Text(" r. o godz. ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {model.Inventory.StartDate.Hour:D2}  ").FontSize(7);
                         r.AutoItem().Text(" : ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {model.Inventory.StartDate.Minute:D2}  ").FontSize(7);
                     });
 
@@ -197,18 +197,18 @@ namespace ShopWeb.Application.Extensions
                     {
                         r.AutoItem().Text("Spis zakończono dnia: ").FontSize(7);
                         var endDate = model.Inventory.EndDate ?? DateTime.Now;
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {endDate.Day:D2}  ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {endDate.Month:D2}  ").FontSize(7);
                         r.AutoItem().Text(" 20 ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {endDate.Year.ToString().Substring(2)}  ").FontSize(7);
                         r.AutoItem().Text(" r. o godz. ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {endDate.Hour:D2}  ").FontSize(7);
                         r.AutoItem().Text(" : ").FontSize(7);
-                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f)
+                        r.AutoItem().PaddingHorizontal(2).BorderBottom(0.5f).AlignCenter()
                             .Text($"  {endDate.Minute:D2}  ").FontSize(7);
                     });
                 });
@@ -231,13 +231,13 @@ namespace ShopWeb.Application.Extensions
                     // Define columns - removed "Ilość księgowa"
                     table.ColumnsDefinition(columns =>
                     {
-                        columns.ConstantColumn(25);  // Lp.
+                        columns.ConstantColumn(20);  // Lp.
                         columns.RelativeColumn(4);   // Nazwa (opis/artykuł) - increased
                         columns.ConstantColumn(50);  // Cecha, symbol, numer, gatunek
-                        columns.ConstantColumn(35);  // Jednostka miary
-                        columns.ConstantColumn(50);  // Ilość faktyczna
+                        columns.ConstantColumn(25);  // Jednostka miary
+                        columns.ConstantColumn(40);  // Ilość faktyczna
                         columns.ConstantColumn(50);  // Cena jednostkowa
-                        columns.ConstantColumn(60);  // Wartość (zł)
+                        columns.ConstantColumn(50);  // Wartość (zł)
                         columns.ConstantColumn(50);  // Uwagi
                     });
 
@@ -245,28 +245,28 @@ namespace ShopWeb.Application.Extensions
                     table.Header(header =>
                     {
                         header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignCenter().Text("Lp.").FontSize(6).Bold();
+                            .AlignMiddle().AlignCenter().Text("Lp.").FontSize(7).Bold();
 
                         header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignCenter().Text("PRZEDMIOT SPISYWANY\nNazwa (opis/artykuł)").FontSize(6).Bold();
+                            .AlignMiddle().AlignCenter().Text("PRZEDMIOT SPISYWANY\nNazwa (opis/artykuł)").FontSize(7).Bold();
 
                         header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .Text("Cecha, symbol, numer, gatunek").FontSize(6).Bold();
+                            .AlignMiddle().AlignCenter().Text("Cecha, symbol, numer, gatunek").FontSize(7).Bold();
 
                         header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .Text("Jednostka miary").FontSize(6).Bold();
+                            .AlignMiddle().AlignCenter().Text("J.M.").FontSize(7).Bold();
 
                         header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .Text("Ilość stwierdzona").FontSize(6).Bold();
+                            .AlignMiddle().AlignCenter().Text("Ilość stwierdzona").FontSize(7).Bold();
 
                         header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .Text("Cena jednostkowa").FontSize(6).Bold();
+                            .AlignMiddle().AlignCenter().Text("Cena jednostkowa").FontSize(7).Bold();
 
                         header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .Text("Wartość").FontSize(6).Bold();
+                            .AlignMiddle().AlignCenter().Text("Wartość").FontSize(7).Bold();
 
-                        header.Cell().Background(lightPink).Border(0.5f).Padding(2)
-                            .Text("Uwagi").FontSize(6).Bold();
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignMiddle().AlignCenter().Text("Uwagi").FontSize(7).Bold();
                     });
 
                     // Data rows
@@ -278,10 +278,10 @@ namespace ShopWeb.Application.Extensions
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
                             .AlignCenter().AlignMiddle().Text(index.ToString()).FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                        table.Cell().Background(rowColor).BorderLeft(0.5f).BorderHorizontal(0.5f).Padding(2)
                             .AlignLeft().AlignMiddle().Text(position.ProductName).FontSize(7);
 
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                        table.Cell().Background(lightPink).BorderRight(0.5f).BorderHorizontal(0.5f).Padding(2)
                             .AlignCenter().AlignMiddle().Text("").FontSize(7);
 
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
@@ -296,22 +296,35 @@ namespace ShopWeb.Application.Extensions
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
                             .AlignRight().AlignMiddle().Text((position.Quantity * position.Price).ToString("N2")).FontSize(7);
 
-                        table.Cell().Background(lightPink).Border(0.5f).Padding(2)
+                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
                             .AlignLeft().AlignMiddle().Text("").FontSize(7);
 
                         index++;
                     }
 
                     // Add empty rows to fill the page (more rows for portrait)
-                    for (int i = index; i <= index + 25; i++)
+                    for (int i = index; i <= index + 40; i++)
                     {
                         var rowColor = i % 2 == 0 ? Colors.White : alternateRowColor;
 
                         for (int col = 0; col < 8; col++) // Changed from 9 to 8
                         {
-                            var bgColor = col == 7 ? Color.FromHex(lightPink) : rowColor;
-                            table.Cell().Background(bgColor).Border(0.5f).Padding(2)
-                                .Text("").FontSize(7);
+                            var bgColor = col == 2 ? Color.FromHex(lightPink) : rowColor;
+                            if(col == 1)
+                            {
+                                table.Cell().Background(bgColor).BorderLeft(0.5f).BorderHorizontal(0.5f).Padding(2)
+                                    .Text("").FontSize(7);
+                            }
+                            if (col == 2)
+                            {
+                                table.Cell().Background(bgColor).BorderRight(0.5f).BorderHorizontal(0.5f).Padding(2)
+                                    .Text("").FontSize(7);
+                            }
+                            else 
+                            {
+                                table.Cell().Background(bgColor).Border(0.5f).Padding(2)
+                                    .Text("").FontSize(7);
+                            }
                         }
                     }
 
