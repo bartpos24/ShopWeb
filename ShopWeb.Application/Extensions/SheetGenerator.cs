@@ -248,32 +248,47 @@ namespace ShopWeb.Application.Extensions
                         columns.ConstantColumn(50);  // Uwagi
                     });
 
-                    // Header row
                     table.Header(header =>
                     {
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                        // === FIRST HEADER ROW ===
+
+                        // Lp. - spans 2 rows
+                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
                             .AlignMiddle().AlignCenter().Text("Lp.").FontSize(7).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("PRZEDMIOT SPISYWANY\nNazwa (opis/artykuł)").FontSize(7).Bold();
+                        // PRZEDMIOT SPISYWANY - spans 2 columns
+                        header.Cell().ColumnSpan(2).Background(headerColor).BorderTop(0.5f).BorderLeft(0.5f).BorderRight(0.5f).Padding(2)
+                            .AlignMiddle().AlignCenter().Text("PRZEDMIOT SPISYWANY").FontSize(7).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Cecha, symbol, numer, gatunek").FontSize(7).Bold();
-
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                        // J.M. - spans 2 rows
+                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
                             .AlignMiddle().AlignCenter().Text("J.M.").FontSize(7).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Ilość stwierdzona").FontSize(7).Bold();
+                        // Ilość stwierdzona - spans 2 rows
+                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignMiddle().AlignCenter().Text("Ilość\nstwierdzona").FontSize(7).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Cena jednostkowa").FontSize(7).Bold();
+                        // Cena jednostkowa - spans 2 rows
+                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignMiddle().AlignCenter().Text("Cena\njednostkowa").FontSize(7).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                        // Wartość - spans 2 rows
+                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
                             .AlignMiddle().AlignCenter().Text("Wartość").FontSize(7).Bold();
 
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                        // Uwagi - spans 2 rows
+                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
                             .AlignMiddle().AlignCenter().Text("Uwagi").FontSize(7).Bold();
+
+                        // === SECOND HEADER ROW ===
+
+                        // Nazwa (określenie)
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignMiddle().AlignCenter().Text("Nazwa (określenie)").FontSize(6).Bold();
+
+                        // Cecha, symbol, numer, gatunek
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignMiddle().AlignCenter().Text("Cecha, symbol,\nnumer, gatunek").FontSize(6).Bold();
                     });
 
                     // Data rows
@@ -283,28 +298,28 @@ namespace ShopWeb.Application.Extensions
                         var rowColor = Colors.White;//index % 2 == 0 ? Colors.White : alternateRowColor;
 
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignCenter().AlignMiddle().Text(index.ToString()).FontSize(7);
+                            .AlignCenter().AlignMiddle().Text(index.ToString()).FontSize(9);
 
                         table.Cell().Background(rowColor).BorderLeft(0.5f).BorderHorizontal(0.5f).Padding(2)
-                            .AlignLeft().AlignMiddle().Text(position.ProductName).FontSize(7);
+                            .AlignLeft().AlignMiddle().Text(position.ProductName).FontSize(9);
 
                         table.Cell().Background(lightPink).BorderRight(0.5f).BorderHorizontal(0.5f).Padding(2)
-                            .AlignCenter().AlignMiddle().Text("").FontSize(7);
+                            .AlignCenter().AlignMiddle().Text("").FontSize(9);
 
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignCenter().AlignMiddle().Text(position.Unit).FontSize(7);
+                            .AlignCenter().AlignMiddle().Text(position.Unit).FontSize(9);
 
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignRight().AlignMiddle().Text(position.Quantity.ToString("N2")).FontSize(7);
+                            .AlignRight().AlignMiddle().Text(position.Quantity.ToString("N2")).FontSize(9);
 
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignRight().AlignMiddle().Text(position.Price.ToString("N2")).FontSize(7);
+                            .AlignRight().AlignMiddle().Text(position.Price.ToString("N2")).FontSize(9);
 
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignRight().AlignMiddle().Text((position.Quantity * position.Price).ToString("N2")).FontSize(7);
+                            .AlignRight().AlignMiddle().Text((position.Quantity * position.Price).ToString("N2")).FontSize(9);
 
                         table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignLeft().AlignMiddle().Text("").FontSize(7);
+                            .AlignLeft().AlignMiddle().Text("").FontSize(9);
 
                         index++;
                     }
@@ -341,11 +356,11 @@ namespace ShopWeb.Application.Extensions
                         .Text("").FontSize(7);
                     // Summary row
                     table.Cell().ColumnSpan(4).Background(headerColor).Border(0.5f).Padding(2)
-                        .AlignCenter().Text("RAZEM").FontSize(7).Bold();
+                        .AlignCenter().Text("RAZEM").FontSize(9).Bold();
 
                     var totalValue = model.Positions.Sum(p => p.Quantity * p.Price);
                     table.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                        .AlignRight().Text(totalValue.ToString("N2")).FontSize(7).Bold();
+                        .AlignRight().Text(totalValue.ToString("N2")).FontSize(9).Bold();
                 });
             });
         }
