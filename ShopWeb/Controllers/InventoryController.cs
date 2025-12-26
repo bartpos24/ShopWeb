@@ -145,6 +145,81 @@ namespace ShopWeb.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditInventoryPosition([FromBody] CommonInventoryPositionVm positionVm)
+        {
+            positionVm.ScanDate = DateTime.Now;
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(", ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                return Json(new { success = false, message = $"Nieprawidłowe dane: {errors}" });
+            }
+
+            var (success, editedPosition) = await TryExecuteAsync(() => inventoryService.EditCommonInventoryPosition(positionVm));
+
+            if (!success || editedPosition == null)
+            {
+                return Json(new { success = false, message = "Nie udało się dodać pozycji" });
+            }
+
+            // Add to session list
+            var sessionKey = $"{SessionKeyInventoryPositions}_{positionVm.InventoryId}";
+            var positions = HttpContext.Session.GetObject<List<CommonInventoryPositionVm>>(sessionKey)
+                ?? new List<CommonInventoryPositionVm>();
+
+            positions.Remove(positions.FirstOrDefault(w => w.Id == editedPosition.Id));
+            positions.Add(editedPosition);
+            HttpContext.Session.SetObject(sessionKey, positions);
+
+            return Json(new
+            {
+                success = true,
+                position = editedPosition,
+                message = "Pozycja została dodana pomyślnie"
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteInventoryPosition([FromBody] CommonInventoryPositionVm positionVm)
+        {
+            positionVm.ScanDate = DateTime.Now;
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(", ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                return Json(new { success = false, message = $"Nieprawidłowe dane: {errors}" });
+            }
+
+            var (success, deletedPositionId) = await TryExecuteAsync(() => inventoryService.DeleteCommonInventoryPosition(positionVm));
+
+            if (!success)
+            {
+                return Json(new { success = false, message = "Nie udało się usunąć pozycji" });
+            }
+
+            // Add to session list
+            var sessionKey = $"{SessionKeyInventoryPositions}_{positionVm.InventoryId}";
+            var positions = HttpContext.Session.GetObject<List<CommonInventoryPositionVm>>(sessionKey)
+                ?? new List<CommonInventoryPositionVm>();
+
+            var positionToRemoveFromList = positions.FirstOrDefault(w => w.Id == deletedPositionId);
+
+            positions.Remove(positionToRemoveFromList);
+            HttpContext.Session.SetObject(sessionKey, positions);
+
+            return Json(new
+            {
+                success = true,
+                position = positionToRemoveFromList,
+                message = "Pozycja została dodana pomyślnie"
+            });
+        }
+
+        [HttpPost]
         public IActionResult ClearInventoryPositions(int inventoryId)
         {
             var sessionKey = $"{SessionKeyInventoryPositions}_{inventoryId}";

@@ -56,5 +56,16 @@ namespace ShopWeb.Application.Services
             var positionsForUser = await inventoryRepository.GetAllCommonInventoryPositionsForUser(inventoryId, userId);
             return mapper.Map<List<CommonInventoryPositionVm>>(positionsForUser);
         }
+        public async Task<CommonInventoryPositionVm> EditCommonInventoryPosition(CommonInventoryPositionVm commonInventoryPositionVm)
+        {
+            var commonInventoryPosition = mapper.Map<Domain.Models.CommonInventoryPosition>(commonInventoryPositionVm);
+            var editedPosition = await inventoryRepository.EditCommonInventoryPosition(commonInventoryPosition);
+            return mapper.Map<CommonInventoryPositionVm>(editedPosition);
+        }
+        public async Task<int> DeleteCommonInventoryPosition(CommonInventoryPositionVm commonInventoryPositionVm)
+        {
+            var commonInventoryPosition = mapper.Map<Domain.Models.CommonInventoryPosition>(commonInventoryPositionVm);
+            return await inventoryRepository.DeleteCommonInventoryPosition(commonInventoryPosition);
+        }
     }
 }

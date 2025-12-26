@@ -33,5 +33,13 @@ namespace ShopWeb.Infrastructure.Repositories
         {
             return await inventoryApi.ApiInventoryGetAllCommonInventoryPositionsForUserGetAsync(inventoryId, userId);
         }
+        public async Task<CommonInventoryPosition> EditCommonInventoryPosition(CommonInventoryPosition commonInventoryPosition)
+        {
+            return await inventoryApi.ApiInventoryEditCommonInventoryPositionPostAsync(commonInventoryPosition);
+        }
+        public async Task<int> DeleteCommonInventoryPosition(CommonInventoryPosition commonInventoryPosition)
+        {
+            return await inventoryApi.ApiInventoryDeleteCommonInventoryPositionPostAsync(commonInventoryPosition);
+        }
     }
 }
