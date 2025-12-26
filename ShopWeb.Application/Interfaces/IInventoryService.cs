@@ -10,6 +10,7 @@ namespace ShopWeb.Application.Interfaces
     public interface IInventoryService
     {
         Task<List<InventoryVm>> AllInventories();
+        Task<InventoryVm> GetInventoryById(int inventoryId);
         Task<int> AddInventory(NewInventoryVm newInventoryVm);
         Task<InventorySummaryVm> GetInventorySummary(int inventoryId);
         Task<byte[]> GenerateSheet(InventorySummaryVm inventorySummaryVm);

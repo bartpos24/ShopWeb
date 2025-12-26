@@ -101,7 +101,11 @@
                             <tbody id="positionsTableBody">
                                 @foreach (var position in positions)
                                 {
-                                    <tr data-position-id="@position.Id">
+                                    <tr data-position-id="@position.Id"
+                                        data-product-name="@position.ProductName"
+                                        data-quantity="@position.Quantity"
+                                        data-price="@position.Price"
+                                        data-unit-id="@position.UnitId">
                                         <td>@position.ProductName</td>
                                         <td>@position.Quantity</td>
                                         <td>@position.Unit</td>
@@ -109,7 +113,7 @@
                                         <td>@position.ScanDate.ToString("dd.MM.yyyy HH:mm:ss")</td>
                                         <td>
                                             <button type="button" class="btn btn-sm btn-warning me-1" 
-                                                    onclick="editPosition(@position.Id, '@position.ProductName', @position.Quantity, @position.Price, @position.UnitId)"
+                                                    onclick="editPositionFromRow(this)"
                                                     title="Edytuj">
                                                 <i class="bi bi-pencil"></i>
                                             </button>
@@ -138,7 +142,7 @@
     <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
     @if (positions.Any())
     {
-        <a asp-action="InventorySummary" asp-route-id="@inventory?.Id" class="btn btn-success">
+        <a asp-action="InventorySummary" asp-route-inventoryId="@inventory?.Id" class="btn btn-success">
             Przejdź do podsumowania
         </a>
     }
@@ -234,6 +238,10 @@
             const tableBody = document.getElementById('positionsTableBody');
             const row = tableBody.insertRow(0);
             row.setAttribute('data-position-id', position.id);
+            row.setAttribute('data-product-name', position.productName);
+            row.setAttribute('data-quantity', position.quantity);
+            row.setAttribute('data-price', position.price);
+            row.setAttribute('data-unit-id', position.unitId);
             
             const scanDate = new Date(position.scanDate);
             const formattedDate = scanDate.toLocaleString('pl-PL', {
@@ -246,15 +254,17 @@
                 hour12: false
             }).replace(',', '');
 
+            const productNameEscaped = escapeHtml(position.productName);
+            
             row.innerHTML = `
-                <td>${position.productName}</td>
+                <td>${productNameEscaped}</td>
                 <td>${position.quantity}</td>
                 <td>${position.unit}</td>
                 <td>${new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(position.price)}</td>
                 <td>${formattedDate}</td>
                 <td>
                     <button type="button" class="btn btn-sm btn-warning me-1" 
-                            onclick="editPosition(${position.id}, '${position.productName}', ${position.quantity}, ${position.price}, ${position.unitId})"
+                            onclick="editPositionFromRow(this)"
                             title="Edytuj">
                         <i class="bi bi-pencil"></i>
                     </button>
@@ -271,6 +281,11 @@
             const row = document.querySelector(`tr[data-position-id="${position.id}"]`);
             if (!row) return;
 
+            row.setAttribute('data-product-name', position.productName);
+            row.setAttribute('data-quantity', position.quantity);
+            row.setAttribute('data-price', position.price);
+            row.setAttribute('data-unit-id', position.unitId);
+
             const scanDate = new Date(position.scanDate);
             const formattedDate = scanDate.toLocaleString('pl-PL', {
                 day: '2-digit',
@@ -282,15 +297,17 @@
                 hour12: false
             }).replace(',', '');
 
+            const productNameEscaped = escapeHtml(position.productName);
+
             row.innerHTML = `
-                <td>${position.productName}</td>
+                <td>${productNameEscaped}</td>
                 <td>${position.quantity}</td>
                 <td>${position.unit}</td>
                 <td>${new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(position.price)}</td>
                 <td>${formattedDate}</td>
                 <td>
                     <button type="button" class="btn btn-sm btn-warning me-1" 
-                            onclick="editPosition(${position.id}, '${position.productName}', ${position.quantity}, ${position.price}, ${position.unitId})"
+                            onclick="editPositionFromRow(this)"
                             title="Edytuj">
                         <i class="bi bi-pencil"></i>
                     </button>
@@ -301,6 +318,17 @@
                     </button>
                 </td>
             `;
+        }
+
+        function editPositionFromRow(button) {
+            const row = button.closest('tr');
+            const id = parseInt(row.getAttribute('data-position-id'));
+            const productName = row.getAttribute('data-product-name');
+            const quantity = parseFloat(row.getAttribute('data-quantity'));
+            const price = parseFloat(row.getAttribute('data-price'));
+            const unitId = parseInt(row.getAttribute('data-unit-id'));
+            
+            editPosition(id, productName, quantity, price, unitId);
         }
 
         function editPosition(id, productName, quantity, price, unitId) {
@@ -387,6 +415,17 @@
                 showAlert('danger', 'Wystąpił błąd podczas usuwania pozycji');
                 console.error(error);
             }
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
         }
 
         function showAlert(type, message) {

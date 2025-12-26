@@ -55,9 +55,12 @@ namespace ShopWeb.Controllers
 		}
 
         [HttpGet]
-        public async Task<IActionResult> InventorySummary(InventoryVm inventory)
+        public async Task<IActionResult> InventorySummary(int inventoryId)
 		{
-			var (success, inventorySummary) = await TryExecuteAsync(() => inventoryService.GetInventorySummary(inventory.Id));
+            var (successInventory, inventory) = await TryExecuteAsync(() => inventoryService.GetInventoryById(inventoryId));
+            if (!successInventory || inventory == null)
+                return RedirectToAction("Index");
+            var (success, inventorySummary) = await TryExecuteAsync(() => inventoryService.GetInventorySummary(inventory.Id));
 			if (!success)
 				return RedirectToAction("Index");
 
@@ -84,10 +87,12 @@ namespace ShopWeb.Controllers
         }
 
         [HttpGet]
-		public async Task<IActionResult> Inventory(InventoryVm inventory)
+		public async Task<IActionResult> Inventory(int inventoryId)
 		{
-            if (inventory == null)
+            var (successInventory, inventory) = await TryExecuteAsync(() => inventoryService.GetInventoryById(inventoryId));
+            if (!successInventory || inventory == null)
                 return RedirectToAction("Index");
+
             var (successUnits, units) = await TryExecuteAsync(() => productService.GetAllUnits());
             if (!successUnits || units == null)
             {
@@ -96,16 +101,16 @@ namespace ShopWeb.Controllers
             }
 
             List<CommonInventoryPositionVm> positions = new List<CommonInventoryPositionVm>();
-            var (success, positionsForUser) = await TryExecuteAsync(() => inventoryService.GetAllCommonInventoryPositionsForUser(inventory.Id));
+            var (success, positionsForUser) = await TryExecuteAsync(() => inventoryService.GetAllCommonInventoryPositionsForUser(inventoryId));
             if (positionsForUser != null)
                 positions = positionsForUser.OrderByDescending(w => w.ScanDate).ToList();
-            var sessionKey = $"{SessionKeyInventoryPositions}_{inventory.Id}";
+            var sessionKey = $"{SessionKeyInventoryPositions}_{inventoryId}";
             HttpContext.Session.SetObject(sessionKey, positions);
             ViewBag.Inventory = inventory;
             ViewBag.Positions = positions;
             ViewBag.Units = units;
 
-            return View(new CommonInventoryPositionVm { InventoryId = inventory.Id });
+            return View(new CommonInventoryPositionVm { InventoryId = inventoryId });
         }
 
         [HttpPost]

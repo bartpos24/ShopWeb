@@ -69,7 +69,7 @@ namespace ShopWeb.Controllers
                 ApiExceptionHandler.AddToModelState(ex, ModelState);
                 return (false, default);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, "Wystąpił nieoczekiwany błąd. Spróbuj ponownie później.");
                 return (false, default);

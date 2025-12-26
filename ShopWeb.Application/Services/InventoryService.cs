@@ -21,10 +21,13 @@ namespace ShopWeb.Application.Services
 
         public async Task<List<InventoryVm>> AllInventories()
         {
-            //return await inventoryRepository.AllInventories().ProjectTo<InventoryVm>(mapper.ConfigurationProvider);
-
             var inventories = await inventoryRepository.AllInventories();
             return mapper.Map<List<InventoryVm>>(inventories);
+        }
+        public async Task<InventoryVm> GetInventoryById(int inventoryId)
+        {
+            var inventory = await inventoryRepository.GetInventoryById(inventoryId);
+            return mapper.Map<InventoryVm>(inventory);
         }
         public async Task<int> AddInventory(NewInventoryVm newInventoryVm)
         {
