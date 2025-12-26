@@ -95,17 +95,30 @@
                                     <th>J.M.</th>
                                     <th>Cena</th>
                                     <th>Data</th>
+                                    <th>Akcje</th>
                                 </tr>
                             </thead>
                             <tbody id="positionsTableBody">
                                 @foreach (var position in positions)
                                 {
-                                    <tr>
+                                    <tr data-position-id="@position.Id">
                                         <td>@position.ProductName</td>
                                         <td>@position.Quantity</td>
                                         <td>@position.Unit</td>
                                         <td>@position.Price.ToString("C")</td>
                                         <td>@position.ScanDate.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-warning me-1" 
+                                                    onclick="editPosition(@position.Id, '@position.ProductName', @position.Quantity, @position.Price, @position.UnitId)"
+                                                    title="Edytuj">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger" 
+                                                    onclick="deletePosition(@position.Id)"
+                                                    title="Usuń">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -138,6 +151,7 @@
 
     <script>
         const inventoryId = @Model.InventoryId;
+        let editingPositionId = null;
 
         document.getElementById('addPositionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -148,6 +162,7 @@
             const unitName = selectedOption.getAttribute('data-unit-name') || '';
 
             const formData = {
+                id: editingPositionId || 0,
                 inventoryId: inventoryId,
                 productName: document.querySelector('[name="ProductName"]').value,
                 quantity: parseFloat(document.querySelector('[name="Quantity"]').value),
@@ -156,8 +171,13 @@
                 unit: unitName
             };
 
+            const isEditing = editingPositionId !== null;
+            const url = isEditing 
+                ? '@Url.Action("EditInventoryPosition", "Inventory")'
+                : '@Url.Action("AddInventoryPosition", "Inventory")';
+
             try {
-                const response = await fetch('@Url.Action("AddInventoryPosition", "Inventory")', {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -170,7 +190,14 @@
 
                 if (result.success) {
                     showAlert('success', result.message);
-                    addPositionToList(result.position);
+                    
+                    if (isEditing) {
+                        updatePositionInList(result.position);
+                        cancelEdit();
+                    } else {
+                        addPositionToList(result.position);
+                    }
+                    
                     this.reset();
                     document.querySelector('[name="InventoryId"]').value = inventoryId;
                     setFocusOnProductName();
@@ -178,7 +205,7 @@
                     showAlert('danger', result.message);
                 }
             } catch (error) {
-                showAlert('danger', 'Wystąpił błąd podczas dodawania pozycji');
+                showAlert('danger', 'Wystąpił błąd podczas ' + (isEditing ? 'edycji' : 'dodawania') + ' pozycji');
                 console.error(error);
             }
         });
@@ -196,6 +223,7 @@
                                 <th>J.M.</th>
                                 <th>Cena</th>
                                 <th>Data</th>
+                                <th>Akcje</th>
                             </tr>
                         </thead>
                         <tbody id="positionsTableBody"></tbody>
@@ -205,6 +233,8 @@
 
             const tableBody = document.getElementById('positionsTableBody');
             const row = tableBody.insertRow(0);
+            row.setAttribute('data-position-id', position.id);
+            
             const scanDate = new Date(position.scanDate);
             const formattedDate = scanDate.toLocaleString('pl-PL', {
                 day: '2-digit',
@@ -222,7 +252,141 @@
                 <td>${position.unit}</td>
                 <td>${new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(position.price)}</td>
                 <td>${formattedDate}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-warning me-1" 
+                            onclick="editPosition(${position.id}, '${position.productName}', ${position.quantity}, ${position.price}, ${position.unitId})"
+                            title="Edytuj">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" 
+                            onclick="deletePosition(${position.id})"
+                            title="Usuń">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
             `;
+        }
+
+        function updatePositionInList(position) {
+            const row = document.querySelector(`tr[data-position-id="${position.id}"]`);
+            if (!row) return;
+
+            const scanDate = new Date(position.scanDate);
+            const formattedDate = scanDate.toLocaleString('pl-PL', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).replace(',', '');
+
+            row.innerHTML = `
+                <td>${position.productName}</td>
+                <td>${position.quantity}</td>
+                <td>${position.unit}</td>
+                <td>${new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(position.price)}</td>
+                <td>${formattedDate}</td>
+                <td>
+                    <button type="button" class="btn btn-sm btn-warning me-1" 
+                            onclick="editPosition(${position.id}, '${position.productName}', ${position.quantity}, ${position.price}, ${position.unitId})"
+                            title="Edytuj">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger" 
+                            onclick="deletePosition(${position.id})"
+                            title="Usuń">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            `;
+        }
+
+        function editPosition(id, productName, quantity, price, unitId) {
+            editingPositionId = id;
+            
+            document.querySelector('[name="ProductName"]').value = productName;
+            document.querySelector('[name="Quantity"]').value = quantity;
+            document.querySelector('[name="Price"]').value = price;
+            document.querySelector('[name="UnitId"]').value = unitId;
+            
+            const submitButton = document.querySelector('#addPositionForm button[type="submit"]');
+            submitButton.innerHTML = '<i class="bi bi-check-circle"></i> Zapisz zmiany';
+            submitButton.classList.remove('btn-primary');
+            submitButton.classList.add('btn-success');
+            
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.className = 'btn btn-secondary w-100 mt-2';
+            cancelButton.innerHTML = '<i class="bi bi-x-circle"></i> Anuluj';
+            cancelButton.onclick = cancelEdit;
+            cancelButton.id = 'cancelEditButton';
+            
+            if (!document.getElementById('cancelEditButton')) {
+                submitButton.parentElement.appendChild(cancelButton);
+            }
+            
+            setFocusOnProductName();
+        }
+
+        function cancelEdit() {
+            editingPositionId = null;
+            
+            document.getElementById('addPositionForm').reset();
+            document.querySelector('[name="InventoryId"]').value = inventoryId;
+            
+            const submitButton = document.querySelector('#addPositionForm button[type="submit"]');
+            submitButton.innerHTML = '<i class="bi bi-plus-circle"></i> Dodaj pozycję';
+            submitButton.classList.remove('btn-success');
+            submitButton.classList.add('btn-primary');
+            
+            const cancelButton = document.getElementById('cancelEditButton');
+            if (cancelButton) {
+                cancelButton.remove();
+            }
+            
+            setFocusOnProductName();
+        }
+
+        async function deletePosition(id) {
+            if (!confirm('Czy na pewno chcesz usunąć tę pozycję?')) return;
+
+            try {
+                const response = await fetch('@Url.Action("DeleteInventoryPosition", "Inventory")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: JSON.stringify({ 
+                        id: id,
+                        inventoryId: inventoryId 
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showAlert('success', 'Pozycja została usunięta pomyślnie');
+                    
+                    const row = document.querySelector(`tr[data-position-id="${id}"]`);
+                    if (row) {
+                        row.remove();
+                        
+                        const tableBody = document.getElementById('positionsTableBody');
+                        if (tableBody && tableBody.children.length === 0) {
+                            document.getElementById('positionsList').innerHTML = 
+                                '<p class="text-muted text-center" id="emptyMessage">Brak dodanych pozycji</p>';
+                        }
+                    }
+                } else {
+                    showAlert('danger', result.message);
+                }
+            } catch (error) {
+                showAlert('danger', 'Wystąpił błąd podczas usuwania pozycji');
+                console.error(error);
+            }
         }
 
         function showAlert(type, message) {
