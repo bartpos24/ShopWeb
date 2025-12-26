@@ -137,25 +137,25 @@ namespace ShopWeb.Domain.Models
         /// Gets or Sets Unit
         /// </summary>
         [DataMember(Name = "unit", EmitDefaultValue = false)]
-        public ProductUnit Unit { get; set; }
+        public ProductUnit? Unit { get; set; }
 
         /// <summary>
         /// Gets or Sets User
         /// </summary>
         [DataMember(Name = "user", EmitDefaultValue = false)]
-        public User User { get; set; }
+        public User? User { get; set; }
 
         /// <summary>
         /// Gets or Sets ModifiedByUser
         /// </summary>
         [DataMember(Name = "modifiedByUser", EmitDefaultValue = false)]
-        public User ModifiedByUser { get; set; }
+        public User? ModifiedByUser { get; set; }
 
         /// <summary>
         /// Gets or Sets Inventory
         /// </summary>
         [DataMember(Name = "inventory", EmitDefaultValue = false)]
-        public Inventory Inventory { get; set; }
+        public Inventory? Inventory { get; set; }
 
         /// <summary>
         /// Returns the string presentation of the object

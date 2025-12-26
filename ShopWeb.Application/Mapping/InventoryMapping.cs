@@ -43,13 +43,18 @@ namespace ShopWeb.Application.Mapping
 
 			CreateMap<CommonInventoryPositionVm, CommonInventoryPosition>()
 				.ForMember(d => d.UserId, opt => opt.MapFrom(s => 0))
+				.ForMember(d => d.IsDeleted, opt => opt.Ignore())
+				.ForMember(d => d.ModificationDate, opt => opt.Ignore())
 				.ForMember(d => d.Inventory, opt => opt.Ignore())
-				.ForMember(d => d.Unit, opt => opt.Ignore())
 				.ForMember(d => d.User, opt => opt.Ignore())
-				.ForMember(d => d.ModifiedByUser, opt => opt.Ignore());
+				.ForMember(d => d.ModifiedByUserId, opt => opt.MapFrom(s => 0))
+				.ForMember(d => d.ModifiedByUser, opt => opt.Ignore())
+                .ForCtorParam("unit", opt => opt.MapFrom(src => (ProductUnit)null))
+                .ForMember(d => d.Unit, opt => opt.Ignore());
+                //.ForSourceMember(s => s.Unit, opt => opt.DoNotValidate());
 
-			CreateMap<CommonInventoryPosition, CommonInventoryPositionVm>()
-				.ForMember(d => d.Unit, opt => opt.MapFrom(s => s.Unit.Name));
+            CreateMap<CommonInventoryPosition, CommonInventoryPositionVm>()
+				.ForMember(d => d.Unit, opt => opt.MapFrom(s => s.Unit != null ? s.Unit.Name : string.Empty));
 
 			CreateMap<SummaryInventoryPosition, SummaryInventoryPositionVm>()
 				.ForMember(d => d.ScanDate, opt => opt.MapFrom(s => s.DateOfScanOrModification));

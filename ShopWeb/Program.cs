@@ -1,8 +1,10 @@
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShopWeb.Application;
+using ShopWeb.Application.TransferObjects.Inventory;
 using ShopWeb.Data;
 using ShopWeb.Extensions;
 using ShopWeb.Infrastructure;
@@ -19,7 +21,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();//.AddFluentValidation(fv => fv.RunDefaultMvcValidationAfterFluentValidationExecutes = false);
+builder.Services.AddControllersWithViews();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<ShopWeb.Application.TransferObjects.Inventory.CommonInventoryPositionValidation>();
 
 //Infrastructure configuration
 builder.Services.AddHttpContextAccessor();

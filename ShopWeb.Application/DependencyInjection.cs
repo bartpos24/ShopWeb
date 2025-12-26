@@ -1,7 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoMapper;
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.Mapping;
 using ShopWeb.Application.Services;
+using ShopWeb.Application.TransferObjects.Inventory;
 using System.Reflection;
 
 namespace ShopWeb.Application
@@ -23,8 +26,14 @@ namespace ShopWeb.Application
 
                 cfg.AllowNullCollections = true;
                 cfg.AllowNullDestinationValues = true;
+                cfg.Advanced.AllowAdditiveTypeMapCreation = true;
             }, Assembly.GetExecutingAssembly());
-			return services;
+            var serviceProvider = services.BuildServiceProvider();
+            var mapper = serviceProvider.GetRequiredService<IMapper>();
+            mapper.ConfigurationProvider.AssertConfigurationIsValid();
+
+
+            return services;
         }
     }
 }

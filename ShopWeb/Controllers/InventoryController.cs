@@ -112,15 +112,15 @@ namespace ShopWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddInventoryPosition([FromBody] CommonInventoryPositionVm positionVm)
         {
+            positionVm.ScanDate = DateTime.Now;
             if (!ModelState.IsValid)
             {
-                return Json(new { success = false, message = "Nieprawidłowe dane" });
+                var errors = string.Join(", ", ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage));
+                return Json(new { success = false, message = $"Nieprawidłowe dane: {errors}" });
             }
 
-            // Set scan date
-            positionVm.ScanDate = DateTime.Now;
-
-            // Add position to database via API
             var (success, addedPosition) = await TryExecuteAsync(() => inventoryService.AddCommonInventoryPosition(positionVm));
 
             if (!success)

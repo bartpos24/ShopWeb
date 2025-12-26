@@ -31,7 +31,7 @@
                     <div class="row g-2 align-items-end">
                         <div class="col-md-3">
                             <label asp-for="Quantity" class="form-label">Ilość</label>
-                            <input asp-for="Quantity" type="number" step="0.01" class="form-control" required />
+                            <input asp-for="Quantity" type="number" step="0.01" class="form-control" value="1.0" required />
                             <span asp-validation-for="Quantity" class="text-danger"></span>
                         </div>
 
@@ -142,12 +142,18 @@
         document.getElementById('addPositionForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            const unitSelect = document.querySelector('[name="UnitId"]');
+            const selectedOption = unitSelect.options[unitSelect.selectedIndex];
+            const unitCode = selectedOption.getAttribute('data-unit-code') || '';
+            const unitName = selectedOption.getAttribute('data-unit-name') || '';
+
             const formData = {
                 inventoryId: inventoryId,
                 productName: document.querySelector('[name="ProductName"]').value,
                 quantity: parseFloat(document.querySelector('[name="Quantity"]').value),
                 price: parseFloat(document.querySelector('[name="Price"]').value),
-                unitId: parseInt(document.querySelector('[name="UnitId"]').value)
+                unitId: parseInt(document.querySelector('[name="UnitId"]').value),
+                unit: unitName
             };
 
             try {
