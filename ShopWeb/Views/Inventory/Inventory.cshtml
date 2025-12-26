@@ -24,7 +24,7 @@
 
                     <div class="mb-3">
                         <label asp-for="ProductName" class="form-label">Nazwa produktu</label>
-                        <input asp-for="ProductName" class="form-control" required />
+                        <input asp-for="ProductName" id="productNameInput" class="form-control" required />
                         <span asp-validation-for="ProductName" class="text-danger"></span>
                     </div>
 
@@ -105,7 +105,7 @@
                                         <td>@position.Quantity</td>
                                         <td>@position.Unit</td>
                                         <td>@position.Price.ToString("C")</td>
-                                        <td>@position.ScanDate.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td>@position.ScanDate.ToString("dd.MM.yyyy HH:mm:ss")</td>
                                     </tr>
                                 }
                             </tbody>
@@ -173,6 +173,7 @@
                     addPositionToList(result.position);
                     this.reset();
                     document.querySelector('[name="InventoryId"]').value = inventoryId;
+                    setFocusOnProductName();
                 } else {
                     showAlert('danger', result.message);
                 }
@@ -204,12 +205,23 @@
 
             const tableBody = document.getElementById('positionsTableBody');
             const row = tableBody.insertRow(0);
+            const scanDate = new Date(position.scanDate);
+            const formattedDate = scanDate.toLocaleString('pl-PL', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            }).replace(',', '');
+
             row.innerHTML = `
                 <td>${position.productName}</td>
                 <td>${position.quantity}</td>
                 <td>${position.unit}</td>
                 <td>${new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(position.price)}</td>
-                <td>${new Date(position.scanDate).toLocaleString('pl-PL')}</td>
+                <td>${formattedDate}</td>
             `;
         }
 
@@ -243,5 +255,16 @@
                 console.error(error);
             }
         }
+
+        function setFocusOnProductName() {
+            const productNameInput = document.getElementById('productNameInput');
+            if (productNameInput) {
+                productNameInput.focus();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setFocusOnProductName();
+        });
     </script>
 }

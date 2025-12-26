@@ -98,7 +98,7 @@ namespace ShopWeb.Controllers
             List<CommonInventoryPositionVm> positions = new List<CommonInventoryPositionVm>();
             var (success, positionsForUser) = await TryExecuteAsync(() => inventoryService.GetAllCommonInventoryPositionsForUser(inventory.Id));
             if (positionsForUser != null)
-                positions = positionsForUser;
+                positions = positionsForUser.OrderByDescending(w => w.ScanDate).ToList();
             var sessionKey = $"{SessionKeyInventoryPositions}_{inventory.Id}";
             HttpContext.Session.SetObject(sessionKey, positions);
             ViewBag.Inventory = inventory;
