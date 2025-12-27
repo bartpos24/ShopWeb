@@ -244,8 +244,16 @@ namespace ShopWeb.Application.Extensions
                 for (int pageIndex = 0; pageIndex < totalPages; pageIndex++)
                 {
                     var pagePositions = model.Positions.Skip(pageIndex * itemsPerPage).Take(itemsPerPage).ToList();
-                    var previousPageTotal = model.Positions.Take(pageIndex * itemsPerPage).Sum(p => p.Quantity * p.Price);
-                    var currentPageTotal = pagePositions.Sum(p => p.Quantity * p.Price);
+            
+            // Calculate total from ALL previous pages (pages before current one)
+            var previousPageTotal = model.Positions
+                .Take(pageIndex * itemsPerPage)
+                .Sum(p => p.Quantity * p.Price);
+            
+            // Calculate cumulative total including current page (all pages up to and including current)
+            var cumulativeTotal = model.Positions
+                .Take((pageIndex + 1) * itemsPerPage)
+                .Sum(p => p.Quantity * p.Price);
 
                     // Add page break before each page except the first
                     if (pageIndex > 0)
@@ -384,7 +392,7 @@ namespace ShopWeb.Application.Extensions
                             .AlignCenter().Text("RAZEM").FontSize(9).Bold();
 
                         table.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignRight().Text(currentPageTotal.ToString("N2")).FontSize(9).Bold();
+                            .AlignRight().Text(cumulativeTotal.ToString("N2")).FontSize(9).Bold();
                     });
                 }
             });
