@@ -61,8 +61,10 @@ namespace ShopWeb.Application.Extensions
                         col.Item().Row(r =>
                         {
                             r.AutoItem().Text("(uniwersalny)").FontSize(11);
-                            r.RelativeItem().AlignCenter()
-                                .Text("Strona nr ___________").FontSize(9);
+                            r.ConstantItem(5);
+                            r.AutoItem().AlignCenter()
+                                .Text("Strona nr:  ").FontSize(9);
+                            r.RelativeItem().BorderBottom(0.5f).AlignCenter().Text("1").FontSize(11);
                         });
                     });
 
@@ -273,7 +275,7 @@ namespace ShopWeb.Application.Extensions
                             .AlignMiddle().AlignCenter().Text("Cena\njednostkowa").FontSize(7).Bold();
 
                         // Wartość - spans 2 rows
-                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
+                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
                             .AlignMiddle().AlignCenter().Text("Wartość").FontSize(7).Bold();
 
                         // Uwagi - spans 2 rows
@@ -289,6 +291,12 @@ namespace ShopWeb.Application.Extensions
                         // Cecha, symbol, numer, gatunek
                         header.Cell().Background(headerColor).Border(0.5f).Padding(2)
                             .AlignMiddle().AlignCenter().Text("Cecha, symbol,\nnumer, gatunek").FontSize(6).Bold();
+
+                        header.Cell().Background(Colors.White).Border(0.5f).Padding(2)
+                            .AlignRight().AlignMiddle().Text(0.0.ToString("N2")).FontSize(9);
+
+                        //header.Cell().Background(Colors.White).Border(0.5f).Padding(2)
+                        //    .AlignMiddle().AlignCenter().Text("<- Z przeniesienia").FontSize(7).Bold();
                     });
 
                     // Data rows
