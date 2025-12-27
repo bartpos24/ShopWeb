@@ -64,7 +64,10 @@ namespace ShopWeb.Application.Extensions
                             r.ConstantItem(5);
                             r.AutoItem().AlignCenter()
                                 .Text("Strona nr:  ").FontSize(9);
-                            r.RelativeItem().BorderBottom(0.5f).AlignCenter().Text("1").FontSize(11);
+                            r.RelativeItem().BorderBottom(0.5f).AlignCenter().Text(text =>
+                            {
+                                text.CurrentPageNumber().FontSize(11);
+                            });
                         });
                     });
 
@@ -230,146 +233,160 @@ namespace ShopWeb.Application.Extensions
         {
             var headerColor = "#FF9999";
             var lightPink = "#FFE0E0";
-            var alternateRowColor = Color.FromHex("#FFFAFA");
+            const int itemsPerPage = 40;
+
+            // Split positions into pages of 40 items
+            var totalPages = (int)Math.Ceiling((double)model.Positions.Count / itemsPerPage);
+            if (totalPages == 0) totalPages = 1; // At least one page even if no items
 
             container.Column(column =>
             {
-                // Main table
-                column.Item().Table(table =>
+                for (int pageIndex = 0; pageIndex < totalPages; pageIndex++)
                 {
-                    // Define columns - removed "Ilość księgowa"
-                    table.ColumnsDefinition(columns =>
+                    var pagePositions = model.Positions.Skip(pageIndex * itemsPerPage).Take(itemsPerPage).ToList();
+                    var previousPageTotal = model.Positions.Take(pageIndex * itemsPerPage).Sum(p => p.Quantity * p.Price);
+                    var currentPageTotal = pagePositions.Sum(p => p.Quantity * p.Price);
+
+                    // Add page break before each page except the first
+                    if (pageIndex > 0)
                     {
-                        columns.ConstantColumn(20);  // Lp.
-                        columns.RelativeColumn(4);   // Nazwa (opis/artykuł) - increased
-                        columns.ConstantColumn(50);  // Cecha, symbol, numer, gatunek
-                        columns.ConstantColumn(25);  // Jednostka miary
-                        columns.ConstantColumn(40);  // Ilość faktyczna
-                        columns.ConstantColumn(50);  // Cena jednostkowa
-                        columns.ConstantColumn(50);  // Wartość (zł)
-                        columns.ConstantColumn(50);  // Uwagi
-                    });
-
-                    table.Header(header =>
-                    {
-                        // === FIRST HEADER ROW ===
-
-                        // Lp. - spans 2 rows
-                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Lp.").FontSize(7).Bold();
-
-                        // PRZEDMIOT SPISYWANY - spans 2 columns
-                        header.Cell().ColumnSpan(2).Background(headerColor).BorderTop(0.5f).BorderLeft(0.5f).BorderRight(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("PRZEDMIOT SPISYWANY").FontSize(7).Bold();
-
-                        // J.M. - spans 2 rows
-                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("J.M.").FontSize(7).Bold();
-
-                        // Ilość stwierdzona - spans 2 rows
-                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Ilość\nstwierdzona").FontSize(7).Bold();
-
-                        // Cena jednostkowa - spans 2 rows
-                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Cena\njednostkowa").FontSize(7).Bold();
-
-                        // Wartość - spans 2 rows
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Wartość").FontSize(7).Bold();
-
-                        // Uwagi - spans 2 rows
-                        header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Uwagi").FontSize(7).Bold();
-
-                        // === SECOND HEADER ROW ===
-
-                        // Nazwa (określenie)
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Nazwa (określenie)").FontSize(6).Bold();
-
-                        // Cecha, symbol, numer, gatunek
-                        header.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                            .AlignMiddle().AlignCenter().Text("Cecha, symbol,\nnumer, gatunek").FontSize(6).Bold();
-
-                        header.Cell().Background(Colors.White).Border(0.5f).Padding(2)
-                            .AlignRight().AlignMiddle().Text(0.0.ToString("N2")).FontSize(9);
-
-                        //header.Cell().Background(Colors.White).Border(0.5f).Padding(2)
-                        //    .AlignMiddle().AlignCenter().Text("<- Z przeniesienia").FontSize(7).Bold();
-                    });
-
-                    // Data rows
-                    int index = 1;
-                    foreach (var position in model.Positions)
-                    {
-                        var rowColor = Colors.White;//index % 2 == 0 ? Colors.White : alternateRowColor;
-
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignCenter().AlignMiddle().Text(index.ToString()).FontSize(9);
-
-                        table.Cell().Background(rowColor).BorderLeft(0.5f).BorderHorizontal(0.5f).Padding(2)
-                            .AlignLeft().AlignMiddle().Text(position.ProductName).FontSize(9);
-
-                        table.Cell().Background(lightPink).BorderRight(0.5f).BorderHorizontal(0.5f).Padding(2)
-                            .AlignCenter().AlignMiddle().Text("").FontSize(9);
-
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignCenter().AlignMiddle().Text(position.Unit).FontSize(9);
-
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignRight().AlignMiddle().Text(position.Quantity.ToString("N2")).FontSize(9);
-
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignRight().AlignMiddle().Text(position.Price.ToString("N2")).FontSize(9);
-
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignRight().AlignMiddle().Text((position.Quantity * position.Price).ToString("N2")).FontSize(9);
-
-                        table.Cell().Background(rowColor).Border(0.5f).Padding(2)
-                            .AlignLeft().AlignMiddle().Text("").FontSize(9);
-
-                        index++;
+                        column.Item().PageBreak();
                     }
 
-                    // Add empty rows to fill the page (more rows for portrait)
-                    for (int i = index; i <= 45; i++)
+                    column.Item().Table(table =>
                     {
-                        var rowColor = Colors.White;//i % 2 == 0 ? Colors.White : alternateRowColor;
-
-                        for (int col = 0; col < 8; col++) // Changed from 9 to 8
+                        // Define columns
+                        table.ColumnsDefinition(columns =>
                         {
-                            var bgColor = col == 2 ? Color.FromHex(lightPink) : rowColor;
-                            if (col == 1)
+                            columns.ConstantColumn(20);  // Lp.
+                            columns.RelativeColumn(4);   // Nazwa (opis/artykuł)
+                            columns.ConstantColumn(50);  // Cecha, symbol, numer, gatunek
+                            columns.ConstantColumn(25);  // Jednostka miary
+                            columns.ConstantColumn(40);  // Ilość faktyczna
+                            columns.ConstantColumn(50);  // Cena jednostkowa
+                            columns.ConstantColumn(50);  // Wartość (zł)
+                            columns.ConstantColumn(50);  // Uwagi
+                        });
+
+                        table.Header(header =>
+                        {
+                            // === FIRST HEADER ROW ===
+
+                            // Lp. - spans 2 rows
+                            header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("Lp.").FontSize(7).Bold();
+
+                            // PRZEDMIOT SPISYWANY - spans 2 columns
+                            header.Cell().ColumnSpan(2).Background(headerColor).BorderTop(0.5f).BorderLeft(0.5f).BorderRight(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("PRZEDMIOT SPISYWANY").FontSize(7).Bold();
+
+                            // J.M. - spans 2 rows
+                            header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("J.M.").FontSize(7).Bold();
+
+                            // Ilość stwierdzona - spans 2 rows
+                            header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("Ilość\nstwierdzona").FontSize(7).Bold();
+
+                            // Cena jednostkowa - spans 2 rows
+                            header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("Cena\njednostkowa").FontSize(7).Bold();
+
+                            // Wartość - spans 2 rows
+                            header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("Wartość").FontSize(7).Bold();
+
+                            // Uwagi - spans 2 rows
+                            header.Cell().RowSpan(2).Background(headerColor).Border(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("Uwagi").FontSize(7).Bold();
+
+                            // === SECOND HEADER ROW ===
+
+                            // Nazwa (określenie)
+                            header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("Nazwa (określenie)").FontSize(6).Bold();
+
+                            // Cecha, symbol, numer, gatunek
+                            header.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                                .AlignMiddle().AlignCenter().Text("Cecha, symbol,\nnumer, gatunek").FontSize(6).Bold();
+
+                            // Previous page total (Z przeniesienia)
+                            header.Cell().Background(Colors.White).Border(0.5f).Padding(2)
+                                .AlignRight().AlignMiddle().Text(previousPageTotal.ToString("N2")).FontSize(9);
+                        });
+
+                        // Data rows
+                        int startIndex = pageIndex * itemsPerPage + 1;
+                        for (int i = 0; i < itemsPerPage; i++)
+                        {
+                            var rowColor = Colors.White;
+                            
+                            if (i < pagePositions.Count)
                             {
-                                table.Cell().Background(bgColor).BorderLeft(0.5f).BorderHorizontal(0.5f).Padding(2)
-                                    .Text("").FontSize(7);
-                            }
-                            else if (col == 2)
-                            {
-                                table.Cell().Background(bgColor).BorderRight(0.5f).BorderHorizontal(0.5f).Padding(2)
-                                    .Text("").FontSize(7);
+                                var position = pagePositions[i];
+                                var itemIndex = startIndex + i;
+
+                                table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                                    .AlignCenter().AlignMiddle().Text(itemIndex.ToString()).FontSize(9);
+
+                                table.Cell().Background(rowColor).BorderLeft(0.5f).BorderHorizontal(0.5f).Padding(2)
+                                    .AlignLeft().AlignMiddle().Text(position.ProductName).FontSize(9);
+
+                                table.Cell().Background(lightPink).BorderRight(0.5f).BorderHorizontal(0.5f).Padding(2)
+                                    .AlignCenter().AlignMiddle().Text("").FontSize(9);
+
+                                table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                                    .AlignCenter().AlignMiddle().Text(position.Unit).FontSize(9);
+
+                                table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                                    .AlignRight().AlignMiddle().Text(position.Quantity.ToString("N2")).FontSize(9);
+
+                                table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                                    .AlignRight().AlignMiddle().Text(position.Price.ToString("N2")).FontSize(9);
+
+                                table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                                    .AlignRight().AlignMiddle().Text((position.Quantity * position.Price).ToString("N2")).FontSize(9);
+
+                                table.Cell().Background(rowColor).Border(0.5f).Padding(2)
+                                    .AlignLeft().AlignMiddle().Text("").FontSize(9);
                             }
                             else
                             {
-                                table.Cell().Background(bgColor).Border(0.5f).Padding(2)
-                                    .Text("").FontSize(7);
+                                // Empty rows
+                                for (int col = 0; col < 8; col++)
+                                {
+                                    var bgColor = col == 2 ? Color.FromHex(lightPink) : rowColor;
+                                    if (col == 1)
+                                    {
+                                        table.Cell().Background(bgColor).BorderLeft(0.5f).BorderHorizontal(0.5f).Padding(2)
+                                            .Text("").FontSize(7);
+                                    }
+                                    else if (col == 2)
+                                    {
+                                        table.Cell().Background(bgColor).BorderRight(0.5f).BorderHorizontal(0.5f).Padding(2)
+                                            .Text("").FontSize(7);
+                                    }
+                                    else
+                                    {
+                                        table.Cell().Background(bgColor).Border(0.5f).Padding(2)
+                                            .Text("").FontSize(7);
+                                    }
+                                }
                             }
                         }
-                    }
 
-                    table.Cell().Padding(2)
-                        .Text("").FontSize(7);
-                    table.Cell().Padding(2)
-                        .Text("").FontSize(7);
-                    // Summary row
-                    table.Cell().ColumnSpan(4).Background(headerColor).Border(0.5f).Padding(2)
-                        .AlignCenter().Text("RAZEM").FontSize(9).Bold();
+                        // Empty cells before summary
+                        table.Cell().Padding(2).Text("").FontSize(7);
+                        table.Cell().Padding(2).Text("").FontSize(7);
 
-                    var totalValue = model.Positions.Sum(p => p.Quantity * p.Price);
-                    table.Cell().Background(headerColor).Border(0.5f).Padding(2)
-                        .AlignRight().Text(totalValue.ToString("N2")).FontSize(9).Bold();
-                });
+                        // Summary row
+                        table.Cell().ColumnSpan(4).Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignCenter().Text("RAZEM").FontSize(9).Bold();
+
+                        table.Cell().Background(headerColor).Border(0.5f).Padding(2)
+                            .AlignRight().Text(currentPageTotal.ToString("N2")).FontSize(9).Bold();
+                    });
+                }
             });
         }
 
