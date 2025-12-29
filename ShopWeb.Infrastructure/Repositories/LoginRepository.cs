@@ -40,7 +40,11 @@ namespace ShopWeb.Infrastructure.Repositories
 				tokenManager.ClearTokens();
 			}
 		}
+		public async Task Register(RegisterModel registerModel)
+		{
+			await loginApi.ApiLoginRegisterPostAsync(registerModel);
+        }
 
-		
-	}
+
+    }
 }

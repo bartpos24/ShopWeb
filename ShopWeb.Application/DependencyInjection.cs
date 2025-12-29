@@ -23,6 +23,7 @@ namespace ShopWeb.Application
             {
                 cfg.AddProfile<InventoryMapping>();
                 cfg.AddProfile<ProductMapping>();
+                cfg.AddProfile<UserMapping>();
 
                 cfg.AllowNullCollections = true;
                 cfg.AllowNullDestinationValues = true;

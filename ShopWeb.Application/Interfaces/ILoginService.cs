@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ShopWeb.Application.TransferObjects.User;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace ShopWeb.Application.Interfaces
 	{
 		Task<string> Login(string username, string password, string? ssaid = null);
 		Task<string> RefreshToken(string refreshToken, string? ssaid = null);
+		Task Register(RegisterModelVm registerModel);
 		Task Logout();
 	}
 }
