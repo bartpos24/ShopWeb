@@ -233,7 +233,7 @@ namespace ShopWeb.Application.Extensions
         {
             var headerColor = "#FF9999";
             var lightPink = "#FFE0E0";
-            const int itemsPerPage = 40;
+            const int itemsPerPage = 35;
 
             // Split positions into pages of 40 items
             var totalPages = (int)Math.Ceiling((double)model.Positions.Count / itemsPerPage);
@@ -266,14 +266,14 @@ namespace ShopWeb.Application.Extensions
                         // Define columns
                         table.ColumnsDefinition(columns =>
                         {
-                            columns.ConstantColumn(20);  // Lp.
+                            columns.ConstantColumn(25);  // Lp.
                             columns.RelativeColumn(4);   // Nazwa (opis/artykuł)
                             columns.ConstantColumn(50);  // Cecha, symbol, numer, gatunek
                             columns.ConstantColumn(25);  // Jednostka miary
                             columns.ConstantColumn(40);  // Ilość faktyczna
                             columns.ConstantColumn(50);  // Cena jednostkowa
-                            columns.ConstantColumn(50);  // Wartość (zł)
-                            columns.ConstantColumn(50);  // Uwagi
+                            columns.ConstantColumn(55);  // Wartość (zł)
+                            columns.ConstantColumn(40);  // Uwagi
                         });
 
                         table.Header(header =>

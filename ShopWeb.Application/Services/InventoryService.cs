@@ -4,6 +4,7 @@ using ShopWeb.Application.Extensions;
 using ShopWeb.Application.Interfaces;
 using ShopWeb.Application.TransferObjects.Inventory;
 using ShopWeb.Domain.Interfaces;
+using ShopWeb.Domain.Models;
 
 namespace ShopWeb.Application.Services
 {
@@ -42,6 +43,20 @@ namespace ShopWeb.Application.Services
             {
                 Positions = mapper.Map<List<SummaryInventoryPositionVm>>(summaryPositions),
                 Count = summaryPositions.Count
+            };
+        }
+        public async Task<InventorySummaryVm> GetInventorySummary(int inventoryId, int pageSize, int pageNo, string searchString)
+        {
+            var result = await inventoryRepository.GetInventorySummary(inventoryId);
+            var summaryPositions = result.Where(w => w.ProductName.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            var summaryToShow = summaryPositions.Skip(pageSize * (pageNo - 1)).Take(pageSize).ToList();
+            return new InventorySummaryVm()
+            {
+                Positions = mapper.Map<List<SummaryInventoryPositionVm>>(summaryToShow),
+                Count = summaryPositions.Count,
+                PageSize = pageSize,
+                CurrentPage = pageNo,
+                SearchString = searchString
             };
         }
         public async Task<byte[]> GenerateSheet(InventorySummaryVm inventorySummaryVm)

@@ -60,30 +60,54 @@ namespace ShopWeb.Controllers
             var (successInventory, inventory) = await TryExecuteAsync(() => inventoryService.GetInventoryById(inventoryId));
             if (!successInventory || inventory == null)
                 return RedirectToAction("Index");
-            var (success, inventorySummary) = await TryExecuteAsync(() => inventoryService.GetInventorySummary(inventory.Id));
-			if (!success)
-				return RedirectToAction("Index");
 
-			inventorySummary.Inventory = inventory;
-            TempData["InventorySummary"] = System.Text.Json.JsonSerializer.Serialize(inventorySummary);
+            var (success, inventorySummary) = await TryExecuteAsync(() => inventoryService.GetInventorySummary(inventory.Id, 50, 1, ""));
+			if (!success)
+                return RedirectToAction("Index");
+
+            inventorySummary.Inventory = inventory;
+            return View(inventorySummary);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> InventorySummary(int inventoryId, int pageSize, int? pageNo, string searchString)
+        {
+            if (!pageNo.HasValue)
+            {
+                pageNo = 1;
+            }
+            if (searchString is null)
+            {
+                searchString = String.Empty;
+            }
+            var (successInventory, inventory) = await TryExecuteAsync(() => inventoryService.GetInventoryById(inventoryId));
+            if (!successInventory || inventory == null)
+                return RedirectToAction("Index");
+
+            var (success, inventorySummary) = await TryExecuteAsync(() => inventoryService.GetInventorySummary(inventory.Id, pageSize, pageNo.Value, searchString));
+            if (!success)
+                return RedirectToAction("Index");
+
+            inventorySummary.Inventory = inventory;
             return View(inventorySummary);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GenerateSheet()
+        public async Task<IActionResult> GenerateSheet(int inventoryId)
         {
-            if (TempData["InventorySummary"] is string json)
-            {
-                var inventorySummary = System.Text.Json.JsonSerializer.Deserialize<InventorySummaryVm>(json);
 
-				// TODO: Generate PDF using inventorySummary
-				var (success, file) = await TryExecuteAsync(() => inventoryService.GenerateSheet(inventorySummary));
-				if(!success)
-					return RedirectToAction("InventorySummary", new { inventory = inventorySummary.Inventory });
-				return File(file, "application/pdf", $"Inventory_{inventorySummary.Inventory.Name}.pdf");
-            }
-
-            return RedirectToAction("Index");
+            var (successInventory, inventory) = await TryExecuteAsync(() => inventoryService.GetInventoryById(inventoryId));
+            if (!successInventory || inventory == null)
+                return RedirectToAction("Index");
+            var (successSummary, inventorySummary) = await TryExecuteAsync(() => inventoryService.GetInventorySummary(inventory.Id));
+            if (!successSummary)
+                return RedirectToAction("Index");
+            inventorySummary.Inventory = inventory;
+            var (success, file) = await TryExecuteAsync(() => inventoryService.GenerateSheet(inventorySummary));
+            if (!success)
+                return RedirectToAction("InventorySummary", new { inventory = inventorySummary.Inventory });
+            return File(file, "application/pdf", $"Inventory_{inventorySummary.Inventory.Name}.pdf");
         }
 
         [HttpGet]

@@ -76,14 +76,8 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h5>Dodane pozycje (@positions.Count)</h5>
-                @if (positions.Any())
-                {
-                    <button type="button" class="btn btn-sm btn-danger" onclick="clearPositions()">
-                        Wyczyść listę
-                    </button>
-                }
             </div>
-            <div class="card-body">
+            <div class="card-body" style="max-height: 500px; overflow-y: auto;">
                 <div id="positionsList">
                     @if (positions.Any())
                     {
@@ -144,6 +138,9 @@
     {
         <a asp-action="InventorySummary" asp-route-inventoryId="@inventory?.Id" class="btn btn-success">
             Przejdź do podsumowania
+        </a>
+        <a asp-action="GenerateSheet" asp-route-inventoryId="@inventory?.Id" class="btn btn-success">
+            Generuj arkusz
         </a>
     }
 </div>
@@ -436,27 +433,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             `;
-            setTimeout(() => alertContainer.innerHTML = '', 5000);
-        }
-
-        async function clearPositions() {
-            if (!confirm('Czy na pewno chcesz wyczyścić wszystkie pozycje?')) return;
-
-            try {
-                const response = await fetch('@Url.Action("ClearInventoryPositions", "Inventory")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ inventoryId: inventoryId })
-                });
-
-                if (response.ok) {
-                    location.reload();
-                }
-            } catch (error) {
-                console.error(error);
-            }
+            setTimeout(() => alertContainer.innerHTML = '', 3000);
         }
 
         function setFocusOnProductName() {

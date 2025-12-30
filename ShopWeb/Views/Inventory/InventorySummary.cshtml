@@ -4,56 +4,121 @@
     ViewData["Title"] = "InventorySummary";
 }
 
-<h1>InventorySummary</h1>
+<h1>Podsumowanie inwentaryzacji: @Model.Inventory.Name</h1>
 
 <p>
-    <a asp-action="GenerateSheet">Wygeneruj arkusz</a>
+    <a asp-action="GenerateSheet" asp-route-inventoryId="@Model.Inventory.Id">Wygeneruj arkusz</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Nazwa produktu
-            </th>
-            <th>
-                Ilość
-            </th>
-            <th>
-                J.M.
-            </th>
-            <th>
-                Cena
-            </th>
-            <th>
-                Data skanowania
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Positions) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Unit)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ScanDate)
-            </td>
-            @* <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td> *@
-        </tr>
+<form asp-action="InventorySummary" asp-controller="Inventory" method="post" id="summaryForm">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="inventoryId" id="inventoryId" value="@Model.Inventory.Id" />
+    <input type="hidden" name="pageNo" id="pageNo" value="@Model.CurrentPage" />
+    <input type="hidden" name="pageSize" id="pageSize" value="@Model.PageSize" />
+    
+    <div class="row mb-3">
+        <div class="col-auto">
+            <input type="text" name="searchString" id="searchString" value="@Model.SearchString" placeholder="Szukaj..." class="form-control" style="display: inline-block; width: auto;" />
+            <input type="submit" value="Wyszukaj" class="btn btn-primary" style="display: inline-block;" />
+        </div>
+    </div>
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nazwa produktu</th>
+                    <th>Ilość</th>
+                    <th>J.M.</th>
+                    <th>Cena</th>
+                    <th>Data skanowania</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Positions != null && Model.Positions.Any())
+                {
+                    @foreach (var item in Model.Positions)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Unit</td>
+                            <td>@item.Price.ToString("N2")</td>
+                            <td>@item.ScanDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center">Brak pozycji do wyświetlenia</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="pagination" style="display: inline-block;">
+                @if (Model.Count > 0)
+                {
+                    var totalPages = (int)Math.Ceiling(Model.Count / (double)Model.PageSize);
+                    var currentPage = Model.CurrentPage;
+
+                    // First page
+                    @if (currentPage > 1)
+                    {
+                        <a href="javascript:void(0);" onclick="changePage(1)">1</a>
+                        <text>  |  </text>
+                    }
+
+                    // Ellipsis after first page if needed
+                    @if (currentPage > 4)
+                    {
+                        <span> ... </span>
+                        <text>  |  </text>
+                    }
+
+                    // Two previous pages
+                    @for (int i = Math.Max(2, currentPage - 2); i < currentPage; i++)
+                    {
+                        <a href="javascript:void(0);" onclick="changePage(@i)">@i</a>
+                        <text>  |  </text>
+                    }
+
+                    // Current page
+                    <span class="current-page"><strong>@currentPage</strong></span>
+
+                    // Two next pages
+                    @for (int i = currentPage + 1; i <= Math.Min(totalPages - 1, currentPage + 2); i++)
+                    {
+                        <text>  |  </text>
+                        <a href="javascript:void(0);" onclick="changePage(@i)">@i</a>
+                    }
+
+                    // Ellipsis before last page if needed
+                    @if (currentPage < totalPages - 3)
+                    {
+                        <text>  |  </text>
+                        <span> ... </span>
+                    }
+
+                    // Last page
+                    @if (currentPage < totalPages)
+                    {
+                        <text>  |  </text>
+                        <a href="javascript:void(0);" onclick="changePage(@totalPages)">@totalPages</a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function changePage(pageNumber) {
+            document.getElementById('pageNo').value = pageNumber;
+            document.getElementById('summaryForm').submit();
+        }
+    </script>
 }
-    </tbody>
-</table>

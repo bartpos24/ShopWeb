@@ -13,6 +13,7 @@ namespace ShopWeb.Application.Interfaces
         Task<InventoryVm> GetInventoryById(int inventoryId);
         Task<int> AddInventory(NewInventoryVm newInventoryVm);
         Task<InventorySummaryVm> GetInventorySummary(int inventoryId);
+        Task<InventorySummaryVm> GetInventorySummary(int inventoryId, int pageSize, int pageNo, string searchString);
         Task<byte[]> GenerateSheet(InventorySummaryVm inventorySummaryVm);
         Task<CommonInventoryPositionVm> AddCommonInventoryPosition(CommonInventoryPositionVm commonInventoryPositionVm);
         Task<CommonInventoryPositionVm> EditCommonInventoryPosition(CommonInventoryPositionVm commonInventoryPositionVm);
